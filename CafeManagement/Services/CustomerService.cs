@@ -7,14 +7,19 @@ namespace CafeManagement.Services
     public class CustomerService:ICustomerService
     {
         private readonly IUnitOfWork _unitOfWork;
+
+        public CustomerService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
         public void Add(Customer item)
         {
             _unitOfWork.Customer.Add(item);
         }
 
-        public void Delete(Guid id)
+        public void Delete(Customer item)
         {
-            var item = _unitOfWork.Customer.GetById(id);
             if (item != null)
                 _unitOfWork.Customer.Delete(item);
         }

@@ -1,4 +1,4 @@
-﻿using CafeManagement.Enum;
+﻿using CafeManagement.Enums;
 
 namespace CafeManagement.Models
 {

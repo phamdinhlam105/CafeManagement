@@ -16,7 +16,6 @@ namespace CafeManagement.UnitOfWork
         private IOrderRepository _order ;
         private IOrderDetailRepository _orderDetail ;
         private ICustomerRepository _customer ;
-        private static UnitOfWork _instance;
         private static readonly object _lock = new object();
 
         public UnitOfWork(CafeManagementDbContext context)

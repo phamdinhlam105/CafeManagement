@@ -12,6 +12,6 @@ namespace CafeManagement.Interfaces.Services
 
         void Update(T item);
 
-        void Delete(Guid id);
+        void Delete(T item);
     }
 }

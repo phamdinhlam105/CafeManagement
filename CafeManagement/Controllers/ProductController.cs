@@ -44,7 +44,7 @@ namespace CafeManagement.Controllers
                 return BadRequest();
 
             _productService.Add(product);
-            return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
+            return CreatedAtAction(nameof(GetById), new { product.Id });
         }
 
         [HttpPut("{id}")]
@@ -68,7 +68,7 @@ namespace CafeManagement.Controllers
             if (product == null)
                 return NotFound();
 
-            _productService.Delete(id);
+            _productService.Delete(product);
             return NoContent();
         }
     }

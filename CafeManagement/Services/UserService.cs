@@ -7,14 +7,19 @@ namespace CafeManagement.Services
     public class UserService:IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
+
+        public UserService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
         public void Add(User item)
         {
             _unitOfWork.User.Add(item);
         }
 
-        public void Delete(Guid id)
+        public void Delete(User item)
         {
-            var item = _unitOfWork.User.GetById(id);
             if (item != null)
                 _unitOfWork.User.Delete(item);
         }

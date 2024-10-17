@@ -7,14 +7,18 @@ namespace CafeManagement.Services
     public class CategoryService : ICategoryService
     {
         private readonly IUnitOfWork _unitOfWork;
+        public CategoryService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
         public void Add(Category item)
         {
             _unitOfWork.Category.Add(item);
         }
 
-        public void Delete(Guid id)
+        public void Delete(Category item)
         {
-            var item = _unitOfWork.Category.GetById(id);
             if (item != null)
                 _unitOfWork.Category.Delete(item);
         }

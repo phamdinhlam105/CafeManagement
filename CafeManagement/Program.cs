@@ -1,5 +1,7 @@
 using CafeManagement.Data;
+using CafeManagement.Interfaces.Mappers;
 using CafeManagement.Interfaces.Services;
+using CafeManagement.Mappers;
 using CafeManagement.Repositories.Interfaces;
 using CafeManagement.Services;
 using CafeManagement.UnitOfWork;
@@ -23,6 +25,7 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<ICustomerMapper, CustomerMapper>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

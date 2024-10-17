@@ -7,14 +7,18 @@ namespace CafeManagement.Services
     public class ProductService : IProductService
     {
         private readonly IUnitOfWork _unitOfWork;
+        
+        public ProductService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
         public void Add(Product item)
         {
             _unitOfWork.Product.Add(item);
         }
 
-        public void Delete(Guid id)
+        public void Delete(Product item)
         {
-            Product item = _unitOfWork.Product.GetById(id);
             if(item!=null)
                 _unitOfWork.Product.Delete(item);
         }

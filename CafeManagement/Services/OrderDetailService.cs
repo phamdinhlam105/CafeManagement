@@ -7,14 +7,18 @@ namespace CafeManagement.Services
     public class OrderDetailService:IOrderDetailService
     {
         private readonly IUnitOfWork _unitOfWork;
+        
+        public OrderDetailService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
         public void Add(OrderDetail item)
         {
             _unitOfWork.OrderDetail.Add(item);
         }
 
-        public void Delete(Guid id)
+        public void Delete(OrderDetail item)
         {
-            var item = _unitOfWork.OrderDetail.GetById(id);
             if (item != null)
                 _unitOfWork.OrderDetail.Delete(item);
         }
