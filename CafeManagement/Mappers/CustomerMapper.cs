@@ -28,6 +28,12 @@ namespace CafeManagement.Mappers
                 Address = request.Address
             };
         }
+        public void UpdateEntityFromRequest(Customer customer, CustomerRequest request)
+        {
+            customer.Name= request.Name;
+            customer.Phone= request.Phone;
+            customer.Address= request.Address;
+        }
     }
 }
 

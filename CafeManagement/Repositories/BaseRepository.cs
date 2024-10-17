@@ -33,7 +33,7 @@ namespace CafeManagement.Repositories
 
         public void Update(T entity)
         {
-            _dbSet.Attach(entity);
+            _context.Update(entity);
             _context.Entry(entity).State = EntityState.Modified;
             _context.SaveChanges();
         }

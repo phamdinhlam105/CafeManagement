@@ -15,11 +15,13 @@ namespace CafeManagement.Controllers
     {
         private readonly ICustomerService _customerService;
         private readonly ICustomerMapper _customerMapper;
+
         public CustomerController(ICustomerService customerService,ICustomerMapper customerMapper)
         {
             _customerService = customerService;
             _customerMapper = customerMapper;
         }
+
         [HttpGet]
         public ActionResult<IEnumerable<CustomerResponse>> GetAll() 
         {
@@ -31,6 +33,16 @@ namespace CafeManagement.Controllers
             }
             return NotFound();
         }
+        
+        [HttpGet("Id")]
+        public ActionResult<CustomerResponse> GetById(Guid Id)
+        {
+            var customer = _customerService.GetById(Id);
+            if (customer == null)
+                return NotFound();
+            return Ok(_customerMapper.MapToResponse(customer));
+        }
+
         [HttpPost]
         public ActionResult Add([FromBody] CustomerRequest customer)
         {
@@ -42,14 +54,20 @@ namespace CafeManagement.Controllers
             _customerService.Add(item);
             return CreatedAtAction(nameof(GetById), new { item.Id });
         }
-        [HttpGet("Id")]
-        public ActionResult<CustomerResponse> GetById(Guid Id)
+
+        [HttpPut("{Id}")]
+        public ActionResult Edit(Guid Id, [FromBody]  CustomerRequest customer)
         {
-            var customer = _customerService.GetById(Id);
-            if (customer == null)
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var existItem = _customerService.GetById(Id);
+            if (existItem == null)
                 return NotFound();
-            return Ok(_customerMapper.MapToResponse(customer));
+            _customerMapper.UpdateEntityFromRequest(existItem, customer);
+            _customerService.Update(existItem);
+            return Ok(existItem);
         }
+
         [HttpDelete("Id")]
         public ActionResult Delete(Guid Id)
         {

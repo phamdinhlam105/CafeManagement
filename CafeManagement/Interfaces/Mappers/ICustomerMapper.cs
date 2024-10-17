@@ -8,5 +8,6 @@ namespace CafeManagement.Interfaces.Mappers
     {
         CustomerResponse MapToResponse(Customer customer);
         Customer MapToEntity(CustomerRequest request);
+        void UpdateEntityFromRequest(Customer customer, CustomerRequest request);
     }
 }
