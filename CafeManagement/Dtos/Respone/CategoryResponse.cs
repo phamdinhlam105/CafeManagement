@@ -1,10 +1,8 @@
 ﻿namespace CafeManagement.Dtos.Respone
 {
-    public class ProductResponse
+    public class CategoryResponse
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public decimal Price { get; set; }
-        public Guid CategoryId { get; set; }
     }
 }

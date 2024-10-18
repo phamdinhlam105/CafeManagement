@@ -19,13 +19,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+//services
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+//mapper
 builder.Services.AddScoped<ICustomerMapper, CustomerMapper>();
+builder.Services.AddScoped<ICategoryMapper, CategoryMapper>();
+builder.Services.AddScoped<IProductMapper, ProductMapper>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

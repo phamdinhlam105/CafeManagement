@@ -14,6 +14,7 @@ namespace CafeManagement.UnitOfWork
         private ICategoryRepository _category;
         private IUserRepository _user;
         private IOrderRepository _order ;
+        private IOnlineOrderRepository _onlineOrder;
         private IOrderDetailRepository _orderDetail ;
         private ICustomerRepository _customer ;
         private static readonly object _lock = new object();
@@ -67,6 +68,18 @@ namespace CafeManagement.UnitOfWork
                         if (_order == null)
                             return _order = new OrderRepository(_context);
                 return _order;
+            }
+        }
+
+        public IOnlineOrderRepository OnlineOrder
+        {
+            get
+            {
+                if(_onlineOrder==null)
+                    lock(_lock)
+                        if (_onlineOrder==null)
+                            return _onlineOrder=new OnlineOrderRepository(_context);
+                return _onlineOrder;
             }
         }
         public IOrderDetailRepository OrderDetail

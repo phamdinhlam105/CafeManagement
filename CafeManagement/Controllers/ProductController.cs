@@ -1,5 +1,10 @@
-﻿using CafeManagement.Interfaces.Services;
+﻿using CafeManagement.Dtos.Request;
+using CafeManagement.Dtos.Respone;
+using CafeManagement.Interfaces.Mappers;
+using CafeManagement.Interfaces.Services;
+using CafeManagement.Mappers;
 using CafeManagement.Models;
+using CafeManagement.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CafeManagement.Controllers
@@ -9,56 +14,67 @@ namespace CafeManagement.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
-
-        public ProductController(IProductService productService)
+        private readonly IProductMapper _productMapper;
+        public ProductController(IProductService productService, IProductMapper productMapper)
         {
             _productService = productService;
+            _productMapper = productMapper;
         }
         [HttpGet]
-        public ActionResult<IEnumerable<Product>> GetAll()
+        public ActionResult<IEnumerable<ProductResponse>> GetAll()
         {
-            var products = _productService.GetAll();
-            return Ok(products);
+            var products = _productService.GetAll().ToList();
+            var productResponse = products.Select(c => _productMapper.MapToResponse(c)).ToList();
+            if (productResponse.Any())
+            {
+                return Ok(productResponse);
+            }
+            return NotFound();
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Product> GetById(Guid id)
+        public ActionResult<ProductResponse> GetById(Guid id)
         {
             var product = _productService.GetById(id);
             if (product == null)
                 return NotFound();
-            return Ok(product);
+            return Ok(_productMapper.MapToResponse(product));
         }
 
-        [HttpGet("category/{categoryId}")]
-        public ActionResult<IEnumerable<Product>> GetProductsByCategory(Guid categoryId)
+        [HttpGet("ByCategory/{categoryId}")]
+        public ActionResult<IEnumerable<ProductResponse>> GetProductsByCategory(Guid categoryId)
         {
             var products = _productService.GetProductsByCategory(categoryId);
-            return Ok(products);
+            var productResponse = products.Select(c => _productMapper.MapToResponse(c)).ToList();
+            if (productResponse.Any())
+            {
+                return Ok(productResponse);
+            }
+            return NotFound();
         }
 
         [HttpPost]
-        public ActionResult Add(Product product)
+        public ActionResult Add([FromBody] ProductRequest product)
         {
-            if (product == null)
-                return BadRequest();
-
-            _productService.Add(product);
-            return CreatedAtAction(nameof(GetById), new { product.Id });
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var item = _productMapper.MapToEntity(product);
+            _productService.Add(item);
+            return CreatedAtAction(nameof(GetById), new { item.Id });
         }
 
         [HttpPut("{id}")]
-        public ActionResult Update(Guid id, Product product)
+        public ActionResult Edit(Guid id,[FromBody] ProductRequest product)
         {
-            if (product == null || product.Id != id)
-                return BadRequest();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var existingProduct = _productService.GetById(id);
             if (existingProduct == null)
                 return NotFound();
-
-            _productService.Update(product);
-            return NoContent();
+            _productMapper.UpdateEntityFromRequest(existingProduct, product);
+            _productService.Update(existingProduct);
+            return Ok(existingProduct);
         }
 
         [HttpDelete("{id}")]
