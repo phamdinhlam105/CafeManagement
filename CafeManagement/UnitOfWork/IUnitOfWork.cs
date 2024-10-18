@@ -1,4 +1,4 @@
-﻿using CafeManagement.Repositories.Interfaces;
+﻿using CafeManagement.Interfaces.Repositories;
 
 namespace CafeManagement.UnitOfWork
 {

@@ -1,5 +1,5 @@
 ﻿using CafeManagement.Data;
-using CafeManagement.Repositories.Interfaces;
+using CafeManagement.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace CafeManagement.Repositories

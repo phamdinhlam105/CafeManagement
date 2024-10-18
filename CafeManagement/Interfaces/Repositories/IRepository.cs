@@ -1,4 +1,4 @@
-﻿namespace CafeManagement.Repositories.Interfaces
+﻿namespace CafeManagement.Interfaces.Repositories
 {
     public interface IRepository<T>
     {

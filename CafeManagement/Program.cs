@@ -2,7 +2,6 @@ using CafeManagement.Data;
 using CafeManagement.Interfaces.Mappers;
 using CafeManagement.Interfaces.Services;
 using CafeManagement.Mappers;
-using CafeManagement.Repositories.Interfaces;
 using CafeManagement.Services;
 using CafeManagement.UnitOfWork;
 using Microsoft.EntityFrameworkCore;

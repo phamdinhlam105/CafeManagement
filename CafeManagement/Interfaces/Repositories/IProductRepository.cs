@@ -1,6 +1,6 @@
 ﻿using CafeManagement.Models;
 
-namespace CafeManagement.Repositories.Interfaces
+namespace CafeManagement.Interfaces.Repositories
 {
     public interface IProductRepository : IRepository<Product>
     {

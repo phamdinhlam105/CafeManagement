@@ -1,6 +1,6 @@
 ﻿using CafeManagement.Data;
+using CafeManagement.Interfaces.Repositories;
 using CafeManagement.Repositories;
-using CafeManagement.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Data.Common;
