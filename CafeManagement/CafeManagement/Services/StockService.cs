@@ -1,4 +1,5 @@
-﻿using CafeManagement.Interfaces.Services;
+﻿using CafeManagement.Helpers;
+using CafeManagement.Interfaces.Services;
 using CafeManagement.Models;
 using CafeManagement.UnitOfWork;
 
@@ -11,80 +12,68 @@ namespace CafeManagement.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public void StockImport(StockEntry entry)
+
+        public DailyStock NewDailyStock()
         {
-            if (entry == null || entry.StockEntryDetails == null || !entry.StockEntryDetails.Any())
+            DailyStock todayStock = _unitOfWork.DailyStock.GetAll()
+       .FirstOrDefault(ds => ds.createDate.Date == Ultilities.GetToday());
+
+            if (todayStock != null)
             {
-                throw new ArgumentException("Phiếu nhập không hợp lệ.");
+                return todayStock;
             }
+            DailyStock yesterdayStock = _unitOfWork.DailyStock.GetAll()
+                .FirstOrDefault(ds => ds.createDate.Date == Ultilities.GetYesterday());
 
-            DailyStock dailyStock = StockRemain();
-
-            foreach (var entryDetail in entry.StockEntryDetails)
+            todayStock = new DailyStock
             {
-                var stockDetail = dailyStock.DailyStockDetails
-                    .FirstOrDefault(d => d.Ingredient.Id == entryDetail.IngredientId);
+                Id = Guid.NewGuid(),
+                createDate = Ultilities.GetToday(),
+                DailyStockDetails = new List<DailyStockDetail>()
+            };
 
-                if (stockDetail == null)
+            var ingredients = _unitOfWork.Ingredient.GetAll();
+
+            foreach (var ingredient in ingredients)
+            {
+                float startStock = 0;
+                if (yesterdayStock != null)
                 {
-                    stockDetail = new DailyStockDetail
+                    var lastDetail = yesterdayStock.DailyStockDetails
+                        .FirstOrDefault(d => d.Ingredient.Id == ingredient.Id);
+
+                    if (lastDetail != null)
                     {
-                        Id = Guid.NewGuid(),
-                        Ingredient = _unitOfWork.Ingredient.GetById(entryDetail.IngredientId),
-                        StockAtStartOfDay = 0,
-                        StockImport = (float)entryDetail.Quantity,
-                        StockRemaining = (float)entryDetail.Quantity
-                    };
-
-                    dailyStock.DailyStockDetails.Add(stockDetail);
+                        startStock = lastDetail.StockRemaining; 
+                    }
                 }
-                else
+
+                var stockDetail = new DailyStockDetail
                 {
-                    stockDetail.StockImport += (float)entryDetail.Quantity;
-                    stockDetail.StockRemaining += (float)entryDetail.Quantity;
-                }
-            }
-        }
+                    Id = Guid.NewGuid(),
+                    Ingredient = ingredient,
+                    StockAtStartOfDay = startStock,
+                    StockImport = 0,
+                    StockRemaining = startStock 
+                };
 
+                todayStock.DailyStockDetails.Add(stockDetail);
+            }
+
+            _unitOfWork.DailyStock.Add(todayStock);
+            return todayStock;
+        }
+       
         public DailyStock StockRemain()
         {
-            DateTime today = DateTime.UtcNow.Date;
+            DateTime today = Ultilities.GetToday();
 
             DailyStock currentStock = _unitOfWork.DailyStock
                 .GetAll()
                 .FirstOrDefault(ds => ds.createDate.Date == today);
 
             if (currentStock == null)
-            {
-                DailyStock previousStock = _unitOfWork.DailyStock
-                    .GetAll()
-                    .OrderByDescending(ds => ds.createDate)
-                    .FirstOrDefault(ds => ds.createDate < today);
-
-                currentStock = new DailyStock
-                {
-                    Id = Guid.NewGuid(),
-                    createDate = today,
-                    DailyStockDetails = new List<DailyStockDetail>()
-                };
-
-                if (previousStock != null)
-                {
-                    foreach (var detail in previousStock.DailyStockDetails)
-                    {
-                        currentStock.DailyStockDetails.Add(new DailyStockDetail
-                        {
-                            Id = Guid.NewGuid(),
-                            Ingredient = detail.Ingredient,
-                            StockAtStartOfDay = detail.StockRemaining,
-                            StockImport = 0,
-                            StockRemaining = detail.StockRemaining
-                        });
-                    }
-                }
-
-                _unitOfWork.DailyStock.Add(currentStock);
-            }
+                currentStock = NewDailyStock();
 
             return currentStock;
         }
@@ -110,7 +99,21 @@ namespace CafeManagement.Services
 
             stockDetail.StockRemaining = amountRemain;
 
-            _unitOfWork.DailyStock.Update(dailyStock);
+            _unitOfWork.DailyStockDetail.Update(stockDetail);
+        }
+
+        public IEnumerable<DailyStock> GetAllDailyStocks() 
+        {
+            return _unitOfWork.DailyStock.GetAll();
+        }
+        public IEnumerable<DailyStockDetail> GetDetailByDate(DateTime date)
+        {
+            var stock = _unitOfWork.DailyStock.GetAll().FirstOrDefault(d => d.createDate == date);
+            if (stock == null)
+            {
+                return null;
+            }
+            return stock.DailyStockDetails.ToList();
         }
     }
 }

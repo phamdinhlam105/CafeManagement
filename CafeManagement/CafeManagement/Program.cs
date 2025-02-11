@@ -25,6 +25,9 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IStockService, StockService>();
+builder.Services.AddScoped<IStockEntryService, StockEntryService>();
+
 //mapper
 builder.Services.AddScoped<ICustomerMapper, CustomerMapper>();
 builder.Services.AddScoped<ICategoryMapper, CategoryMapper>();
