@@ -16,14 +16,14 @@ namespace CafeManagement.Services
         public DailyStock NewDailyStock()
         {
             DailyStock todayStock = _unitOfWork.DailyStock.GetAll()
-       .FirstOrDefault(ds => ds.createDate.Date == Ultilities.GetToday());
+       .FirstOrDefault(ds => ds.createDate == Ultilities.GetToday());
 
             if (todayStock != null)
             {
                 return todayStock;
             }
             DailyStock yesterdayStock = _unitOfWork.DailyStock.GetAll()
-                .FirstOrDefault(ds => ds.createDate.Date == Ultilities.GetYesterday());
+                .FirstOrDefault(ds => ds.createDate == Ultilities.GetYesterday());
 
             todayStock = new DailyStock
             {
@@ -66,11 +66,11 @@ namespace CafeManagement.Services
        
         public DailyStock StockRemain()
         {
-            DateTime today = Ultilities.GetToday();
+            DateOnly today = Ultilities.GetToday();
 
             DailyStock currentStock = _unitOfWork.DailyStock
                 .GetAll()
-                .FirstOrDefault(ds => ds.createDate.Date == today);
+                .FirstOrDefault(ds => ds.createDate == today);
 
             if (currentStock == null)
                 currentStock = NewDailyStock();
@@ -106,7 +106,7 @@ namespace CafeManagement.Services
         {
             return _unitOfWork.DailyStock.GetAll();
         }
-        public IEnumerable<DailyStockDetail> GetDetailByDate(DateTime date)
+        public IEnumerable<DailyStockDetail> GetDetailByDate(DateOnly date)
         {
             var stock = _unitOfWork.DailyStock.GetAll().FirstOrDefault(d => d.createDate == date);
             if (stock == null)

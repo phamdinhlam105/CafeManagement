@@ -2,13 +2,14 @@
 {
     public static class Ultilities
     {
-        public static DateTime GetToday()
+        public static DateOnly GetToday()
         {
-            return DateTime.UtcNow.Date;
+            return DateOnly.FromDateTime(DateTime.UtcNow);
         }
-        public static DateTime GetYesterday()
+
+        public static DateOnly GetYesterday()
         {
-            return DateTime.UtcNow.AddDays(-1).Date;
+            return DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-1));
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using CafeManagement.Interfaces.Services;
+﻿using CafeManagement.Dtos.Request;
+using CafeManagement.Interfaces.Services;
+using CafeManagement.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,11 +11,9 @@ namespace CafeManagement.Controllers
     public class StockController : ControllerBase
     {
         private IStockService _stockService;
-        private IStockEntryService _stockEntryService;
-        public StockController(IStockService stockService, IStockEntryService stockEntryService)
+        public StockController(IStockService stockService)
         {
             _stockService = stockService;
-            _stockEntryService = stockEntryService;
         }
         [HttpGet]
         public IActionResult GetAll() 
@@ -21,7 +21,7 @@ namespace CafeManagement.Controllers
             return Ok(_stockService.GetAllDailyStocks());
         }
         [HttpGet("/bydate")]
-        public IActionResult GetDetailByDate(DateTime date)
+        public IActionResult GetDetailByDate(DateOnly date)
         {
             return Ok(_stockService.GetDetailByDate(date));
         }
@@ -30,5 +30,17 @@ namespace CafeManagement.Controllers
         {
             return Ok(_stockService.StockRemain());
         }
+        [HttpPost("/update")]
+        public IActionResult UpdateRemainStock([FromBody]UpdateStockRequest updatedStock)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+            foreach (var detail in updatedStock.Details)
+            {
+                _stockService.StockUpdate(updatedStock.Id, detail.Ingredient, detail.remainAmount);
+            }
+            return Ok();
+        }
+
     }
 }

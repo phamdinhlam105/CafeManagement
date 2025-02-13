@@ -9,6 +9,6 @@ namespace CafeManagement.Interfaces.Services
         void StockUpdate(Guid stockId, Ingredient ingredient, float amountRemain);
         DailyStock NewDailyStock();
         IEnumerable<DailyStock> GetAllDailyStocks();
-        IEnumerable<DailyStockDetail> GetDetailByDate(DateTime date);
+        IEnumerable<DailyStockDetail> GetDetailByDate(DateOnly date);
     }
 }

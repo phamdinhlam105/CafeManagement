@@ -34,6 +34,15 @@ namespace CafeManagement.Services
             _unitOfWork.DailyStock.Update(dailyStock);
         }
 
-       
+        public IEnumerable<StockEntry> GetAll()
+        {
+            return _unitOfWork.StockEntry.GetAll();
+        }
+       public IEnumerable<StockEntry> GetByDate(DateOnly date)
+        {
+            return _unitOfWork.StockEntry.GetAll()
+            .Where(se => DateOnly.FromDateTime(se.EntryDate) == date);
+        }
+        
     }
 }

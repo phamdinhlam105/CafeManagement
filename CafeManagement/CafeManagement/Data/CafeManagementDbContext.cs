@@ -18,6 +18,11 @@ namespace CafeManagement.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<OrderStatusHistory> OrderStatusHistories {  get; set; }
         public DbSet<Promotion> Promotions { get; set; }
+        public DbSet<Ingredient> Ingredients { get; set; }
+        public DbSet<DailyStock> DailyStocks {  get; set; }
+        public DbSet<DailyStockDetail> DailyStockDetails {  get; set; }
+        public DbSet<StockEntry> StockEntries { get; set; }
+        public DbSet<StockEntryDetail> StockEntryDetails {  get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
