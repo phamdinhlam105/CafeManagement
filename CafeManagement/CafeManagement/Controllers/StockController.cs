@@ -41,6 +41,5 @@ namespace CafeManagement.Controllers
             }
             return Ok();
         }
-
     }
 }
