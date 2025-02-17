@@ -1,0 +1,12 @@
+﻿using CafeManagement.Models;
+
+namespace CafeManagement.Interfaces.Services
+{
+    public interface IReportRetrievalService
+    {
+        DailyReport? GetDailyReport(DateOnly date);
+        MonthlyReport? GetMonthlyReport(int month, int year);
+        QuarterlyReport? GetQuarterlyReport(int quarter, int year);
+        IEnumerable<DailyReport> GetReportsByRange(DateOnly startDate, DateOnly endDate);
+    }
+}
