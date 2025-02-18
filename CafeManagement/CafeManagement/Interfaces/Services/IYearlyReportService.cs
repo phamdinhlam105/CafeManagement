@@ -1,4 +1,4 @@
-﻿using CafeManagement.Models;
+﻿using CafeManagement.Models.Report;
 
 namespace CafeManagement.Interfaces.Services
 {

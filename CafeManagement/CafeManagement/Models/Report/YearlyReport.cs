@@ -1,6 +1,6 @@
-﻿namespace CafeManagement.Models
+﻿namespace CafeManagement.Models.Report
 {
-    public class YearlyReport:ReportBase
+    public class YearlyReport : ReportBase
     {
         public List<Customer> TopLoyalCustomers { get; set; }
         public List<DailyReport> BestDaysInYear { get; set; }
@@ -10,7 +10,7 @@
         {
             TopLoyalCustomers = new List<Customer>();
             BestDaysInYear = new List<DailyReport>();
-            QuarterlyReports= new List<QuarterlyReport>();
+            QuarterlyReports = new List<QuarterlyReport>();
         }
     }
 }

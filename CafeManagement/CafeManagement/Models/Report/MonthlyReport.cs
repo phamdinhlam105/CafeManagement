@@ -1,8 +1,8 @@
-﻿namespace CafeManagement.Models
+﻿namespace CafeManagement.Models.Report
 {
-    public class MonthlyReport:ReportBase
+    public class MonthlyReport : ReportBase
     {
-        
+
         public DateOnly StartDate { get; set; }
         public DateOnly EndDate { get; set; }
         public IEnumerable<BestSellingDayInWeek> BestSellingDaysInWeek { get; set; }
