@@ -1,4 +1,7 @@
-﻿namespace CafeManagement.Models
+﻿using CafeManagement.Models;
+using CafeManagement.Models.Order;
+
+namespace CafeManagement.Models
 {
     public class Product
     {

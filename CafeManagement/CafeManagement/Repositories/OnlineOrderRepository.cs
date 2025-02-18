@@ -1,6 +1,5 @@
 ﻿using CafeManagement.Data;
 using CafeManagement.Interfaces.Repositories;
-using CafeManagement.Models;
 
 namespace CafeManagement.Repositories
 {

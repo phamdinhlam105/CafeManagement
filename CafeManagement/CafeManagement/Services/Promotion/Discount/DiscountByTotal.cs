@@ -1,7 +1,7 @@
 ﻿using CafeManagement.Interfaces.Promotion.Condition;
 using CafeManagement.Interfaces.Promotion.Promotion;
 using CafeManagement.Interfaces.Promotion.Strategy;
-using CafeManagement.Models;
+using CafeManagement.Models.Order;
 
 namespace CafeManagement.Services.Promotion.Discount
 {

@@ -1,4 +1,4 @@
-﻿using CafeManagement.Models;
+﻿using CafeManagement.Models.Stock;
 
 namespace CafeManagement.Interfaces.Repositories
 {

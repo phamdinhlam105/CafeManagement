@@ -1,11 +1,10 @@
-﻿
-namespace CafeManagement.Models
+﻿namespace CafeManagement.Models.Order
 {
     public class OrderStatusHistory
     {
-        public Guid Id { get; set; } 
-        public Guid OrderId { get; set; } 
-        public DateTime ChangeDate { get; set; } 
+        public Guid Id { get; set; }
+        public Guid OrderId { get; set; }
+        public DateTime ChangeDate { get; set; }
         public string Description { get; set; }
         public Enums.OrderStatus NewStatus { get; set; }
 

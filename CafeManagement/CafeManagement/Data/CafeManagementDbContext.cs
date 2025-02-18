@@ -1,4 +1,6 @@
 ﻿using CafeManagement.Models;
+using CafeManagement.Models.Order;
+using CafeManagement.Models.Stock;
 using Microsoft.EntityFrameworkCore;
 
 namespace CafeManagement.Data

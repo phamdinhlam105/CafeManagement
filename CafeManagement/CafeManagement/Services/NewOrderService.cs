@@ -1,6 +1,6 @@
 ﻿using CafeManagement.Enums;
 using CafeManagement.Interfaces.Services;
-using CafeManagement.Models;
+using CafeManagement.Models.Order;
 using CafeManagement.UnitOfWork;
 
 namespace CafeManagement.Services

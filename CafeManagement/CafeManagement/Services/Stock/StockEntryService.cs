@@ -1,10 +1,10 @@
 ﻿using CafeManagement.Interfaces.Services;
-using CafeManagement.Models;
+using CafeManagement.Models.Stock;
 using CafeManagement.UnitOfWork;
 
-namespace CafeManagement.Services
+namespace CafeManagement.Services.Stock
 {
-    public class StockEntryService:IStockEntryService
+    public class StockEntryService : IStockEntryService
     {
         private IStockService _stockService;
         private IUnitOfWork _unitOfWork;
@@ -38,11 +38,11 @@ namespace CafeManagement.Services
         {
             return _unitOfWork.StockEntry.GetAll();
         }
-       public IEnumerable<StockEntry> GetByDate(DateOnly date)
+        public IEnumerable<StockEntry> GetByDate(DateOnly date)
         {
             return _unitOfWork.StockEntry.GetAll()
             .Where(se => DateOnly.FromDateTime(se.EntryDate) == date);
         }
-        
+
     }
 }

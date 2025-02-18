@@ -1,4 +1,4 @@
-﻿namespace CafeManagement.Models
+﻿namespace CafeManagement.Models.Stock
 {
     public class Ingredient
     {

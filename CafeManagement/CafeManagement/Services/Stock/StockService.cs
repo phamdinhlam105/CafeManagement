@@ -1,14 +1,14 @@
 ﻿using CafeManagement.Helpers;
 using CafeManagement.Interfaces.Services;
-using CafeManagement.Models;
+using CafeManagement.Models.Stock;
 using CafeManagement.UnitOfWork;
 
-namespace CafeManagement.Services
+namespace CafeManagement.Services.Stock
 {
     public class StockService : IStockService
     {
         private IUnitOfWork _unitOfWork;
-        public StockService(IUnitOfWork unitOfWork) 
+        public StockService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -44,7 +44,7 @@ namespace CafeManagement.Services
 
                     if (lastDetail != null)
                     {
-                        startStock = lastDetail.StockRemaining; 
+                        startStock = lastDetail.StockRemaining;
                     }
                 }
 
@@ -54,7 +54,7 @@ namespace CafeManagement.Services
                     Ingredient = ingredient,
                     StockAtStartOfDay = startStock,
                     StockImport = 0,
-                    StockRemaining = startStock 
+                    StockRemaining = startStock
                 };
 
                 todayStock.DailyStockDetails.Add(stockDetail);
@@ -63,7 +63,7 @@ namespace CafeManagement.Services
             _unitOfWork.DailyStock.Add(todayStock);
             return todayStock;
         }
-       
+
         public DailyStock StockRemain()
         {
             DateOnly today = Ultilities.GetToday();
@@ -102,7 +102,7 @@ namespace CafeManagement.Services
             _unitOfWork.DailyStockDetail.Update(stockDetail);
         }
 
-        public IEnumerable<DailyStock> GetAllDailyStocks() 
+        public IEnumerable<DailyStock> GetAllDailyStocks()
         {
             return _unitOfWork.DailyStock.GetAll();
         }

@@ -1,4 +1,4 @@
-﻿using CafeManagement.Models;
+﻿using CafeManagement.Models.Order;
 
 namespace CafeManagement.Interfaces.Services
 {

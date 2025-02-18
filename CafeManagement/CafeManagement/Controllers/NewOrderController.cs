@@ -3,7 +3,7 @@ using CafeManagement.Enums;
 using CafeManagement.Interfaces.Mappers;
 using CafeManagement.Interfaces.Services;
 using CafeManagement.Mappers;
-using CafeManagement.Models;
+using CafeManagement.Models.Order;
 using CafeManagement.Services;
 using CafeManagement.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;

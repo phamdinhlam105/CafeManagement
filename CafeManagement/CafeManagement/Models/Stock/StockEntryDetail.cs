@@ -1,8 +1,8 @@
-﻿namespace CafeManagement.Models
+﻿namespace CafeManagement.Models.Stock
 {
     public class StockEntryDetail
     {
-        public Guid Id { get; set; } 
+        public Guid Id { get; set; }
         public Guid StockEntryId { get; set; }
         public Guid IngredientId { get; set; }
         public float Quantity { get; set; }

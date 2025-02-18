@@ -3,6 +3,8 @@ using CafeManagement.Interfaces.Mappers;
 using CafeManagement.Interfaces.Services;
 using CafeManagement.Mappers;
 using CafeManagement.Services;
+using CafeManagement.Services.Report;
+using CafeManagement.Services.Stock;
 using CafeManagement.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +29,10 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IStockService, StockService>();
 builder.Services.AddScoped<IStockEntryService, StockEntryService>();
+builder.Services.AddScoped<IReportQueryService, ReportQueryService>();
+builder.Services.AddScoped<IReportCreationService, ReportCreationService>();
+builder.Services.AddScoped<IReportRetrievalService, IReportRetrievalService>();
+builder.Services.AddScoped<IReportUpdateService, IReportUpdateService>();
 
 //mapper
 builder.Services.AddScoped<ICustomerMapper, CustomerMapper>();

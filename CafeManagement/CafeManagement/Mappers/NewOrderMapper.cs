@@ -2,7 +2,7 @@
 using CafeManagement.Dtos.Respone;
 using CafeManagement.Enums;
 using CafeManagement.Interfaces.Mappers;
-using CafeManagement.Models;
+using CafeManagement.Models.Order;
 
 namespace CafeManagement.Mappers
 {

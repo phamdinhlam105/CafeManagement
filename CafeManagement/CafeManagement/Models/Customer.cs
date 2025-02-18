@@ -1,4 +1,6 @@
-﻿namespace CafeManagement.Models
+﻿
+
+namespace CafeManagement.Models
 {
     public class Customer
     {
@@ -7,11 +9,11 @@
         public string Phone { get; set; }
         public string Address {  get; set; }
 
-        public ICollection<Order> Orders { get; set; }
+        public ICollection<Order.Order> Orders { get; set; }
 
         public Customer()
         {
-            Orders = new List<Order>();
+            Orders = new List<Order.Order>();
         }
     }
 }
