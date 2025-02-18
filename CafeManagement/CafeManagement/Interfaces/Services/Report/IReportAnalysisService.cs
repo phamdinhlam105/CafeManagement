@@ -1,4 +1,4 @@
-﻿namespace CafeManagement.Interfaces.Services
+﻿namespace CafeManagement.Interfaces.Services.Report
 {
     public interface IReportAnalysisService
     {

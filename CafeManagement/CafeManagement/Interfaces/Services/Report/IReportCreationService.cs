@@ -1,6 +1,6 @@
 ﻿using CafeManagement.Models;
 
-namespace CafeManagement.Interfaces.Services
+namespace CafeManagement.Interfaces.Services.Report
 {
     public interface IReportCreationService
     {

@@ -1,4 +1,4 @@
-﻿using CafeManagement.Interfaces.Services;
+﻿using CafeManagement.Interfaces.Services.Report;
 using CafeManagement.Models.Report;
 using CafeManagement.UnitOfWork;
 
@@ -7,14 +7,10 @@ namespace CafeManagement.Services.Report
     public class ReportCreationService : IReportCreationService
     {
         private IUnitOfWork _unitOfWork;
-        private IOrderService _orderService;
-        private IStockEntryService _stockEntryService;
 
-        public ReportCreationService(IUnitOfWork unitOfWork, IOrderService orderService, IStockEntryService stockEntryService)
+        public ReportCreationService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _orderService = orderService;
-            _stockEntryService = stockEntryService;
         }
         public void CreateDailyReport(DateOnly date)
         {

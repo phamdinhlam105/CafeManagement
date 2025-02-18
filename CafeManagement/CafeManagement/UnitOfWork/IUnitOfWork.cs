@@ -1,4 +1,6 @@
 ﻿using CafeManagement.Interfaces.Repositories;
+using CafeManagement.Interfaces.Repositories.Report;
+using CafeManagement.Interfaces.Repositories.Stock;
 
 namespace CafeManagement.UnitOfWork
 {
@@ -16,6 +18,10 @@ namespace CafeManagement.UnitOfWork
         IDailyStockDetailRepository DailyStockDetail { get; }
         IStockEntryRepository StockEntry { get; }
         IStockEntryDetailRepository StockEntryDetail { get; }
+        IDailyReportRepository DailyReportRepository { get; }
+        IMonthlyReportRepository MonthlyReportRepository { get; }
+        IQuarterlyReportRepository QuarterlyReportRepository { get; }
+        IYearlyReportRepository YearlyReportRepository {  get; }
         void Save();
     }
 }

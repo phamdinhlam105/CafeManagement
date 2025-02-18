@@ -1,4 +1,4 @@
-﻿using CafeManagement.Interfaces.Services;
+﻿using CafeManagement.Interfaces.Services.Report;
 using CafeManagement.Models;
 using CafeManagement.UnitOfWork;
 using Microsoft.EntityFrameworkCore;

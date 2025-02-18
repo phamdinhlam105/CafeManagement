@@ -1,4 +1,4 @@
-﻿using CafeManagement.Interfaces.Services;
+﻿using CafeManagement.Interfaces.Services.Stock;
 using CafeManagement.Models.Stock;
 using CafeManagement.Services;
 using Microsoft.AspNetCore.Http;

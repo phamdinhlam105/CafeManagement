@@ -1,5 +1,5 @@
 ﻿using CafeManagement.Dtos.Request;
-using CafeManagement.Interfaces.Services;
+using CafeManagement.Interfaces.Services.Stock;
 using CafeManagement.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

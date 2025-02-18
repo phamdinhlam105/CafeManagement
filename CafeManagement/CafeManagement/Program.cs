@@ -1,6 +1,8 @@
 using CafeManagement.Data;
 using CafeManagement.Interfaces.Mappers;
 using CafeManagement.Interfaces.Services;
+using CafeManagement.Interfaces.Services.Report;
+using CafeManagement.Interfaces.Services.Stock;
 using CafeManagement.Mappers;
 using CafeManagement.Services;
 using CafeManagement.Services.Report;

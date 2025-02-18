@@ -1,6 +1,6 @@
 ﻿using CafeManagement.Models.Stock;
 
-namespace CafeManagement.Interfaces.Services
+namespace CafeManagement.Interfaces.Services.Stock
 {
     public interface IStockEntryService
     {
