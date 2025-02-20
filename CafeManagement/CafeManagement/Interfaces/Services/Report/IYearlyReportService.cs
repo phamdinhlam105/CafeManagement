@@ -7,7 +7,5 @@ namespace CafeManagement.Interfaces.Services.Report
         YearlyReport CreateYearlyReport(int year);
         YearlyReport GetYearlyReport(int year);
         IEnumerable<YearlyReport> GetAllYearlyReports();
-        void UpdateYearlyReport(int year, YearlyReportUpdateDto updateData);
-        YearlyReportAnalysisDto AnalyzeYearlyReport(int year);
     }
 }

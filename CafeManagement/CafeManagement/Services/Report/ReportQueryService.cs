@@ -1,5 +1,6 @@
 ﻿using CafeManagement.Interfaces.Services.Report;
 using CafeManagement.Models;
+using CafeManagement.Models.Report;
 using CafeManagement.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 
@@ -60,10 +61,17 @@ namespace CafeManagement.Services.Report
                 .FirstOrDefault();
         }
 
-        public List<int> GetPeakHours(DateTime date)
+        public int GetTotalProductsSold(DateTime startTime, DateTime endTime)
         {
             return _unitOfWork.Order.GetAll()
-                .Where(o => o.createdAt.Date == date)
+                .Where(o => o.createdAt >= startTime && o.createdAt <= endTime && o.OrderStatus == Enums.OrderStatus.Completed)
+                .Sum(o => o.Details.Sum(od => od.Quantity));
+        }
+
+        public List<int> GetPeakHours(DateOnly date)
+        {
+            return _unitOfWork.Order.GetAll()
+                .Where(o => DateOnly.FromDateTime(o.createdAt) == date)
                 .GroupBy(o => o.createdAt.Hour)
                 .Select(g => new { Hour = g.Key, Count = g.Count() })
                 .OrderByDescending(g => g.Count)
@@ -72,15 +80,35 @@ namespace CafeManagement.Services.Report
                 .ToList();
         }
 
-        public DateOnly GetBestDayInWeek(int month, int year)
+        public IEnumerable<BestDays> GetBestDaysInWeek(DateTime startDate, DateTime endDate, Guid reportId)
         {
-            return _unitOfWork.Order.GetAll()
-                .Where(o => o.createdAt.Month == month && o.createdAt.Year == year)
-                .GroupBy(o => o.createdAt.Day)
-                .Select(g => new { Day = g.Key, TotalRevenue = g.Sum(o => o.Price) })
-                .OrderByDescending(g => g.TotalRevenue)
-                .Select(g => DateOnly.FromDateTime(new DateTime(year, month, g.Day)))
-                .FirstOrDefault();
+            var totalDays = (endDate.Date - startDate.Date).TotalDays + 1;
+            var totalWeeks = (int)Math.Ceiling(totalDays / 7.0);
+
+            var bestDays = _unitOfWork.Order.GetAll()
+                .Where(o => o.createdAt >= startDate && o.createdAt <= endDate && o.OrderStatus == Enums.OrderStatus.Completed)
+                .GroupBy(o => o.createdAt.DayOfWeek)
+                .Select(g => new
+                {
+                    WeekDay = g.Key,
+                    TotalRevenue = g.Sum(o => o.Price)
+                })
+                .Select(g => new
+                {
+                    WeekDay = g.WeekDay,
+                    AverageRevenue = totalWeeks > 0 ? g.TotalRevenue / totalWeeks : 0
+                })
+                .OrderByDescending(g => g.AverageRevenue)
+                .Take(2)
+                .ToList();
+
+            return bestDays.Select(day => new BestDays
+            {
+                Id = Guid.NewGuid(),
+                ReportId = reportId,
+                WeekDay = day.WeekDay.ToString(),
+                AvgRevenue = day.AverageRevenue
+            });
         }
     }
 }

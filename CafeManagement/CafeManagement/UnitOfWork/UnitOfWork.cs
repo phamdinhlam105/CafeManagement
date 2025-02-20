@@ -175,7 +175,7 @@ namespace CafeManagement.UnitOfWork
                 return _stockEntryDetailRepository;
             }
         }
-        public IDailyReportRepository DailyReportRepository
+        public IDailyReportRepository DailyReport
         {
             get
             {
@@ -186,7 +186,7 @@ namespace CafeManagement.UnitOfWork
                 return _dailyReportRepository;
             }
         }
-        public IMonthlyReportRepository MonthlyReportRepository
+        public IMonthlyReportRepository MonthlyReport
         {
             get
             {
@@ -197,7 +197,7 @@ namespace CafeManagement.UnitOfWork
                 return _monthlyReportRepository;
             }
         }
-        public IQuarterlyReportRepository QuarterlyReportRepository
+        public IQuarterlyReportRepository QuarterlyReport
         {
             get
             {
@@ -208,7 +208,7 @@ namespace CafeManagement.UnitOfWork
                 return _quarterlyReportRepository;
             }
         }
-        public IYearlyReportRepository YearlyReportRepository
+        public IYearlyReportRepository YearlyReport
         {
             get
             {

@@ -1,4 +1,5 @@
 ﻿using CafeManagement.Models;
+using CafeManagement.Models.Report;
 
 namespace CafeManagement.Interfaces.Services.Report
 {
@@ -10,7 +11,8 @@ namespace CafeManagement.Interfaces.Services.Report
         int GetNumberOfCancelledOrders(DateTime startDate, DateTime endDate);
         Product GetTopSellingProduct(DateTime startDate, DateTime endDate);
         Product GetLeastSellingProduct(DateTime startDate, DateTime endDate);
-        List<int> GetPeakHours(DateTime date);
-        DateOnly GetBestDayInWeek(int month, int year);
+        List<int> GetPeakHours(DateOnly date);
+        public IEnumerable<BestDays> GetBestDaysInWeek(DateTime startDate, DateTime endDate, Guid reportId);
+        int GetTotalProductsSold(DateTime startTime, DateTime endTime);
     }
 }

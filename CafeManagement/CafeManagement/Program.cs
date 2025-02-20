@@ -33,8 +33,8 @@ builder.Services.AddScoped<IStockService, StockService>();
 builder.Services.AddScoped<IStockEntryService, StockEntryService>();
 builder.Services.AddScoped<IReportQueryService, ReportQueryService>();
 builder.Services.AddScoped<IReportCreationService, ReportCreationService>();
-builder.Services.AddScoped<IReportRetrievalService, IReportRetrievalService>();
-builder.Services.AddScoped<IReportUpdateService, IReportUpdateService>();
+builder.Services.AddScoped<IReportRetrievalService, ReportRetrievalService>();
+builder.Services.AddScoped<IYearlyReportService, YearlyReportService>();
 
 //mapper
 builder.Services.AddScoped<ICustomerMapper, CustomerMapper>();

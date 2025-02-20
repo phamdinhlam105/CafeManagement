@@ -18,10 +18,10 @@ namespace CafeManagement.UnitOfWork
         IDailyStockDetailRepository DailyStockDetail { get; }
         IStockEntryRepository StockEntry { get; }
         IStockEntryDetailRepository StockEntryDetail { get; }
-        IDailyReportRepository DailyReportRepository { get; }
-        IMonthlyReportRepository MonthlyReportRepository { get; }
-        IQuarterlyReportRepository QuarterlyReportRepository { get; }
-        IYearlyReportRepository YearlyReportRepository {  get; }
+        IDailyReportRepository DailyReport { get; }
+        IMonthlyReportRepository MonthlyReport { get; }
+        IQuarterlyReportRepository QuarterlyReport { get; }
+        IYearlyReportRepository YearlyReport {  get; }
         void Save();
     }
 }
