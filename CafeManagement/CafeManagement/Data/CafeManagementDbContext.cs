@@ -1,6 +1,6 @@
 ﻿using CafeManagement.Models;
 using CafeManagement.Models.Order;
-using CafeManagement.Models.Promotion;
+using CafeManagement.Models.PromotionModel;
 using CafeManagement.Models.Report;
 using CafeManagement.Models.Stock;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +30,7 @@ namespace CafeManagement.Data
         public DbSet<DailyReport> DailyReports { get; set; }
         public DbSet<MonthlyReport> MonthlyReports { get; set; }
         public DbSet<QuarterlyReport> QuarterlyReports { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
