@@ -1,4 +1,5 @@
 ﻿using CafeManagement.Interfaces.Repositories;
+using CafeManagement.Interfaces.Repositories.PromotionRepo;
 using CafeManagement.Interfaces.Repositories.Report;
 using CafeManagement.Interfaces.Repositories.Stock;
 
@@ -22,6 +23,8 @@ namespace CafeManagement.UnitOfWork
         IMonthlyReportRepository MonthlyReport { get; }
         IQuarterlyReportRepository QuarterlyReport { get; }
         IYearlyReportRepository YearlyReport {  get; }
+        IPromotion Promotion { get; }
+        IPromotionSchedule PromotionSchedule {  get; }
         void Save();
     }
 }

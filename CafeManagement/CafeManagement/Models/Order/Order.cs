@@ -13,15 +13,13 @@ namespace CafeManagement.Models.Order
         public string Note { get; set; }
         public OrderStatus OrderStatus { get; set; }
         public OrderType OrderType { get; set; }
-        public Guid PromotionId { get; set; }
-        public Promotion Promotion { get; set; }
+        public Guid? PromotionId { get; set; }
+        public Promotion.Promotion Promotion { get; set; }
         public ICollection<OrderDetail> Details { get; set; }
-        public ICollection<OrderStatusHistory> StatusHistories { get; set; }
         public Customer Customer { get; set; }
         public Order()
         {
             Details = new List<OrderDetail>();
-            StatusHistories = new List<OrderStatusHistory>();
             Price = 0;
             Quantity = 0;
             createdAt = DateTime.Now;

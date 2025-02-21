@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Interfaces\Promotion\" />
     <Folder Include="Interfaces\Services\Order\" />
   </ItemGroup>
 

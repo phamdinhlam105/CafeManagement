@@ -1,8 +1,10 @@
 ﻿using CafeManagement.Data;
 using CafeManagement.Interfaces.Repositories;
+using CafeManagement.Interfaces.Repositories.PromotionRepo;
 using CafeManagement.Interfaces.Repositories.Report;
 using CafeManagement.Interfaces.Repositories.Stock;
 using CafeManagement.Repositories;
+using CafeManagement.Repositories.PromotionRepo;
 using CafeManagement.Repositories.Report;
 using CafeManagement.Repositories.Stock;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +32,8 @@ namespace CafeManagement.UnitOfWork
         private IMonthlyReportRepository _monthlyReportRepository ;
         private IQuarterlyReportRepository _quarterlyReportRepository ;
         private IYearlyReportRepository _yearlyReportRepository ;
+        private IPromotion _promotionRepository;
+        private IPromotionSchedule _promotionScheduleRepository;
         private static readonly object _lock = new object();
 
         public UnitOfWork(CafeManagementDbContext context)
@@ -217,6 +221,28 @@ namespace CafeManagement.UnitOfWork
                         if (_yearlyReportRepository == null)
                             return _yearlyReportRepository = new YearlyReportRepository(_context);
                 return _yearlyReportRepository;
+            }
+        }
+        public IPromotion Promotion
+        {
+            get
+            {
+                if (_promotionRepository == null)
+                    lock (_lock)
+                        if (_promotionRepository == null)
+                            return _promotionRepository = new PromotionRepository(_context);
+                return _promotionRepository;
+            }
+        }
+        public IPromotionSchedule PromotionSchedule
+        {
+            get
+            {
+                if (_promotionScheduleRepository == null)
+                    lock (_lock)
+                        if (_promotionScheduleRepository == null)
+                            return _promotionScheduleRepository = new PromotionScheduleRepository(_context);
+                return _promotionScheduleRepository;
             }
         }
         public void Dispose()

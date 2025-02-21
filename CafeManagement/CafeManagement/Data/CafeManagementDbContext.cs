@@ -1,5 +1,6 @@
 ﻿using CafeManagement.Models;
 using CafeManagement.Models.Order;
+using CafeManagement.Models.Promotion;
 using CafeManagement.Models.Report;
 using CafeManagement.Models.Stock;
 using Microsoft.EntityFrameworkCore;
@@ -65,10 +66,6 @@ namespace CafeManagement.Data
                 e.HasMany(od => od.Details)
                     .WithOne(o => o.Order)
                     .HasForeignKey(od => od.OderId);
-
-                e.HasMany(sh => sh.StatusHistories)
-                    .WithOne(o => o.Order)
-                    .HasForeignKey(o => o.OrderId);
             });
 
             modelBuilder.Entity<OnlineOrder>(e =>
@@ -110,8 +107,6 @@ namespace CafeManagement.Data
                 e.HasKey(p => p.Id);
                 e.Property(p => p.Name).IsRequired();
                 e.Property(p => p.Description).IsRequired();
-                e.Property(p => p.StartDate).IsRequired();
-                e.Property(p => p.EndDate).IsRequired();
                 e.HasMany(p => p.ApplyOrders)
                     .WithOne(od => od.Promotion)
                     .HasForeignKey(od => od.PromotionId);

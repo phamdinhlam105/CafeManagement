@@ -1,10 +1,12 @@
 using CafeManagement.Data;
 using CafeManagement.Interfaces.Mappers;
 using CafeManagement.Interfaces.Services;
+using CafeManagement.Interfaces.Services.PromotionService;
 using CafeManagement.Interfaces.Services.Report;
 using CafeManagement.Interfaces.Services.Stock;
 using CafeManagement.Mappers;
 using CafeManagement.Services;
+using CafeManagement.Services.PromotionService;
 using CafeManagement.Services.Report;
 using CafeManagement.Services.Stock;
 using CafeManagement.UnitOfWork;
@@ -35,6 +37,7 @@ builder.Services.AddScoped<IReportQueryService, ReportQueryService>();
 builder.Services.AddScoped<IReportCreationService, ReportCreationService>();
 builder.Services.AddScoped<IReportRetrievalService, ReportRetrievalService>();
 builder.Services.AddScoped<IYearlyReportService, YearlyReportService>();
+builder.Services.AddScoped<IPromotionService, PromotionService>();
 
 //mapper
 builder.Services.AddScoped<ICustomerMapper, CustomerMapper>();

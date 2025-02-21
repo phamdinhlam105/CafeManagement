@@ -33,5 +33,15 @@ namespace CafeManagement.Controllers
         {
             return Ok(_reportRetrievalService.GetQuarterlyReport(quarter, year));
         }
+        [HttpGet("yearly/GetByYear")]
+        public IActionResult getYearlyReport(int year)
+        {
+            return Ok(_yearlyReportService.GetYearlyReport(year));
+        }
+        [HttpGet("yearly")]
+        public IActionResult getAllYearlyReports()
+        {
+            return Ok(_yearlyReportService.GetAllYearlyReports());
+        }
     }
 }
