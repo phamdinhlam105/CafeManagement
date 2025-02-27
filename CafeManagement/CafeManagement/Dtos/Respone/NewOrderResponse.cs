@@ -11,7 +11,6 @@ namespace CafeManagement.Dtos.Respone
         public decimal Total {  get; set; }
         public int Amount {  get; set; }
         public DateTime? DeliveryTime { get; set; }
-        public OrderType OrderType { get; set; }
         public OrderStatus Status { get; set; }
     }
 }

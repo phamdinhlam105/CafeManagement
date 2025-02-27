@@ -34,16 +34,9 @@ namespace CafeManagement.Services
         public void CreateOrder(Order order)
         {
             _unitOfWork.Order.Add(order);
-            if (order is OnlineOrder onlineOrder)
-                _unitOfWork.OnlineOrder.Add(onlineOrder);
         }
 
-        public void GetDeliveryInfor(OnlineOrder onlineOrder, decimal shippingCost , DateTime deliveryTime)
-        {
-            onlineOrder.DeliveryTime = deliveryTime;
-            onlineOrder.ShippingCost = shippingCost;
-            _unitOfWork.OnlineOrder.Update(onlineOrder);
-        }
+   
         public Order GetById(Guid orderId) //eager load
         {
             Order order = _unitOfWork.Order.GetById(orderId);

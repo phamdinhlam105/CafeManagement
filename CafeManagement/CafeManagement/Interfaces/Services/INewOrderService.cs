@@ -10,6 +10,5 @@ namespace CafeManagement.Interfaces.Services
         void ChangeStatus(Order order,OrderStatus status);
         void ChangeNote(Order order, string newnote);
         Order GetById(Guid orderId);
-        void GetDeliveryInfor(OnlineOrder onlineOrder, decimal shippingCost, DateTime deliveryTime);
     }
 }

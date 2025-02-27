@@ -1,6 +1,6 @@
 ﻿using CafeManagement.Data;
 using CafeManagement.Interfaces.Repositories.PromotionRepo;
-using CafeManagement.Models.Promotion;
+using CafeManagement.Models.PromotionModel;
 
 namespace CafeManagement.Repositories.PromotionRepo
 {

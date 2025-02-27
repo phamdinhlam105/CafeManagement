@@ -13,9 +13,4 @@
         Completed,
         Cancelled
     }
-    public enum OrderType
-    {
-        Online,
-        InStore
-    }
 }

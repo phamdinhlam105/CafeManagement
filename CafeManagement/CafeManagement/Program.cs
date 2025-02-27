@@ -1,16 +1,20 @@
 using CafeManagement.Data;
 using CafeManagement.Interfaces.Mappers;
 using CafeManagement.Interfaces.Services;
+using CafeManagement.Interfaces.Services.Login;
 using CafeManagement.Interfaces.Services.PromotionService;
 using CafeManagement.Interfaces.Services.Report;
 using CafeManagement.Interfaces.Services.Stock;
 using CafeManagement.Mappers;
+using CafeManagement.Models;
 using CafeManagement.Services;
+using CafeManagement.Services.Login;
 using CafeManagement.Services.PromotionService;
 using CafeManagement.Services.Report;
 using CafeManagement.Services.Stock;
 using CafeManagement.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -41,6 +45,7 @@ builder.Services.AddScoped<IReportCreationService, ReportCreationService>();
 builder.Services.AddScoped<IReportRetrievalService, ReportRetrievalService>();
 builder.Services.AddScoped<IYearlyReportService, YearlyReportService>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 //mapper
 builder.Services.AddScoped<ICustomerMapper, CustomerMapper>();
@@ -49,6 +54,19 @@ builder.Services.AddScoped<IProductMapper, ProductMapper>();
 builder.Services.AddScoped<INewOrderMapper, NewOrderMapper>();
 builder.Services.AddScoped<IOrderDetailMapper, OrderDetailMapper>();
 
+//authentication
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
+    // require symbol
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 6;
+});
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<CafeManagementDbContext>()
+    .AddDefaultTokenProviders();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

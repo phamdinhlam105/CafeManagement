@@ -11,7 +11,6 @@ namespace CafeManagement.UnitOfWork
         ICategoryRepository Category { get; }
         IUserRepository User { get; }
         IOrderRepository Order { get; }
-        IOnlineOrderRepository OnlineOrder { get; }
         IOrderDetailRepository OrderDetail { get; }
         ICustomerRepository Customer { get; }
         IIngredientRepository Ingredient { get; }

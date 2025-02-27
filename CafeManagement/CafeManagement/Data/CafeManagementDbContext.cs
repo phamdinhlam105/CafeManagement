@@ -3,11 +3,12 @@ using CafeManagement.Models.Order;
 using CafeManagement.Models.PromotionModel;
 using CafeManagement.Models.Report;
 using CafeManagement.Models.Stock;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CafeManagement.Data
 {
-    public class CafeManagementDbContext : DbContext
+    public class CafeManagementDbContext : IdentityDbContext<User>
     {
         public CafeManagementDbContext(DbContextOptions<CafeManagementDbContext> options)
             : base(options)
@@ -16,7 +17,6 @@ namespace CafeManagement.Data
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<OnlineOrder> OnlineOrders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -30,14 +30,14 @@ namespace CafeManagement.Data
         public DbSet<DailyReport> DailyReports { get; set; }
         public DbSet<MonthlyReport> MonthlyReports { get; set; }
         public DbSet<QuarterlyReport> QuarterlyReports { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<Profile> Profiles { get; set; }
+        public DbSet<BestDays> BestDays { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Product>(e =>
             {
-                e.ToTable("Product");
-                e.HasKey(p => p.Id);
                 e.Property(p => p.Name).IsRequired();
                 e.Property(p => p.Price).IsRequired().HasColumnType("decimal(18,2)");
                 e.HasMany(p => p.Details)
@@ -46,57 +46,40 @@ namespace CafeManagement.Data
             });
 
 
-            modelBuilder.Entity<OrderDetail>(e =>
-            {
-                e.ToTable("OrderDetail");
-                e.HasKey(od => od.Id);
-            });
 
             modelBuilder.Entity<Order>(e =>
             {
-                e.ToTable("Order");
-                e.HasKey(o => o.Id);
                 e.Property(e => e.No).IsRequired();
                 e.Property(e => e.Price).IsRequired().HasColumnType("decimal(18,2)");
                 e.Property(e => e.Quantity).IsRequired();
                 e.Property(e => e.createdAt).IsRequired();
                 e.Property(e => e.Note).HasMaxLength(500);
                 e.Property(e => e.OrderStatus).IsRequired();
-                e.Property(e => e.OrderType).IsRequired();
 
                 e.HasMany(od => od.Details)
                     .WithOne(o => o.Order)
                     .HasForeignKey(od => od.OderId);
             });
 
-            modelBuilder.Entity<OnlineOrder>(e =>
-            {
-                e.ToTable("OnlineOrders"); 
-                e.Property(e => e.DeliveryTime).IsRequired();
-                e.Property(e => e.ShippingCost).IsRequired().HasColumnType("decimal(18,2)"); ;
-            });
 
             modelBuilder.Entity<Category>(e =>
             {
-                e.ToTable("Category");
                 e.HasKey(c => c.Id);
                 e.Property(c => c.Name).IsRequired();
                 e.HasMany(c => c.Products)
-                    .WithOne(p => p.Category) 
+                    .WithOne(p => p.Category)
                     .HasForeignKey(p => p.CategoryId);
             });
             modelBuilder.Entity<Customer>(e =>
             {
-                e.ToTable("Customer");
                 e.HasKey(c => c.Id);
-                e.HasMany(c => c.Orders)  
-                    .WithOne(o=>o.Customer) 
-                    .HasForeignKey(o=>o.CustomerId);
+                e.HasMany(c => c.Orders)
+                    .WithOne(o => o.Customer)
+                    .HasForeignKey(o => o.CustomerId);
             });
 
             modelBuilder.Entity<OrderStatusHistory>(e =>
             {
-                e.ToTable("OrderStatusHistories");
                 e.Property(sh => sh.NewStatus).IsRequired();
                 e.Property(sh => sh.Description).IsRequired();
             });
@@ -104,13 +87,68 @@ namespace CafeManagement.Data
 
             modelBuilder.Entity<Promotion>(e =>
             {
-                e.ToTable("Promotion");
                 e.HasKey(p => p.Id);
                 e.Property(p => p.Name).IsRequired();
                 e.Property(p => p.Description).IsRequired();
                 e.HasMany(p => p.ApplyOrders)
                     .WithOne(od => od.Promotion)
                     .HasForeignKey(od => od.PromotionId);
+            });
+            modelBuilder.Entity<User>(e =>
+            {
+                e.HasOne(u => u.Profile)
+                .WithOne()
+                .HasForeignKey<Profile>(p => p.UserId);
+            });
+            modelBuilder.Entity<Profile>(e =>
+            {
+                e.ToTable("Profiles");
+                e.HasKey(p => p.Id);
+                e.Property(p => p.Name).IsRequired();
+                e.Property(p => p.Age).IsRequired();
+                e.Property(p => p.Email).IsRequired();
+                e.Property(p => p.PhoneNumber).IsRequired();
+                e.Property(p => p.PictureURL);
+                e.Property(p => p.joinDate).IsRequired();
+            });
+
+            modelBuilder.Entity<MonthlyReport>(entity =>
+            {
+                entity.HasOne(r => r.TopSelling)
+                      .WithMany()
+                      .HasForeignKey(r => r.TopSellingId)
+                      .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(r => r.LeastSelling)
+                      .WithMany()
+                      .HasForeignKey(r => r.LeastSellingId)
+                      .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<QuarterlyReport>(entity =>
+            {
+                entity.HasOne(r => r.TopSelling)
+                      .WithMany()
+                      .HasForeignKey(r => r.TopSellingId)
+                      .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(r => r.LeastSelling)
+                      .WithMany()
+                      .HasForeignKey(r => r.LeastSellingId)
+                      .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<DailyReport>(entity =>
+            {
+                entity.HasOne(r => r.TopSelling)
+                      .WithMany()
+                      .HasForeignKey(r => r.TopSellingId)
+                      .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(r => r.LeastSelling)
+                      .WithMany()
+                      .HasForeignKey(r => r.LeastSellingId)
+                      .OnDelete(DeleteBehavior.NoAction);
             });
         }
     }

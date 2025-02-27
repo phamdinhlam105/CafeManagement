@@ -20,7 +20,7 @@ namespace CafeManagement.Controllers
         {
             return Ok(_stockService.GetAllDailyStocks());
         }
-        [HttpGet("/bydate")]
+        [HttpGet("/bydate/stock")]
         public IActionResult GetDetailByDate(DateOnly date)
         {
             return Ok(_stockService.GetDetailByDate(date));

@@ -10,22 +10,13 @@ namespace CafeManagement.Mappers
     {
         public Order MapToEntity(NewOrderRequest request)
         {
-            if (request.OrderType == OrderType.InStore)
-                return new InStoreOrder
+                return new Order
                 {
                     Id = new Guid(),
                     Note = request.Note,
                     OrderStatus=OrderStatus.New,
-                    CustomerId=request.CustomerId
+                    CustomerId= request.CustomerId
 
-                };
-            else
-                return new OnlineOrder
-                {
-                    Id = new Guid(),
-                    Note = request.Note,
-                    OrderStatus = OrderStatus.New,
-                    CustomerId = request.CustomerId
                 };
         }
 
@@ -38,14 +29,8 @@ namespace CafeManagement.Mappers
                 Note = order.Note,
                 Total = order.Price,
                 Amount = order.Quantity,
-                OrderType = order.OrderType,
                 Status = order.OrderStatus
             };
-            if (order is OnlineOrder onlineOrder)
-            {
-                response.ShippingCost = onlineOrder.ShippingCost;
-                response.DeliveryTime = onlineOrder.DeliveryTime;
-            }
             return response;
         }
 

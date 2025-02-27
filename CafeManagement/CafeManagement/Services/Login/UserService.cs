@@ -2,9 +2,9 @@
 using CafeManagement.Models;
 using CafeManagement.UnitOfWork;
 
-namespace CafeManagement.Services
+namespace CafeManagement.Services.Login
 {
-    public class UserService:IUserService
+    public class UserService : IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
 

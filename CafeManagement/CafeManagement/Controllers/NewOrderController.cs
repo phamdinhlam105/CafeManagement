@@ -70,21 +70,6 @@ namespace CafeManagement.Controllers
             return Ok(_newOrderMapper.MapToResponse(order));
         }
 
-        [HttpPut("Delivery/{orderId}")]
-        public IActionResult GetDeliveryInfor(Guid orderId, [FromBody] decimal shippingCost, DateTime deliveryTime)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            Order order = _newOrderService.GetById(orderId);
-            if (order == null)
-                return NotFound(orderId);
-            if (order is OnlineOrder onlineOrder)
-                _newOrderService.GetDeliveryInfor(onlineOrder, shippingCost, deliveryTime);
-            else
-                return BadRequest(new { message = "This is not an online order" });
-            return Ok(_newOrderMapper.MapToResponse(order));
-        }
-
 
         [HttpDelete]
         public IActionResult DeleteOrder(Guid orderId)
