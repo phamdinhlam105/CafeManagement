@@ -12,32 +12,32 @@ namespace CafeManagement.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public void Add(Product item)
+        public async Task Add(Product item)
         {
-            _unitOfWork.Product.Add(item);
+            await _unitOfWork.Product.Add(item);
         }
 
-        public void Delete(Product item)
+        public async Task Delete(Product item)
         {
             if(item!=null)
-                _unitOfWork.Product.Delete(item);
+                await _unitOfWork.Product.Delete(item);
         }
 
-        public IEnumerable<Product> GetAll()
+        public async Task<IEnumerable<Product>> GetAll()
         {
-            return _unitOfWork.Product.GetAll();
+            return await _unitOfWork.Product.GetAll();
         }
 
-        public Product GetById(Guid id)
+        public async Task<Product> GetById(Guid id)
         {
-            return _unitOfWork.Product.GetById(id);
+            return await _unitOfWork.Product.GetById(id);
         }
 
 
-        public void Update(Product item)
+        public async Task Update(Product item)
         {
             if (item != null)
-                _unitOfWork.Product.Update(item);
+                await _unitOfWork.Product.Update(item);
         }
     }
 }

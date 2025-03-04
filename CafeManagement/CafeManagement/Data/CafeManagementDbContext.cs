@@ -20,8 +20,8 @@ namespace CafeManagement.Data
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<OrderStatusHistory> OrderStatusHistories {  get; set; }
         public DbSet<Promotion> Promotions { get; set; }
+        public DbSet<PromotionSchedule> PromotionSchedules {  get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<DailyStock> DailyStocks {  get; set; }
         public DbSet<DailyStockDetail> DailyStockDetails {  get; set; }
@@ -30,8 +30,8 @@ namespace CafeManagement.Data
         public DbSet<DailyReport> DailyReports { get; set; }
         public DbSet<MonthlyReport> MonthlyReports { get; set; }
         public DbSet<QuarterlyReport> QuarterlyReports { get; set; }
+        public DbSet<YearlyReport> YearlyReports { get; set; }
         public DbSet<Profile> Profiles { get; set; }
-        public DbSet<BestDays> BestDays { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -98,7 +98,8 @@ namespace CafeManagement.Data
             {
                 e.HasOne(u => u.Profile)
                 .WithOne()
-                .HasForeignKey<Profile>(p => p.UserId);
+                .HasForeignKey<Profile>(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
             });
             modelBuilder.Entity<Profile>(e =>
             {
@@ -106,6 +107,7 @@ namespace CafeManagement.Data
                 e.HasKey(p => p.Id);
                 e.Property(p => p.Name).IsRequired();
                 e.Property(p => p.Age).IsRequired();
+                e.Property(p => p.BirthDay);
                 e.Property(p => p.Email).IsRequired();
                 e.Property(p => p.PhoneNumber).IsRequired();
                 e.Property(p => p.PictureURL);

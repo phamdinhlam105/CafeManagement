@@ -15,9 +15,9 @@ namespace CafeManagement.Services.Report
             _unitOfWork = unitOfWork;
             _reportQueryService = reportQueryService;
         }
-        public YearlyReport CreateYearlyReport(int year)
+        public async Task<YearlyReport> CreateYearlyReport(int year)
         {
-            var quarterlyReports = _unitOfWork.QuarterlyReport.GetAll()
+            var quarterlyReports = (await _unitOfWork.QuarterlyReport.GetAll())
                 .Where(qr => qr.createDate.Year == year)  
                 .ToList();
             if (quarterlyReports == null || !quarterlyReports.Any())
@@ -36,24 +36,24 @@ namespace CafeManagement.Services.Report
                 TotalProductsSold = quarterlyReports.Sum(q => q.TotalProductsSold),
                 NumberOfFinishedOrders = quarterlyReports.Sum(q => q.NumberOfFinishedOrders),
                 NumberOfCancelledOrders = quarterlyReports.Sum(q => q.NumberOfCancelledOrders),
-                TopSelling = _reportQueryService.GetTopSellingProduct(startYear, endYear),
-                LeastSelling = _reportQueryService.GetLeastSellingProduct(startYear, endYear),
+                TopSelling = await _reportQueryService.GetTopSellingProduct(startYear, endYear),
+                LeastSelling = await _reportQueryService.GetLeastSellingProduct(startYear, endYear),
                 TopLoyalCustomers = topLoyalCustomers,
                 QuarterlyReports = quarterlyReports,
                 createDate = DateTime.Now
             };
-            _unitOfWork.YearlyReport.Add(yearlyReport);
+            await _unitOfWork.YearlyReport.Add(yearlyReport);
             return yearlyReport;
         }
 
-        public IEnumerable<YearlyReport> GetAllYearlyReports()
+        public async Task<IEnumerable<YearlyReport>> GetAllYearlyReports()
         {
-            return _unitOfWork.YearlyReport.GetAll().ToList();
+            return (await _unitOfWork.YearlyReport.GetAll()).ToList();
         }
 
-        public YearlyReport GetYearlyReport(int year)
+        public async Task<YearlyReport> GetYearlyReport(int year)
         {
-            return _unitOfWork.YearlyReport.GetAll()
+            return (await _unitOfWork.YearlyReport.GetAll())
                .FirstOrDefault(yr => yr.Year == year);
         }
     }

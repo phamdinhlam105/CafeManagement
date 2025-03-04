@@ -4,6 +4,6 @@ namespace CafeManagement.Interfaces.Services
 {
     public interface IOrderService:IService<Order>
     {
-        IEnumerable<OrderDetail> GetDetailsByOrderId(Guid orderId);
+        Task<IEnumerable<OrderDetail>> GetDetailsByOrderId(Guid orderId);
     }
 }

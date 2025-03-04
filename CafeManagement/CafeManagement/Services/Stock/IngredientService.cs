@@ -11,19 +11,19 @@ namespace CafeManagement.Services.Stock
         {
             _unitOfWork = unitOfWork;
         }
-        void IIngredientService.createIngredient(Ingredient ingredient)
+        async Task IIngredientService.createIngredient(Ingredient ingredient)
         {
-            _unitOfWork.Ingredient.Add(ingredient);
+            await _unitOfWork.Ingredient.Add(ingredient);
         }
 
-        void IIngredientService.deleteIngredient(Ingredient ingredient)
+        async Task IIngredientService.deleteIngredient(Ingredient ingredient)
         {
-            _unitOfWork.Ingredient.Delete(ingredient);
+            await _unitOfWork.Ingredient.Delete(ingredient);
         }
 
-        void IIngredientService.updateIngredient(Ingredient ingredient)
+        async Task IIngredientService.updateIngredient(Ingredient ingredient)
         {
-            _unitOfWork.Ingredient.Update(ingredient);
+            await _unitOfWork.Ingredient.Update(ingredient);
         }
     }
 }

@@ -1,17 +1,18 @@
 ﻿using CafeManagement.Models;
+using System.Threading.Tasks;
 
 namespace CafeManagement.Interfaces.Services
 {
     public interface IService<T>
     {
-        IEnumerable<T> GetAll();
+        Task<IEnumerable<T>> GetAll();
 
-        T GetById(Guid id);
+        Task<T> GetById(Guid id);
 
-        void Add(T item);
+        Task Add(T item);
 
-        void Update(T item);
+        Task Update(T item);
 
-        void Delete(T item);
+        Task Delete(T item);
     }
 }

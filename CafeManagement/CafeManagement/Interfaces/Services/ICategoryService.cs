@@ -4,6 +4,6 @@ namespace CafeManagement.Interfaces.Services
 {
     public interface ICategoryService:IService<Category>
     {
-        public IEnumerable<Product> GetProductsByCategory(Guid categoryId);
+        Task<IEnumerable<Product>> GetProductsByCategory(Guid categoryId);
     }
 }

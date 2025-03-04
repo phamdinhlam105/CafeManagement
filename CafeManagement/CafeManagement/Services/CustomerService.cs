@@ -13,31 +13,31 @@ namespace CafeManagement.Services
             _unitOfWork = unitOfWork;
         }
 
-        public void Add(Customer item)
+        public async Task Add(Customer item)
         {
-            _unitOfWork.Customer.Add(item);
+            await _unitOfWork.Customer.Add(item);
         }
 
-        public void Delete(Customer item)
+        public async Task Delete(Customer item)
         {
             if (item != null)
-                _unitOfWork.Customer.Delete(item);
+                await _unitOfWork.Customer.Delete(item);
         }
 
-        public IEnumerable<Customer> GetAll()
+        public async Task<IEnumerable<Customer>> GetAll()
         {
-            return _unitOfWork.Customer.GetAll();
+            return await _unitOfWork.Customer.GetAll();
         }
 
-        public Customer GetById(Guid id)
+        public async Task<Customer> GetById(Guid id)
         {
-            return _unitOfWork.Customer.GetById(id);
+            return await _unitOfWork.Customer.GetById(id);
         }
 
-        public void Update(Customer item)
+        public async Task Update(Customer item)
         {
             if (item != null)
-                _unitOfWork.Customer.Update(item);
+                await _unitOfWork.Customer.Update(item);
         }
     }
 }

@@ -8,7 +8,6 @@ using CafeManagement.Services;
 using CafeManagement.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace CafeManagement.Controllers
 {
@@ -28,56 +27,48 @@ namespace CafeManagement.Controllers
         }
 
         [HttpPost]
-        public IActionResult NewOrder([FromBody] NewOrderRequest req)
+        public async Task<IActionResult> NewOrder([FromBody] NewOrderRequest req)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             Order order = _newOrderMapper.MapToEntity(req);
-            _newOrderService.CreateOrder(order);
+            await _newOrderService.CreateOrder(order);
             return Ok(order);
         }
 
         [HttpGet]
-        public IActionResult Getall()
+        public async Task<IActionResult> Getall()
         {
-            var orders = _orderService.GetAll().ToList();
+            var orders = (await _orderService.GetAll()).ToList();
             var ordersResponse = orders.Select(c => _newOrderMapper.MapToResponse(c)).ToList();
-            if (ordersResponse.Any())
-            {
-                return Ok(ordersResponse);
-            }
-            return NotFound();
+            return Ok(ordersResponse);
         }
         [HttpGet("/{id}")]
-        public IActionResult GetById(Guid id)
+        public async Task<IActionResult> GetById(Guid id)
         {
-            Order order = _newOrderService.GetById(id);
-            if (order == null)
-                return NotFound();
-            return Ok(_newOrderMapper.MapToResponse(order));
+            return Ok(_newOrderMapper.MapToResponse(await _newOrderService.GetById(id)));
         }
 
 
-        [HttpPut("ChangeStatus/{orderId}")]
-        public IActionResult ChangeStatus(Guid orderId, [FromBody]  OrderStatus orderStatus)
+        [HttpPut("Finish/{orderId}")]
+        public async Task<IActionResult> FinishOrder(Guid orderId)
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
-            Order order = _newOrderService.GetById(orderId);
+            Order order = await _newOrderService.GetById(orderId);
             if (order == null)
                 return NotFound(orderId);
-            _newOrderService.ChangeStatus(order, orderStatus);
-            return Ok(_newOrderMapper.MapToResponse(order));
+            return Ok(await _newOrderService.FinishOrder(order));
         }
 
 
         [HttpDelete]
-        public IActionResult DeleteOrder(Guid orderId)
+        public async Task<IActionResult> DeleteOrder(Guid orderId)
         {
-            Order order = _newOrderService.GetById(orderId);
+            Order order = await _newOrderService.GetById(orderId);
             if (order == null)
                 return NotFound(orderId);
-            return NoContent();
+            return Ok();
         }
     }
 }

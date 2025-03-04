@@ -12,18 +12,18 @@ namespace CafeManagement.Repositories
         {
 
         }
-
-        public override IEnumerable<Product> GetAll()
+        
+        public override async Task<IEnumerable<Product>> GetAll()
         {
-            return _context.Products
-                .Include(o => o.Category);
+            return await _context.Products
+                .Include(o => o.Category).ToListAsync();
         }
 
-        public IEnumerable<Product> GetByCategoryId(Guid categoryId)
+        public async Task<IEnumerable<Product>> GetByCategoryId(Guid categoryId)
         {
-            return _context.Products
+            return await _context.Products
                   .Where(p => p.Category.Id == categoryId) 
-                   .ToList();
+                   .ToListAsync();
         }
     }
 }

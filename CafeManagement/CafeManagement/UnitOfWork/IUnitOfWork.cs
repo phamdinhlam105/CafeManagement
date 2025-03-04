@@ -5,11 +5,10 @@ using CafeManagement.Interfaces.Repositories.Stock;
 
 namespace CafeManagement.UnitOfWork
 {
-    public interface IUnitOfWork:IDisposable
+    public interface IUnitOfWork: IAsyncDisposable
     {
         IProductRepository Product { get; }
         ICategoryRepository Category { get; }
-        IUserRepository User { get; }
         IOrderRepository Order { get; }
         IOrderDetailRepository OrderDetail { get; }
         ICustomerRepository Customer { get; }
@@ -24,6 +23,7 @@ namespace CafeManagement.UnitOfWork
         IYearlyReportRepository YearlyReport {  get; }
         IPromotion Promotion { get; }
         IPromotionSchedule PromotionSchedule {  get; }
-        void Save();
+        IProfileRepository Profile { get; }
+        Task Save();
     }
 }

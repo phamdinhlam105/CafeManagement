@@ -9,11 +9,11 @@ namespace CafeManagement.Repositories
     {
         public OrderRepository(CafeManagementDbContext _context):base(_context) { }
 
-        public override Order GetById(Guid id)
+        public override async Task<Order> GetById(Guid id)
         {
-            return _context.Orders
+            return await _context.Orders
                 .Include(o=>o.Details)
-                .FirstOrDefault(o => o.Id == id);
+                .FirstOrDefaultAsync(o => o.Id == id);
         }
     }
 }

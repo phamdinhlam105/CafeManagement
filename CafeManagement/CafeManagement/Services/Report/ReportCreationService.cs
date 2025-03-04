@@ -15,7 +15,7 @@ namespace CafeManagement.Services.Report
             _unitOfWork = unitOfWork;
             _reportQueryService = reportQueryService;
         }
-        public void CreateDailyReport(DateTime date)
+        public async Task CreateDailyReport(DateTime date)
         {
             DateTime startTime = date.Date;
             DateTime endTime = date.Date.AddDays(1);
@@ -23,24 +23,24 @@ namespace CafeManagement.Services.Report
             dailyReport.Id = Guid.NewGuid();
             dailyReport.createDate = DateTime.Now;
             dailyReport.ReportDate = DateOnly.FromDateTime(date);
-            dailyReport.TotalRevenue = _reportQueryService.GetTotalRevenue(startTime, endTime);
-            dailyReport.TotalExpenditure = _reportQueryService.GetTotalExpenditure(startTime, endTime);
-            dailyReport.NumberOfFinishedOrders = _reportQueryService.GetNumberOfFinishedOrders(startTime, endTime);
-            dailyReport.NumberOfCancelledOrders = _reportQueryService.GetNumberOfCancelledOrders(startTime, endTime);
-            dailyReport.TopSelling = _reportQueryService.GetTopSellingProduct(startTime, endTime);
-            dailyReport.LeastSelling = _reportQueryService.GetLeastSellingProduct(startTime, endTime);
-            dailyReport.PeakHours = _reportQueryService.GetPeakHours(DateOnly.FromDateTime(date));
-            dailyReport.TotalProductsSold = _reportQueryService.GetTotalProductsSold(startTime, endTime);
-            _unitOfWork.DailyReport.Add(dailyReport);
+            dailyReport.TotalRevenue = await _reportQueryService.GetTotalRevenue(startTime, endTime);
+            dailyReport.TotalExpenditure = await _reportQueryService.GetTotalExpenditure(startTime, endTime);
+            dailyReport.NumberOfFinishedOrders = await _reportQueryService.GetNumberOfFinishedOrders(startTime, endTime);
+            dailyReport.NumberOfCancelledOrders = await _reportQueryService.GetNumberOfCancelledOrders(startTime, endTime);
+            dailyReport.TopSelling = await _reportQueryService.GetTopSellingProduct(startTime, endTime);
+            dailyReport.LeastSelling = await _reportQueryService.GetLeastSellingProduct(startTime, endTime);
+            dailyReport.PeakHours = await _reportQueryService.GetPeakHours(DateOnly.FromDateTime(date));
+            dailyReport.TotalProductsSold = await _reportQueryService.GetTotalProductsSold(startTime, endTime);
+            await _unitOfWork.DailyReport.Add(dailyReport);
         }
 
-        public void CreateMonthlyReport(int month, int year)
+        public async Task CreateMonthlyReport(int month, int year)
         {
             MonthlyReport monthlyReport = new MonthlyReport();
             monthlyReport.Id = Guid.NewGuid();
             DateTime startDate = new DateTime(year, month, 1);
             DateTime endDate = startDate.AddMonths(1).AddSeconds(-1);
-            var dailyReports = _unitOfWork.DailyReport.GetAll()
+            var dailyReports = (await _unitOfWork.DailyReport.GetAll())
                 .Where(dr => dr.ReportDate >= DateOnly.FromDateTime(startDate)
                  && dr.ReportDate <= DateOnly.FromDateTime(endDate))
                 .ToList();
@@ -56,19 +56,18 @@ namespace CafeManagement.Services.Report
             monthlyReport.TotalExpenditure = dailyReports.Sum(dr => dr.TotalExpenditure);
             monthlyReport.NumberOfFinishedOrders = dailyReports.Sum(dr => dr.NumberOfFinishedOrders);
             monthlyReport.NumberOfCancelledOrders = dailyReports.Sum(dr => dr.NumberOfCancelledOrders);
-            monthlyReport.TopSelling = _reportQueryService.GetTopSellingProduct(startDate, endDate);
-            monthlyReport.LeastSelling = _reportQueryService.GetLeastSellingProduct(startDate, endDate);
-            monthlyReport.BestSellingDaysInWeek = _reportQueryService.GetBestDaysInWeek(startDate,endDate,monthlyReport.Id);
-            _unitOfWork.MonthlyReport.Add(monthlyReport);
+            monthlyReport.TopSelling = await _reportQueryService.GetTopSellingProduct(startDate, endDate);
+            monthlyReport.LeastSelling = await _reportQueryService.GetLeastSellingProduct(startDate, endDate);
+            await _unitOfWork.MonthlyReport.Add(monthlyReport);
         }
 
-        public void CreateQuarterlyReport(int quarter, int year)
+        public async Task CreateQuarterlyReport(int quarter, int year)
         {
             
             (DateTime startDate, DateTime endDate) = QuarterHelper.GetQuarterDates(quarter, year);
             int startMonth = (quarter - 1) * 3 + 1;
             int endMonth = startMonth + 2;
-            var monthlyReports = _unitOfWork.MonthlyReport.GetAll()
+            var monthlyReports = (await _unitOfWork.MonthlyReport.GetAll())
                .Where(mr => mr.StartDate.Year == year
                          && mr.StartDate.Month >= startMonth
                          && mr.StartDate.Month <= endMonth)
@@ -86,13 +85,12 @@ namespace CafeManagement.Services.Report
                 TotalProductsSold = monthlyReports.Sum(m => m.TotalProductsSold),
                 TotalExpenditure = monthlyReports.Sum(m=>m.TotalExpenditure),
                 NumberOfCancelledOrders = monthlyReports.Sum(m=>m.NumberOfCancelledOrders),
-                TopSelling = _reportQueryService.GetTopSellingProduct(startDate, endDate),
-                LeastSelling = _reportQueryService.GetLeastSellingProduct(startDate, endDate),
+                TopSelling = await _reportQueryService.GetTopSellingProduct(startDate, endDate),
+                LeastSelling = await _reportQueryService.GetLeastSellingProduct(startDate, endDate),
                 NumberOfFinishedOrders = monthlyReports.Sum(m=>m.NumberOfFinishedOrders),
                 MonthlyReports = monthlyReports,
                 createDate = DateTime.Now
             };
-            quarterlyReport.BestDaysInQuarter =_reportQueryService.GetBestDaysInWeek(startDate, endDate, quarterlyReport.Id);
         }
     }
 }

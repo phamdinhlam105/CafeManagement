@@ -4,8 +4,8 @@ namespace CafeManagement.Interfaces.Services.Report
 {
     public interface IYearlyReportService
     {
-        YearlyReport CreateYearlyReport(int year);
-        YearlyReport GetYearlyReport(int year);
-        IEnumerable<YearlyReport> GetAllYearlyReports();
+        Task<YearlyReport> CreateYearlyReport(int year);
+        Task<YearlyReport> GetYearlyReport(int year);
+        Task<IEnumerable<YearlyReport>> GetAllYearlyReports();
     }
 }

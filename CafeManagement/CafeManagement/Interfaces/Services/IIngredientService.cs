@@ -4,8 +4,8 @@ namespace CafeManagement.Interfaces.Services
 {
     public interface IIngredientService
     {
-        void createIngredient(Ingredient ingredient);
-        void updateIngredient(Ingredient ingredient);
-        void deleteIngredient(Ingredient ingredient);
+        Task createIngredient(Ingredient ingredient);
+        Task updateIngredient(Ingredient ingredient);
+        Task deleteIngredient(Ingredient ingredient);
     }
 }

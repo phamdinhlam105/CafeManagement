@@ -9,6 +9,7 @@ using CafeManagement.Mappers;
 using CafeManagement.Models;
 using CafeManagement.Services;
 using CafeManagement.Services.Login;
+using CafeManagement.Services.Store;
 using CafeManagement.Services.PromotionService;
 using CafeManagement.Services.Report;
 using CafeManagement.Services.Stock;
@@ -19,12 +20,26 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+Env.Load();
+
+builder.Configuration["ConnectionStrings:CafeManagementConnection"] =
+    $"Server={Env.GetString("DB_SERVER")};" +
+    $"Port={Env.GetString("DB_PORT")};" +
+    $"Database={Env.GetString("DB_DATABASE")};" +
+    $"User={Env.GetString("DB_USER")};" +
+    $"Password={Env.GetString("DB_PASSWORD")};";
+
+builder.Configuration["JwtConfig:Issuer"] = Env.GetString("JWT_ISSUER");
+builder.Configuration["JwtConfig:Audience"] = Env.GetString("JWT_AUDIENCE");
+builder.Configuration["JwtConfig:Key"] = Env.GetString("JWT_KEY");
+// Add services to the container.   
 builder.Services.AddDbContext<CafeManagementDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("CafeManagementConnection")));
+    options.UseMySql(builder.Configuration.GetConnectionString("CafeManagementConnection"),
+   ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("CafeManagementConnection"))));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -34,7 +49,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //services
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<INewOrderService, NewOrderService>();
 builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
@@ -46,6 +61,7 @@ builder.Services.AddScoped<IReportRetrievalService, ReportRetrievalService>();
 builder.Services.AddScoped<IYearlyReportService, YearlyReportService>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IExportBillService, ExportBillService>();
 
 //mapper
 builder.Services.AddScoped<ICustomerMapper, CustomerMapper>();

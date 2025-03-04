@@ -13,35 +13,35 @@ namespace CafeManagement.Services
             _unitOfWork = unitOfWork;
         }
 
-        public void Add(Order item)
+        public async Task Add(Order item)
         {
-            _unitOfWork.Order.Add(item);
+            await _unitOfWork.Order.Add(item);
         }
 
-        public void Delete(Order item)
+        public async Task Delete(Order item)
         {
             if (item != null)
-                _unitOfWork.Order.Delete(item);
+                await _unitOfWork.Order.Delete(item);
         }
 
-        public IEnumerable<Order> GetAll()
+        public async Task<IEnumerable<Order>> GetAll()
         {
-            return _unitOfWork.Order.GetAll();
+            return await _unitOfWork.Order.GetAll();
         }
 
-        public Order GetById(Guid id)
+        public async Task<Order> GetById(Guid id)
         {
-            return _unitOfWork.Order.GetById(id);
+            return await _unitOfWork.Order.GetById(id);
         }
 
-        public void Update(Order item)
+        public async Task Update(Order item)
         {
             if (item != null)
-                _unitOfWork.Order.Update(item);
+                await _unitOfWork.Order.Update(item);
         }
-        public IEnumerable<OrderDetail> GetDetailsByOrderId(Guid orderId)
+        public async Task<IEnumerable<OrderDetail>> GetDetailsByOrderId(Guid orderId)
         {
-            return _unitOfWork.OrderDetail.GetAll().Where(q => q.OderId == orderId).ToList();
+            return await _unitOfWork.OrderDetail.GetDetailByOrderId(orderId);
         }
     }
 }

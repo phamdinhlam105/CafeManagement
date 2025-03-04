@@ -8,18 +8,18 @@ namespace CafeManagement.Repositories
     public class OrderDetailsRepository:BaseRepository<OrderDetail>,IOrderDetailRepository
     {
         public OrderDetailsRepository(CafeManagementDbContext _context) : base(_context) { }
-        public IEnumerable<OrderDetail> GetDetailByOrderId(Guid OrderId)
+        public async Task<IEnumerable<OrderDetail>> GetDetailByOrderId(Guid OrderId)
         {
-            return _context.OrderDetails
+            return await _context.OrderDetails
                 .Where(p => p.OderId == OrderId)
                 .Include(od => od.Order)
-                .Include(od => od.Product);
+                .Include(od => od.Product).ToListAsync();
         }
-        public override OrderDetail GetById(Guid id)
+        public override async Task<OrderDetail> GetById(Guid id)
         {
-            return _context.OrderDetails
+            return await _context.OrderDetails
                 .Include(od => od.Product)
-                .FirstOrDefault(od => od.Id == id);
+                .FirstOrDefaultAsync(od => od.Id == id);
         }
     }
 }

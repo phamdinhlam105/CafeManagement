@@ -21,60 +21,52 @@ namespace CafeManagement.Controllers
             _productMapper = productMapper;
         }
         [HttpGet]
-        public ActionResult<IEnumerable<ProductResponse>> GetAll()
+        public async Task<ActionResult> GetAll()
         {
-            var products = _productService.GetAll().ToList();
-            var productResponse = products.Select(c => _productMapper.MapToResponse(c)).ToList();
-            if (productResponse.Any())
-            {
-                return Ok(productResponse);
-            }
-            return NotFound();
+            var products = (await _productService.GetAll()).ToList();
+            return Ok(products.Select(c => _productMapper.MapToResponse(c)).ToList());
         }
 
         [HttpGet("{id}")]
-        public ActionResult<ProductResponse> GetById(Guid id)
+        public async Task<ActionResult> GetById(Guid id)
         {
-            var product = _productService.GetById(id);
-            if (product == null)
-                return NotFound();
-            return Ok(_productMapper.MapToResponse(product));
+            return Ok(_productMapper.MapToResponse(await _productService.GetById(id)));
         }
 
      
         [HttpPost]
-        public ActionResult Add([FromBody] ProductRequest product)
+        public async Task<ActionResult> Add([FromBody] ProductRequest product)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var item = _productMapper.MapToEntity(product);
-            _productService.Add(item);
+            await _productService.Add(item);
             return CreatedAtAction(nameof(GetById), new { item.Id });
         }
 
         [HttpPut("{id}")]
-        public ActionResult Edit(Guid id,[FromBody] ProductRequest product)
+        public async Task<ActionResult> Edit(Guid id,[FromBody] ProductRequest product)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var existingProduct = _productService.GetById(id);
+            var existingProduct = await _productService.GetById(id);
             if (existingProduct == null)
                 return NotFound();
             _productMapper.UpdateEntityFromRequest(existingProduct, product);
-            _productService.Update(existingProduct);
+            await _productService.Update(existingProduct);
             return Ok(existingProduct);
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete(Guid id)
+        public async Task<ActionResult> Delete(Guid id)
         {
-            var product = _productService.GetById(id);
+            var product = await _productService.GetById(id);
             if (product == null)
                 return NotFound();
 
-            _productService.Delete(product);
-            return NoContent();
+            await _productService.Delete(product);
+            return Ok();
         }
     }
 }

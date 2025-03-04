@@ -29,41 +29,41 @@ namespace CafeManagement.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddDetail([FromBody] OrderDetailRequest req)
+        public async Task<IActionResult> AddDetail([FromBody] OrderDetailRequest req)
         {
-            Order currentOrder = _newOderService.GetById(req.OrderId);
+            Order currentOrder = await _newOderService.GetById(req.OrderId);
             if (currentOrder == null)
                 return NotFound(req.OrderId);
             OrderDetail newDetail = _orderDetailMapper.MapToEntity(req);
-            _orderDetailService.Add(newDetail);
-            _newOderService.AddOrderDetail(currentOrder,newDetail);
+            await _orderDetailService.Add(newDetail);
+            await _newOderService.AddOrderDetail(currentOrder, newDetail);
             return Ok(newDetail);
         }
 
         [HttpGet("GetByOrderId/{orderId}")]
-        public IActionResult GetDetailByOrder(Guid orderId) 
+        public async Task<IActionResult> GetDetailByOrder(Guid orderId) 
         {
-            ICollection<OrderDetail> listDetail = _orderDetailService.GetDetailsByOrder(orderId);
+            var listDetail = (await _orderDetailService.GetDetailsByOrder(orderId)).ToList();
             if (listDetail == null || listDetail.Count == 0)
                 return NoContent();
             return Ok(listDetail.Select(d => _orderDetailMapper.MapToResponse(d)));
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            IEnumerable<OrderDetail> details = _orderDetailService.GetAll();
+            var details = (await _orderDetailService.GetAll()).ToList();
             return Ok(details);
         }
         
         [HttpPut("{id}")]
-        public IActionResult Put(Guid id, [FromBody] OrderDetailRequest request)
+        public async Task<IActionResult> Put(Guid id, [FromBody] OrderDetailRequest request)
         {
-            OrderDetail orderDetail = _orderDetailService.GetById(id);
+            OrderDetail orderDetail = await _orderDetailService.GetById(id);
             if (orderDetail == null)
                 return NotFound(id);
             _orderDetailMapper.UpdateEntityFromRequest(orderDetail, request);
-            _orderDetailService.Update(orderDetail);
+            await _orderDetailService.Update(orderDetail);
             return Ok();
         }
     }

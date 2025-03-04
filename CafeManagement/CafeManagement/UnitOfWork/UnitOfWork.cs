@@ -18,7 +18,6 @@ namespace CafeManagement.UnitOfWork
         private readonly CafeManagementDbContext _context;
         private IProductRepository _product;
         private ICategoryRepository _category;
-        private IUserRepository _user;
         private IOrderRepository _order ;
         private IOrderDetailRepository _orderDetail ;
         private ICustomerRepository _customer ;
@@ -33,6 +32,7 @@ namespace CafeManagement.UnitOfWork
         private IYearlyReportRepository _yearlyReportRepository ;
         private IPromotion _promotionRepository;
         private IPromotionSchedule _promotionScheduleRepository;
+        private IProfileRepository _profileRepository ;
         private static readonly object _lock = new object();
 
         public UnitOfWork(CafeManagementDbContext context)
@@ -64,17 +64,7 @@ namespace CafeManagement.UnitOfWork
             }
         }
 
-        public IUserRepository User
-        {
-            get
-            {
-                if( _user == null)
-                    lock (_lock)
-                        if (_user == null)
-                            return _user = new UserRepository(_context);
-                return _user;
-            }
-        }
+       
         public IOrderRepository Order
         {
             get
@@ -233,14 +223,31 @@ namespace CafeManagement.UnitOfWork
                 return _promotionScheduleRepository;
             }
         }
-        public void Dispose()
+        public IProfileRepository Profile
         {
-            _context.Dispose();
+            get
+            {
+                if(_profileRepository == null)
+                    lock(_lock)
+                        if(_profileRepository==null)
+                            return _profileRepository = new ProfileRepository(_context);
+                return _profileRepository;
+            }
+        }
+        public async ValueTask DisposeAsync()
+        {
+
+            if (_context != null)
+            {
+                await _context.DisposeAsync();
+            }
         }
 
-        public void Save()
+        public async Task Save()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
+
+
     }
 }

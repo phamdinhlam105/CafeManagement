@@ -1,5 +1,8 @@
 ﻿using CafeManagement.Dtos.Request;
+using CafeManagement.Helpers;
+using CafeManagement.Interfaces.Services;
 using CafeManagement.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
@@ -11,33 +14,46 @@ namespace CafeManagement.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
-        public AccountController(UserManager<User> userManager)
+        private IUserService _userSerivce;
+        public AccountController(IUserService userService)
         {
-            _userManager = userManager;
+            _userSerivce = userService;
         }
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] CreateAccountRequest model)
+        public async Task<IActionResult> Register([FromBody] SignupRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            var user = new User
+            try
             {
-                UserName = model.UserName,
-                Email = model.Email
-            };
-
-            var result = await _userManager.CreateAsync(user, model.Password);
-
-            if (result.Succeeded)
-            {
-                return Ok(new { Message = "User created successfully" });
+                await _userSerivce.Signup(request);
+                return Ok();
             }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+        [HttpPost("setrole")]
+        [Authorize(Roles = Role.Admin)]
+        public async Task<IActionResult> SetRole([FromBody] SetRoleRequest request )
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
 
-            return BadRequest(result.Errors);
+                await _userSerivce.ChangeRole(request);
+            }
+            catch 
+            {
+                return BadRequest();
+            }
+            return Ok();
         }
     }
 }

@@ -4,11 +4,11 @@ namespace CafeManagement.Interfaces.Services.Stock
 {
     public interface IStockService
     {
-        DailyStock StockRemain();
+        Task<DailyStock> StockRemain();
 
-        void StockUpdate(Guid stockId, Ingredient ingredient, float amountRemain);
-        DailyStock NewDailyStock();
-        IEnumerable<DailyStock> GetAllDailyStocks();
-        IEnumerable<DailyStockDetail> GetDetailByDate(DateOnly date);
+        Task StockUpdate(Guid stockId, Ingredient ingredient, float amountRemain);
+        Task<DailyStock> NewDailyStock();
+        Task<IEnumerable<DailyStock>> GetAllDailyStocks();
+        Task<IEnumerable<DailyStockDetail>> GetDetailByDate(DateOnly date);
     }
 }

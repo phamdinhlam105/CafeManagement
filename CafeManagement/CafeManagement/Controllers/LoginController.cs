@@ -11,19 +11,18 @@ namespace CafeManagement.Controllers
     [ApiController]
     public class LoginController : ControllerBase   
     {
-        private ITokenService _tokenService;
         private IUserService _userService;
-        public LoginController(ITokenService tokenService,IUserService userService)
+        public LoginController(IUserService userService)
         {
-            _tokenService = tokenService;
             _userService = userService;
         }
         [HttpPost]
-        public IActionResult Login([FromBody]LoginRequest request)
+        public async Task<IActionResult> Login([FromBody]LoginRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
-            return Ok(_tokenService.Validate(request));
+            var response = await _userService.Login(request);
+            return Ok(response);
         }
 
 

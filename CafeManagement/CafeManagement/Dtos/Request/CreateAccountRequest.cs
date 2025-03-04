@@ -6,6 +6,8 @@ namespace CafeManagement.Dtos.Request
     {
         [Required]
         public string UserName { get; set; }
+        [Required]
+        public string Name {  get; set; }
 
         [Required]
         [EmailAddress]
@@ -14,5 +16,7 @@ namespace CafeManagement.Dtos.Request
         [Required]
         [MinLength(6)]
         public string Password { get; set; }
+        [Required]
+        public string PhoneNumber {  get; set; }
     }
 }

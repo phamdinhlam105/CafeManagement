@@ -11,6 +11,12 @@ namespace CafeManagement.Controllers
         private IReportCreationService _reportCreationService;
         private IReportRetrievalService _reportRetrievalService;
         private IYearlyReportService _yearlyReportService;
+        public ReportController(IReportCreationService reportCreationService, IReportRetrievalService reportRetrievalService, IYearlyReportService yearlyReportService)
+        {
+            _reportCreationService = reportCreationService;
+            _reportRetrievalService = reportRetrievalService;
+            _yearlyReportService = yearlyReportService;
+        }
 
         [HttpPost]
         public IActionResult createReport(DateTime date)

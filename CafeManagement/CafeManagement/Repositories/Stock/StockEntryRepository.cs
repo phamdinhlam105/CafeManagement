@@ -8,11 +8,11 @@ namespace CafeManagement.Repositories.Stock
     public class StockEntryRepository : BaseRepository<StockEntry>, IStockEntryRepository
     {
         public StockEntryRepository(CafeManagementDbContext _context) : base(_context) { }
-        public override IEnumerable<StockEntry> GetAll()
+        public override async Task<IEnumerable<StockEntry>> GetAll()
         {
-            return _context.StockEntries
+            return await _context.StockEntries
                 .Include(se => se.StockEntryDetails)
-                .ThenInclude(dt => dt.Ingredient);
+                .ThenInclude(dt => dt.Ingredient).ToListAsync();
         }
     }
 }

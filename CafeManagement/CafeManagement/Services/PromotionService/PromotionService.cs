@@ -12,30 +12,30 @@ namespace CafeManagement.Services.PromotionService
         {
             _unitOfWork = unitOfWork;
         }
-        public void ApplyPromotionToOrder(Guid orderId, Guid promotionId)
+        public async Task ApplyPromotionToOrder(Guid orderId, Guid promotionId)
         {
-            var order = _unitOfWork.Order.GetById(orderId);
-            var promotion = _unitOfWork.Promotion.GetById(promotionId);
+            var order = await _unitOfWork.Order.GetById(orderId);
+            var promotion = await _unitOfWork.Promotion.GetById(promotionId);
             if (order == null || promotion == null)
                 throw new Exception("Order or Promotion not found.");
             order.PromotionId = promotionId;
             order.Promotion = promotion;
-            _unitOfWork.Order.Update(order);
+            await _unitOfWork.Order.Update(order);
         }
 
-        public void CreatePromotion(Promotion promotion)
+        public async Task CreatePromotion(Promotion promotion)
         {
-            _unitOfWork.Promotion.Add(promotion);
+            await _unitOfWork.Promotion.Add(promotion);
         }
 
-        public void CreatePromotionSchedule(PromotionSchedule schedule)
+        public async Task CreatePromotionSchedule(PromotionSchedule schedule)
         {
-            _unitOfWork.PromotionSchedule.Add(schedule);
+            await _unitOfWork.PromotionSchedule.Add(schedule);
         }
 
-        public IEnumerable<Promotion> GetActivePromotionByDate(DateOnly startDate, DateOnly endDate)
+        public async Task<IEnumerable<Promotion>> GetActivePromotionByDate(DateOnly startDate, DateOnly endDate)
         {
-            var schedules = _unitOfWork.PromotionSchedule.GetAll()
+            var schedules = (await _unitOfWork.PromotionSchedule.GetAll())
                 .Where(p => p.startDate <= startDate && p.endDate <= endDate).ToList();
 
             return  schedules
@@ -44,24 +44,24 @@ namespace CafeManagement.Services.PromotionService
                         .Distinct();
         }
 
-        public IEnumerable<Promotion> GetAllPromotions()
+        public async Task<IEnumerable<Promotion>> GetAllPromotions()
         {
-            return _unitOfWork.Promotion.GetAll();
+            return await _unitOfWork.Promotion.GetAll();
         }
 
-        public Promotion? GetPromotionById(Guid promotionId)
+        public async Task<Promotion?> GetPromotionById(Guid promotionId)
         {
-            return _unitOfWork.Promotion.GetById(promotionId);
+            return await _unitOfWork.Promotion.GetById(promotionId);
         }
 
-        public void UpdatePromotion(Guid promotionId, Promotion promotionUpdate)
+        public async Task UpdatePromotion(Guid promotionId, Promotion promotionUpdate)
         {
-            _unitOfWork.Promotion.Update(promotionUpdate);
+            await _unitOfWork.Promotion.Update(promotionUpdate);
         }
 
-        public void UpdatePromotionSchedule(Guid scheduleId, PromotionSchedule scheduleUpdate)
+        public async Task UpdatePromotionSchedule(Guid scheduleId, PromotionSchedule scheduleUpdate)
         {
-            _unitOfWork.PromotionSchedule.Update(scheduleUpdate);
+            await _unitOfWork.PromotionSchedule.Update(scheduleUpdate);
         }
     }
 }

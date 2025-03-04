@@ -1,6 +1,7 @@
 ﻿using CafeManagement.Data;
 using CafeManagement.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace CafeManagement.Repositories
 {
@@ -15,33 +16,33 @@ namespace CafeManagement.Repositories
             _dbSet = context.Set<T>();
         }
 
-        public virtual IEnumerable<T> GetAll()
+        public virtual async Task<IEnumerable<T>> GetAll()
         {
-            return _dbSet.ToList();
+            return await _dbSet.ToListAsync();
         }
 
-        public virtual T GetById(Guid id)
+        public virtual async Task<T> GetById(Guid id)
         {
-            return _dbSet.Find(id);
+            return await _dbSet.FindAsync(id);
         }
 
-        public virtual void Add(T entity)
+        public virtual async Task Add(T entity)
         {
-            _dbSet.Add(entity);
-            _context.SaveChanges();
+            await _dbSet.AddAsync(entity);
+            await _context.SaveChangesAsync();
         }
 
-        public virtual void Update(T entity)
+        public virtual async Task Update(T entity)
         {
             _context.Update(entity);
             _context.Entry(entity).State = EntityState.Modified;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public virtual void Delete(T entity)
+        public virtual async Task Delete(T entity)
         {
             _dbSet.Remove(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
     }

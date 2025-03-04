@@ -23,58 +23,53 @@ namespace CafeManagement.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<CustomerResponse>> GetAll() 
+        public async Task<IActionResult> GetAll() 
         {
-            var customers= _customerService.GetAll().ToList();
+            var customers= (await _customerService.GetAll()).ToList();
             var customerResponses = customers.Select(c=>_customerMapper.MapToResponse(c)).ToList();
-            if(customerResponses.Any())
-            {
-                return Ok(customerResponses);
-            }
-            return NotFound();
+
+            return  Ok(customerResponses);
         }
         
         [HttpGet("Id")]
-        public ActionResult<CustomerResponse> GetById(Guid Id)
+        public async Task<IActionResult> GetById(Guid Id)
         {
-            var customer = _customerService.GetById(Id);
-            if (customer == null)
-                return NotFound();
+            var customer = await _customerService.GetById(Id);
             return Ok(_customerMapper.MapToResponse(customer));
         }
 
         [HttpPost]
-        public ActionResult Add([FromBody] CustomerRequest customer)
+        public async Task<IActionResult> Add([FromBody] CustomerRequest customer)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             var item = _customerMapper.MapToEntity(customer);
-            _customerService.Add(item);
+            await _customerService.Add(item);
             return CreatedAtAction(nameof(GetById), new { item.Id });
         }
 
         [HttpPut("{Id}")]
-        public ActionResult Edit(Guid Id, [FromBody]  CustomerRequest customer)
+        public async Task<IActionResult> Edit(Guid Id, [FromBody]  CustomerRequest customer)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var existItem = _customerService.GetById(Id);
+            var existItem = await _customerService.GetById(Id);
             if (existItem == null)
                 return NotFound();
             _customerMapper.UpdateEntityFromRequest(existItem, customer);
-            _customerService.Update(existItem);
+            await _customerService.Update(existItem);
             return Ok(existItem);
         }
 
         [HttpDelete("Id")]
-        public ActionResult Delete(Guid Id)
+        public async Task<IActionResult> Delete(Guid Id)
         {
-            var customer = _customerService.GetById(Id);
+            var customer = await _customerService.GetById(Id);
             if(customer == null)
                 return NotFound();
-            _customerService.Delete(customer);
+            await _customerService.Delete(customer);
             return NoContent();
         }
 

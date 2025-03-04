@@ -12,35 +12,35 @@ namespace CafeManagement.Services
             _unitOfWork = unitOfWork;
         }
 
-        public void Add(Category item)
+        public async Task Add(Category item)
         {
-            _unitOfWork.Category.Add(item);
+            await _unitOfWork.Category.Add(item);
         }
 
-        public void Delete(Category item)
+        public async Task Delete(Category item)
         {
             if (item != null)
-                _unitOfWork.Category.Delete(item);
+                await _unitOfWork.Category.Delete(item);
         }
 
-        public IEnumerable<Category> GetAll()
+        public async Task<IEnumerable<Category>> GetAll()
         {
-            return _unitOfWork.Category.GetAll();
+            return await _unitOfWork.Category.GetAll();
         }
 
-        public Category GetById(Guid id)
+        public async Task<Category> GetById(Guid id)
         {
-            return _unitOfWork.Category.GetById(id);
+            return await _unitOfWork.Category.GetById(id);
         }
-        public IEnumerable<Product> GetProductsByCategory(Guid categoryId)
+        public async Task<IEnumerable<Product>> GetProductsByCategory(Guid categoryId)
         {
-            return _unitOfWork.Product.GetByCategoryId(categoryId);
+            return await _unitOfWork.Product.GetByCategoryId(categoryId);
         }
 
-        public void Update(Category item)
+        public async Task Update(Category item)
         {
             if (item != null)
-                _unitOfWork.Category.Update(item);
+                await _unitOfWork.Category.Update(item);
         }
     }
 }

@@ -17,24 +17,24 @@ namespace CafeManagement.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.2")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("ProductVersion", "8.0.13")
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("CafeManagement.Models.Category", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -45,21 +45,26 @@ namespace CafeManagement.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid?>("YearlyReportId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("YearlyReportId");
 
                     b.ToTable("Customers");
                 });
@@ -68,10 +73,10 @@ namespace CafeManagement.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid?>("CustomerId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("No")
                         .HasColumnType("int");
@@ -79,7 +84,7 @@ namespace CafeManagement.Migrations
                     b.Property<string>("Note")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<int>("OrderStatus")
                         .HasColumnType("int");
@@ -88,13 +93,13 @@ namespace CafeManagement.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid?>("PromotionId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("createdAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -109,17 +114,17 @@ namespace CafeManagement.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Note")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<Guid>("OderId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -137,44 +142,43 @@ namespace CafeManagement.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("ChangeDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("NewStatus")
                         .HasColumnType("int");
 
                     b.Property<Guid>("OrderId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderStatusHistories");
+                    b.ToTable("OrderStatusHistory");
                 });
 
             modelBuilder.Entity("CafeManagement.Models.Product", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Img")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -190,33 +194,36 @@ namespace CafeManagement.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
-                    b.Property<int>("Age")
+                    b.Property<int?>("Age")
+                        .IsRequired()
                         .HasColumnType("int");
+
+                    b.Property<DateOnly?>("BirthDay")
+                        .HasColumnType("date");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PictureURL")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<DateTime>("joinDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -230,15 +237,18 @@ namespace CafeManagement.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Discount")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("isActive")
                         .HasColumnType("int");
@@ -248,48 +258,43 @@ namespace CafeManagement.Migrations
                     b.ToTable("Promotions");
                 });
 
-            modelBuilder.Entity("CafeManagement.Models.Report.BestDays", b =>
+            modelBuilder.Entity("CafeManagement.Models.PromotionModel.PromotionSchedule", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
-                    b.Property<decimal>("AvgRevenue")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<Guid?>("MonthlyReportId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("QuarterlyReportId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ReportId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("WeekDay")
+                    b.Property<string>("Note")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("PromotionId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateOnly>("endDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly>("startDate")
+                        .HasColumnType("date");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MonthlyReportId");
+                    b.HasIndex("PromotionId");
 
-                    b.HasIndex("QuarterlyReportId");
-
-                    b.ToTable("BestDays");
+                    b.ToTable("PromotionSchedules");
                 });
 
             modelBuilder.Entity("CafeManagement.Models.Report.DailyReport", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("LeastSellingId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid?>("MonthlyReportId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("NumberOfCancelledOrders")
                         .HasColumnType("int");
@@ -297,27 +302,27 @@ namespace CafeManagement.Migrations
                     b.Property<int>("NumberOfFinishedOrders")
                         .HasColumnType("int");
 
-                    b.PrimitiveCollection<string>("PeakHours")
+                    b.Property<string>("PeakHours")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<DateOnly>("ReportDate")
                         .HasColumnType("date");
 
                     b.Property<Guid>("TopSellingId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<decimal>("TotalExpenditure")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<int>("TotalProductsSold")
                         .HasColumnType("int");
 
                     b.Property<decimal>("TotalRevenue")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<DateTime>("createDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -334,13 +339,13 @@ namespace CafeManagement.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateOnly>("EndDate")
                         .HasColumnType("date");
 
                     b.Property<Guid>("LeastSellingId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("NumberOfCancelledOrders")
                         .HasColumnType("int");
@@ -349,25 +354,25 @@ namespace CafeManagement.Migrations
                         .HasColumnType("int");
 
                     b.Property<Guid?>("QuarterlyReportId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("date");
 
                     b.Property<Guid>("TopSellingId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<decimal>("TotalExpenditure")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<int>("TotalProductsSold")
                         .HasColumnType("int");
 
                     b.Property<decimal>("TotalRevenue")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<DateTime>("createDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -384,13 +389,13 @@ namespace CafeManagement.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateOnly>("EndDate")
                         .HasColumnType("date");
 
                     b.Property<Guid>("LeastSellingId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("NumberOfCancelledOrders")
                         .HasColumnType("int");
@@ -405,19 +410,22 @@ namespace CafeManagement.Migrations
                         .HasColumnType("date");
 
                     b.Property<Guid>("TopSellingId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<decimal>("TotalExpenditure")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<int>("TotalProductsSold")
                         .HasColumnType("int");
 
                     b.Property<decimal>("TotalRevenue")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<Guid?>("YearlyReportId")
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("createDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -425,14 +433,58 @@ namespace CafeManagement.Migrations
 
                     b.HasIndex("TopSellingId");
 
+                    b.HasIndex("YearlyReportId");
+
                     b.ToTable("QuarterlyReports");
+                });
+
+            modelBuilder.Entity("CafeManagement.Models.Report.YearlyReport", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("LeastSellingId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("NumberOfCancelledOrders")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfFinishedOrders")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("TopSellingId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<decimal>("TotalExpenditure")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<int>("TotalProductsSold")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalRevenue")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("createDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LeastSellingId");
+
+                    b.HasIndex("TopSellingId");
+
+                    b.ToTable("YearlyReports");
                 });
 
             modelBuilder.Entity("CafeManagement.Models.Stock.DailyStock", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateOnly>("createDate")
                         .HasColumnType("date");
@@ -446,22 +498,22 @@ namespace CafeManagement.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("DailyStockId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("IngredientId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<float>("StockAtStartOfDay")
-                        .HasColumnType("real");
+                        .HasColumnType("float");
 
                     b.Property<float>("StockImport")
-                        .HasColumnType("real");
+                        .HasColumnType("float");
 
                     b.Property<float>("StockRemaining")
-                        .HasColumnType("real");
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -476,15 +528,18 @@ namespace CafeManagement.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("MeasurementUnit")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PictureURL")
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -495,13 +550,13 @@ namespace CafeManagement.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("EntryDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<decimal>("TotalValue")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
 
@@ -512,19 +567,19 @@ namespace CafeManagement.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("IngredientId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<float>("Quantity")
-                        .HasColumnType("real");
+                        .HasColumnType("float");
 
                     b.Property<Guid>("StockEntryId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
@@ -538,54 +593,54 @@ namespace CafeManagement.Migrations
             modelBuilder.Entity("CafeManagement.Models.User", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.HasKey("Id");
 
@@ -594,8 +649,7 @@ namespace CafeManagement.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+                        .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -603,26 +657,25 @@ namespace CafeManagement.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
+                        .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
                 });
@@ -633,17 +686,17 @@ namespace CafeManagement.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("RoleId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -658,17 +711,17 @@ namespace CafeManagement.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -680,17 +733,17 @@ namespace CafeManagement.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -702,10 +755,10 @@ namespace CafeManagement.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -717,20 +770,27 @@ namespace CafeManagement.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("CafeManagement.Models.Customer", b =>
+                {
+                    b.HasOne("CafeManagement.Models.Report.YearlyReport", null)
+                        .WithMany("TopLoyalCustomers")
+                        .HasForeignKey("YearlyReportId");
                 });
 
             modelBuilder.Entity("CafeManagement.Models.Order.Order", b =>
@@ -798,15 +858,15 @@ namespace CafeManagement.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CafeManagement.Models.Report.BestDays", b =>
+            modelBuilder.Entity("CafeManagement.Models.PromotionModel.PromotionSchedule", b =>
                 {
-                    b.HasOne("CafeManagement.Models.Report.MonthlyReport", null)
-                        .WithMany("BestSellingDaysInWeek")
-                        .HasForeignKey("MonthlyReportId");
+                    b.HasOne("CafeManagement.Models.PromotionModel.Promotion", "Promotion")
+                        .WithMany()
+                        .HasForeignKey("PromotionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("CafeManagement.Models.Report.QuarterlyReport", null)
-                        .WithMany("BestDaysInQuarter")
-                        .HasForeignKey("QuarterlyReportId");
+                    b.Navigation("Promotion");
                 });
 
             modelBuilder.Entity("CafeManagement.Models.Report.DailyReport", b =>
@@ -867,6 +927,29 @@ namespace CafeManagement.Migrations
                         .WithMany()
                         .HasForeignKey("TopSellingId")
                         .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("CafeManagement.Models.Report.YearlyReport", null)
+                        .WithMany("QuarterlyReports")
+                        .HasForeignKey("YearlyReportId");
+
+                    b.Navigation("LeastSelling");
+
+                    b.Navigation("TopSelling");
+                });
+
+            modelBuilder.Entity("CafeManagement.Models.Report.YearlyReport", b =>
+                {
+                    b.HasOne("CafeManagement.Models.Product", "LeastSelling")
+                        .WithMany()
+                        .HasForeignKey("LeastSellingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CafeManagement.Models.Product", "TopSelling")
+                        .WithMany()
+                        .HasForeignKey("TopSellingId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("LeastSelling");
@@ -990,16 +1073,19 @@ namespace CafeManagement.Migrations
 
             modelBuilder.Entity("CafeManagement.Models.Report.MonthlyReport", b =>
                 {
-                    b.Navigation("BestSellingDaysInWeek");
-
                     b.Navigation("DailyReports");
                 });
 
             modelBuilder.Entity("CafeManagement.Models.Report.QuarterlyReport", b =>
                 {
-                    b.Navigation("BestDaysInQuarter");
-
                     b.Navigation("MonthlyReports");
+                });
+
+            modelBuilder.Entity("CafeManagement.Models.Report.YearlyReport", b =>
+                {
+                    b.Navigation("QuarterlyReports");
+
+                    b.Navigation("TopLoyalCustomers");
                 });
 
             modelBuilder.Entity("CafeManagement.Models.Stock.DailyStock", b =>

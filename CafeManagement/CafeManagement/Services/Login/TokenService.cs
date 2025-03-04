@@ -4,6 +4,7 @@ using CafeManagement.Dtos.Request;
 using CafeManagement.Dtos.Respone;
 using CafeManagement.Interfaces.Services.Login;
 using CafeManagement.Models;
+using CafeManagement.UnitOfWork;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -17,75 +18,43 @@ namespace CafeManagement.Services.Login
     {
         private CafeManagementDbContext _dbcontext;
         private IConfiguration _configuration;
-        public TokenService(CafeManagementDbContext dbcontext, IConfiguration configuration)
+        private UserManager<User> _userManager;
+        public TokenService(CafeManagementDbContext dbcontext, IConfiguration configuration,UserManager<User> userManager)
         {
             _configuration = configuration;
             _dbcontext = dbcontext;
+            _userManager = userManager;
         }
 
-        private string CreateToken(Profile user)
+        public async Task<string> CreateToken(User user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
-           
+            
             var secetkeyBytes = Encoding.UTF8.GetBytes(_configuration["JwtConfig:Key"]);
+            var userRole = await _userManager.GetRolesAsync(user);
             var tokenDesciptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
             {
-                        new Claim("Name", user.Name),
-                        new Claim("Age", user.Age.ToString()),
+                        new Claim(JwtRegisteredClaimNames.Jti,user.Id),
+                        new Claim("Name", user.Profile.Name),
+                        new Claim("Age", user.Profile.Age.ToString()??string.Empty),
                         new Claim(ClaimValueTypes.Email, user.Email),
-                        new Claim("PhoneNumber", user.PhoneNumber),
-                        new Claim("PictureURL", user.PictureURL),
-                        new Claim("JoinDate", user.joinDate.ToString()),
-                        //new Claim("Role",user.Role.RoleName.ToString())
+                        new Claim("PhoneNumber", user.Profile.PhoneNumber),
+                        new Claim("PictureURL", user.Profile.PictureURL??string.Empty),
+                        new Claim("JoinDate", user.Profile.joinDate.ToString()),
+                        new Claim(ClaimTypes.Role, userRole.ToString())
+
                     }
                 ),
-                Expires = DateTime.UtcNow.AddMinutes(180),
+                Expires = DateTime.UtcNow.AddHours(12),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secetkeyBytes), SecurityAlgorithms.HmacSha512Signature)
 
             };
-            var token = jwtTokenHandler.CreateToken(tokenDesciptor);
+                var token = jwtTokenHandler.CreateToken(tokenDesciptor);
             return jwtTokenHandler.WriteToken(token);
         }
 
-        public LoginResponse? Validate(LoginRequest request)
-        {
-
-            if (string.IsNullOrWhiteSpace(request.UserName) || string.IsNullOrWhiteSpace(request.Password))
-                return null;
-            var userAccount = _dbcontext.Users
-                .Include(u => u.Profile)
-                .FirstOrDefault(u => u.UserName == request.UserName);
-            if (userAccount == null)
-                return null;
-
-            var passwordHasher = new PasswordHasher<User>();
-            var result = passwordHasher.VerifyHashedPassword(userAccount, userAccount.PasswordHash, request.Password);
-
-            if (result != PasswordVerificationResult.Success)
-                return null;
-
-            if (userAccount.Profile == null)
-            {
-                userAccount.Profile = new Profile
-                {
-                    Name = userAccount.UserName,
-                    Email = userAccount.Email, 
-                    PhoneNumber = "111111",
-                    joinDate = DateTime.UtcNow,
-                    Age = 0,
-                    PictureURL = ""
-                };
-                _dbcontext.SaveChanges();
-            }
-            var token = CreateToken(userAccount.Profile);
-            return new LoginResponse
-            {
-                UserName = request.UserName,
-                ExpiresIn = 180,
-                AccessToken = token 
-            };
-        }
+      
     }
 }

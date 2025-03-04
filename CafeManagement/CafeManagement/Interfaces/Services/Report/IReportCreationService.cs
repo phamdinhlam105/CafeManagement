@@ -4,8 +4,8 @@ namespace CafeManagement.Interfaces.Services.Report
 {
     public interface IReportCreationService
     {
-        void CreateDailyReport(DateTime date);
-        void CreateMonthlyReport(int month, int year);
-        void CreateQuarterlyReport(int quarter, int year);
+        Task CreateDailyReport(DateTime date);
+        Task CreateMonthlyReport(int month, int year);
+        Task CreateQuarterlyReport(int quarter, int year);
     }
 }

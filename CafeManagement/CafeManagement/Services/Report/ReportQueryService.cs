@@ -13,35 +13,35 @@ namespace CafeManagement.Services.Report
         {
             _unitOfWork = unitOfWork;
         }
-        public decimal GetTotalRevenue(DateTime startDate, DateTime endDate)
+        public async Task<decimal> GetTotalRevenue(DateTime startDate, DateTime endDate)
         {
-            return _unitOfWork.Order.GetAll()
+            return (await _unitOfWork.Order.GetAll())
                 .Where(o => o.createdAt >= startDate && o.createdAt <= endDate && o.OrderStatus == Enums.OrderStatus.Completed)
                 .Sum(o => o.Price);
         }
 
-        public decimal GetTotalExpenditure(DateTime startDate, DateTime endDate)
+        public async Task<decimal> GetTotalExpenditure(DateTime startDate, DateTime endDate)
         {
-            return _unitOfWork.StockEntry.GetAll()
+            return (await _unitOfWork.StockEntry.GetAll())
                 .Where(s => s.EntryDate >= startDate && s.EntryDate <= endDate)
                 .Sum(s => s.TotalValue);
         }
 
-        public int GetNumberOfFinishedOrders(DateTime startDate, DateTime endDate)
+        public async Task<int> GetNumberOfFinishedOrders(DateTime startDate, DateTime endDate)
         {
-            return _unitOfWork.Order.GetAll()
+            return (await _unitOfWork.Order.GetAll())
                 .Count(o => o.createdAt >= startDate && o.createdAt <= endDate && o.OrderStatus == Enums.OrderStatus.Completed);
         }
 
-        public int GetNumberOfCancelledOrders(DateTime startDate, DateTime endDate)
+        public async Task<int> GetNumberOfCancelledOrders(DateTime startDate, DateTime endDate)
         {
-            return _unitOfWork.Order.GetAll()
+            return (await _unitOfWork.Order.GetAll())
                 .Count(o => o.createdAt >= startDate && o.createdAt <= endDate && o.OrderStatus == Enums.OrderStatus.Cancelled);
         }
 
-        public Product GetTopSellingProduct(DateTime startDate, DateTime endDate)
+        public async Task<Product> GetTopSellingProduct(DateTime startDate, DateTime endDate)
         {
-            return _unitOfWork.OrderDetail.GetAll()
+            return (await _unitOfWork.OrderDetail.GetAll())
                 .Where(od => od.Order.createdAt >= startDate && od.Order.createdAt <= endDate)
                 .GroupBy(od => od.ProductId)
                 .Select(g => new { g.First().Product, TotalSold = g.Sum(od => od.Quantity) })
@@ -50,9 +50,9 @@ namespace CafeManagement.Services.Report
                 .FirstOrDefault();
         }
 
-        public Product GetLeastSellingProduct(DateTime startDate, DateTime endDate)
+        public async Task<Product> GetLeastSellingProduct(DateTime startDate, DateTime endDate)
         {
-            return _unitOfWork.OrderDetail.GetAll()
+            return (await _unitOfWork.OrderDetail.GetAll())
                 .Where(od => od.Order.createdAt >= startDate && od.Order.createdAt <= endDate)
                 .GroupBy(od => od.ProductId)
                 .Select(g => new { g.First().Product, TotalSold = g.Sum(od => od.Quantity) })
@@ -61,16 +61,16 @@ namespace CafeManagement.Services.Report
                 .FirstOrDefault();
         }
 
-        public int GetTotalProductsSold(DateTime startTime, DateTime endTime)
+        public async Task<int> GetTotalProductsSold(DateTime startTime, DateTime endTime)
         {
-            return _unitOfWork.Order.GetAll()
+            return (await _unitOfWork.Order.GetAll())
                 .Where(o => o.createdAt >= startTime && o.createdAt <= endTime && o.OrderStatus == Enums.OrderStatus.Completed)
                 .Sum(o => o.Details.Sum(od => od.Quantity));
         }
 
-        public List<int> GetPeakHours(DateOnly date)
+        public async Task<List<int>> GetPeakHours(DateOnly date)
         {
-            return _unitOfWork.Order.GetAll()
+            return (await _unitOfWork.Order.GetAll())
                 .Where(o => DateOnly.FromDateTime(o.createdAt) == date)
                 .GroupBy(o => o.createdAt.Hour)
                 .Select(g => new { Hour = g.Key, Count = g.Count() })
@@ -80,12 +80,12 @@ namespace CafeManagement.Services.Report
                 .ToList();
         }
 
-        public IEnumerable<BestDays> GetBestDaysInWeek(DateTime startDate, DateTime endDate, Guid reportId)
+        public async Task<IEnumerable<BestDays>> GetBestDaysInWeek(DateTime startDate, DateTime endDate, Guid reportId)
         {
             var totalDays = (endDate.Date - startDate.Date).TotalDays + 1;
             var totalWeeks = (int)Math.Ceiling(totalDays / 7.0);
 
-            var bestDays = _unitOfWork.Order.GetAll()
+            var bestDays = (await _unitOfWork.Order.GetAll())
                 .Where(o => o.createdAt >= startDate && o.createdAt <= endDate && o.OrderStatus == Enums.OrderStatus.Completed)
                 .GroupBy(o => o.createdAt.DayOfWeek)
                 .Select(g => new

@@ -1,10 +1,11 @@
 ﻿using CafeManagement.Dtos.Request;
 using CafeManagement.Dtos.Respone;
+using CafeManagement.Models;
 
 namespace CafeManagement.Interfaces.Services.Login
 {
     public interface ITokenService
     {
-        LoginResponse? Validate(LoginRequest request);
+        Task<string> CreateToken(User user);
     }
 }
