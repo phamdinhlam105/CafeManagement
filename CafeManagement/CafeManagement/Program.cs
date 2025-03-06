@@ -24,18 +24,6 @@ using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Env.Load();
-
-builder.Configuration["ConnectionStrings:CafeManagementConnection"] =
-    $"Server={Env.GetString("DB_SERVER")};" +
-    $"Port={Env.GetString("DB_PORT")};" +
-    $"Database={Env.GetString("DB_DATABASE")};" +
-    $"User={Env.GetString("DB_USER")};" +
-    $"Password={Env.GetString("DB_PASSWORD")};";
-
-builder.Configuration["JwtConfig:Issuer"] = Env.GetString("JWT_ISSUER");
-builder.Configuration["JwtConfig:Audience"] = Env.GetString("JWT_AUDIENCE");
-builder.Configuration["JwtConfig:Key"] = Env.GetString("JWT_KEY");
 // Add services to the container.   
 builder.Services.AddDbContext<CafeManagementDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("CafeManagementConnection"),

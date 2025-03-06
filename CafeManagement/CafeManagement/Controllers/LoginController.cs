@@ -11,7 +11,7 @@ namespace CafeManagement.Controllers
     [ApiController]
     public class LoginController : ControllerBase   
     {
-        private IUserService _userService;
+        private readonly IUserService _userService;
         public LoginController(IUserService userService)
         {
             _userService = userService;
@@ -24,7 +24,6 @@ namespace CafeManagement.Controllers
             var response = await _userService.Login(request);
             return Ok(response);
         }
-
 
     }
 }

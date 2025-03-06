@@ -11,5 +11,6 @@ namespace CafeManagement.Interfaces.Services
         Task<FinishOrderResponse> FinishOrder(Order order);
         Task EditOrder(Order order);
         Task<Order> GetById(Guid orderId);
+        Task<IEnumerable<Order>> GetAll();
     }
 }

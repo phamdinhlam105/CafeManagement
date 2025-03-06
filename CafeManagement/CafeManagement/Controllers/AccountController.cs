@@ -14,7 +14,7 @@ namespace CafeManagement.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private IUserService _userSerivce;
+        private readonly IUserService _userSerivce;
         public AccountController(IUserService userService)
         {
             _userSerivce = userService;
@@ -37,7 +37,7 @@ namespace CafeManagement.Controllers
             }
         }
         [HttpPost("setrole")]
-        [Authorize(Roles = Role.Admin)]
+        [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
         public async Task<IActionResult> SetRole([FromBody] SetRoleRequest request )
         {
             if (!ModelState.IsValid)
@@ -46,14 +46,14 @@ namespace CafeManagement.Controllers
             }
             try
             {
-
                 await _userSerivce.ChangeRole(request);
+                return Ok();
             }
             catch 
             {
                 return BadRequest();
             }
-            return Ok();
+
         }
     }
 }

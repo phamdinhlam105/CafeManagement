@@ -12,7 +12,7 @@ namespace CafeManagement.Mappers
         {
                 return new Order
                 {
-                    Id = new Guid(),
+                    Id = Guid.NewGuid(),
                     Note = request.Note,
                     OrderStatus=OrderStatus.New,
                     CustomerId= request.CustomerId

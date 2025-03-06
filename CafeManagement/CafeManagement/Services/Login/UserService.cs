@@ -14,9 +14,9 @@ namespace CafeManagement.Services.Login
     public class UserService : IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private UserManager<User> _userManager;
-        private RoleManager<IdentityRole> _roleManager;
-        private ITokenService _tokenService;
+        private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ITokenService _tokenService;
 
         public UserService(IUnitOfWork unitOfWork,
             UserManager<User> userManager,
@@ -88,16 +88,20 @@ namespace CafeManagement.Services.Login
                 return null;
             var profile = await _unitOfWork.Profile.GetByUserId(userAccount.Id);
             if (profile == null)
+            {
                 profile = new Profile
                 {
                     Id = Guid.NewGuid(),
                     Name = request.UserName,
                     Email = userAccount.Email,
-                    PhoneNumber="111111",
-                    joinDate=DateTime.Now,
-
+                    PhoneNumber = "111111",
+                    joinDate = DateTime.UtcNow,
+                    UserId=userAccount.Id,
+                    Age=0,
+                    PictureURL=""
                 };
-            await _unitOfWork.Profile.Add(profile);
+                await _unitOfWork.Profile.Add(profile);
+            }
             userAccount.Profile = profile;
             var token = await _tokenService.CreateToken(userAccount);
             return new LoginResponse

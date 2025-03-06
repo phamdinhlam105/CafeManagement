@@ -20,7 +20,6 @@ namespace CafeManagement.Services.Store
         }
         public async Task AddOrderDetail(Order order, OrderDetail detail)
         {
-            order.Details.Add(detail);
             await _unitOfWork.OrderDetail.Add(detail);
         }
 
@@ -50,6 +49,11 @@ namespace CafeManagement.Services.Store
         {
             Order order = await _unitOfWork.Order.GetById(orderId);
             return order;
+        }
+
+        public async Task<IEnumerable<Order>> GetAll()
+        {
+            return await _unitOfWork.Order.GetAll();
         }
     }
 }

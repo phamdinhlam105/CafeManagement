@@ -1,29 +1,30 @@
 ﻿using CafeManagement.Dtos.Request;
 using CafeManagement.Enums;
+using CafeManagement.Helpers;
 using CafeManagement.Interfaces.Mappers;
 using CafeManagement.Interfaces.Services;
 using CafeManagement.Mappers;
 using CafeManagement.Models.Order;
 using CafeManagement.Services;
 using CafeManagement.UnitOfWork;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
 namespace CafeManagement.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class NewOrderController : ControllerBase
     {
         private readonly INewOrderService _newOrderService;
         private readonly INewOrderMapper _newOrderMapper;
-        private readonly IOrderService _orderService;
 
-        public NewOrderController(INewOrderService newOrderService, INewOrderMapper newOrderMapper, IOrderService orderService)
+        public NewOrderController(INewOrderService newOrderService, INewOrderMapper newOrderMapper)
         {
             _newOrderService = newOrderService;
             _newOrderMapper = newOrderMapper;
-            _orderService = orderService;
         }
 
         [HttpPost]
@@ -39,14 +40,13 @@ namespace CafeManagement.Controllers
         [HttpGet]
         public async Task<IActionResult> Getall()
         {
-            var orders = (await _orderService.GetAll()).ToList();
-            var ordersResponse = orders.Select(c => _newOrderMapper.MapToResponse(c)).ToList();
-            return Ok(ordersResponse);
+            var orders = (await _newOrderService.GetAll()).ToList();
+            return Ok(orders);
         }
         [HttpGet("/{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            return Ok(_newOrderMapper.MapToResponse(await _newOrderService.GetById(id)));
+            return Ok(await _newOrderService.GetById(id));
         }
 
 
@@ -63,6 +63,7 @@ namespace CafeManagement.Controllers
 
 
         [HttpDelete]
+        [Authorize(Roles =Role.Manager)]
         public async Task<IActionResult> DeleteOrder(Guid orderId)
         {
             Order order = await _newOrderService.GetById(orderId);

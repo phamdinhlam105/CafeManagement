@@ -11,9 +11,9 @@ namespace CafeManagement.Mappers
         {
             return new Category
             {
-                Id = new Guid(),
-                Name = request.Name
-            };
+                Id = Guid.NewGuid(),
+                Name = request.Name,
+                Description = (request.Description==null) ? string.Empty:request.Description            };
         }
 
         public CategoryResponse MapToResponse(Category category)
@@ -28,6 +28,8 @@ namespace CafeManagement.Mappers
         public void UpdateEntityFromRequest(Category category, CategoryRequest request)
         {
             category.Name= request.Name;
+            if (request.Description != null)
+                category.Description = request.Description;
         }
     }
 }

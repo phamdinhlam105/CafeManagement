@@ -1,14 +1,17 @@
 ﻿using CafeManagement.Dtos.Request;
 using CafeManagement.Dtos.Respone;
+using CafeManagement.Helpers;
 using CafeManagement.Interfaces.Mappers;
 using CafeManagement.Interfaces.Services;
 using CafeManagement.Mappers;
 using CafeManagement.Models;
 using CafeManagement.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CafeManagement.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ProductController : ControllerBase
@@ -35,6 +38,7 @@ namespace CafeManagement.Controllers
 
      
         [HttpPost]
+        [Authorize(Roles =Role.Manager)]
         public async Task<ActionResult> Add([FromBody] ProductRequest product)
         {
             if (!ModelState.IsValid)
@@ -45,6 +49,7 @@ namespace CafeManagement.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles =Role.Manager)]
         public async Task<ActionResult> Edit(Guid id,[FromBody] ProductRequest product)
         {
             if (!ModelState.IsValid)
@@ -59,6 +64,7 @@ namespace CafeManagement.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles =Role.Manager)]
         public async Task<ActionResult> Delete(Guid id)
         {
             var product = await _productService.GetById(id);

@@ -11,7 +11,7 @@ namespace CafeManagement.Mappers
         {
             return new Product
             {
-                Id = new Guid(),
+                Id = Guid.NewGuid(),
                 Name = request.Name,
                 Price = request.Price,
                 CategoryId = request.CategoryId,

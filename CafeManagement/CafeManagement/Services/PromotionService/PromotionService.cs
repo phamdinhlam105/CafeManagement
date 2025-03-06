@@ -7,7 +7,7 @@ namespace CafeManagement.Services.PromotionService
 {
     public class PromotionService : IPromotionService
     {
-        private IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
         public PromotionService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;

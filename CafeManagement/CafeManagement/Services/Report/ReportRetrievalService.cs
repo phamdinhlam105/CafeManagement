@@ -9,8 +9,8 @@ namespace CafeManagement.Services.Report
 {
     public class ReportRetrievalService : IReportRetrievalService
     {
-        private IUnitOfWork _unitOfWork;
-        private IReportQueryService _reportQueryService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IReportQueryService _reportQueryService;
         public ReportRetrievalService(IUnitOfWork unitOfWork , IReportQueryService reportQueryService)
         {
             _unitOfWork = unitOfWork;

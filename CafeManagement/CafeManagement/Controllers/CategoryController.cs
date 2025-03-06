@@ -1,7 +1,9 @@
 ﻿using CafeManagement.Dtos.Request;
 using CafeManagement.Dtos.Respone;
+using CafeManagement.Helpers;
 using CafeManagement.Interfaces.Mappers;
 using CafeManagement.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,27 +25,25 @@ namespace CafeManagement.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult> GetAll()
         {
             var categories = (await _categoryService.GetAll()).ToList();
-            var categoryResponses = categories.Select(c => _categoryMapper.MapToResponse(c)).ToList();
-            if (categoryResponses.Any())
-            {
-                return Ok(categoryResponses);
-            }
-            return NotFound();
+            return Ok(categories);
         }
 
         [HttpGet("Id")]
+        [Authorize]
         public async Task<ActionResult> GetById(Guid Id)
         {
             var category = await _categoryService.GetById(Id);
             if (category == null)
                 return NotFound();
-            return Ok(_categoryMapper.MapToResponse(category));
+            return Ok(category);
         }
 
         [HttpPost]
+        [Authorize(Roles = Role.Manager)]
         public async Task<ActionResult> Add([FromBody] CategoryRequest category)
         {
             if (!ModelState.IsValid)
@@ -56,6 +56,7 @@ namespace CafeManagement.Controllers
         }
 
         [HttpPut("{Id}")]
+        [Authorize(Roles = Role.Manager)]
         public async Task<ActionResult> Edit(Guid Id, [FromBody] CategoryRequest customer)
         {
             if (!ModelState.IsValid)
@@ -69,19 +70,19 @@ namespace CafeManagement.Controllers
         }
 
         [HttpGet("GetProducts/{categoryId}")]
+        [Authorize]
         public async Task<ActionResult> GetProductsByCategory(Guid categoryId)
         {
+            var category = await _categoryService.GetById(categoryId);
+            if(category == null) 
+                return NotFound(new ErrorResponse{Error= 404, Message= "id category not found"});
             var products = await _categoryService.GetProductsByCategory(categoryId);
-            var productResponse = products.Select(p => _productMapper.MapToResponse(p)).ToList();
-            if (productResponse.Any())
-            {
-                return Ok(productResponse);
-            }
-            return NotFound();
+            return Ok(products);
         }
 
 
         [HttpDelete("Id")]
+        [Authorize(Roles = Role.Manager)]
         public async Task<ActionResult> Delete(Guid Id)
         {
             var category = await _categoryService.GetById(Id);

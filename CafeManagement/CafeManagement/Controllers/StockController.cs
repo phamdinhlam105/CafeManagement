@@ -1,45 +1,55 @@
 ﻿using CafeManagement.Dtos.Request;
+using CafeManagement.Helpers;
 using CafeManagement.Interfaces.Services.Stock;
 using CafeManagement.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CafeManagement.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class StockController : ControllerBase
     {
-        private IStockService _stockService;
+        private readonly IStockService _stockService;
         public StockController(IStockService stockService)
         {
             _stockService = stockService;
         }
         [HttpGet]
-        public IActionResult GetAll() 
+        public async Task<IActionResult> GetAll() 
         {
-            return Ok(_stockService.GetAllDailyStocks());
+            return Ok(await _stockService.GetAllDailyStocks());
         }
         [HttpGet("/bydate/stock")]
-        public IActionResult GetDetailByDate(DateOnly date)
+        public async Task<IActionResult> GetDetailByDate(DateOnly date)
         {
-            return Ok(_stockService.GetDetailByDate(date));
+            return Ok(await _stockService.GetDetailByDate(date));
         }
         [HttpGet("/remain")]
-        public IActionResult GetStockRemain()
+        public async Task<IActionResult> GetStockRemain()
         {
-            return Ok(_stockService.StockRemain());
+            return Ok(await _stockService.StockRemain());
         }
         [HttpPost("/update")]
-        public IActionResult UpdateRemainStock([FromBody]UpdateStockRequest updatedStock)
+        public async Task<IActionResult> UpdateRemainStock([FromBody]UpdateStockRequest updatedStock)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
-            foreach (var detail in updatedStock.Details)
+            try
             {
-                _stockService.StockUpdate(updatedStock.Id, detail.Ingredient, detail.remainAmount);
+                foreach (var detail in updatedStock.Details)
+                {
+                    await _stockService.StockUpdate(updatedStock.Id, detail.Ingredient, detail.remainAmount);
+                }
+                return Ok();
             }
-            return Ok();
+            catch
+            {
+                return BadRequest();
+            }
         }
     }
 }

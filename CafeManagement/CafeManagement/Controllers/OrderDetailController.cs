@@ -1,14 +1,18 @@
 ﻿using CafeManagement.Dtos.Request;
+using CafeManagement.Dtos.Respone;
+using CafeManagement.Helpers;
 using CafeManagement.Interfaces.Mappers;
 using CafeManagement.Interfaces.Services;
 using CafeManagement.Models.Order;
 using CafeManagement.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace CafeManagement.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class OrderDetailController : ControllerBase
@@ -17,15 +21,18 @@ namespace CafeManagement.Controllers
         private readonly IOrderDetailService _orderDetailService;
         private readonly IOrderDetailMapper _orderDetailMapper;
         private readonly INewOrderService _newOderService;
+        private readonly IProductService _productService;
 
         public OrderDetailController(
             IOrderDetailService orderDetailService,
             INewOrderService newOderService,
-            IOrderDetailMapper orderDetailMapper)
+            IOrderDetailMapper orderDetailMapper,
+            IProductService productService)
         {
             _orderDetailService = orderDetailService;
             _newOderService = newOderService;
             _orderDetailMapper = orderDetailMapper;
+            _productService = productService;
         }
 
         [HttpPost]
@@ -33,7 +40,10 @@ namespace CafeManagement.Controllers
         {
             Order currentOrder = await _newOderService.GetById(req.OrderId);
             if (currentOrder == null)
-                return NotFound(req.OrderId);
+                return NotFound(new ErrorResponse { Error = 404, Message = "id order not found" });
+            var product = await _productService.GetById(req.ProductId);
+            if (product == null)
+                return NotFound(new ErrorResponse { Error = 404, Message = "id product not found" });
             OrderDetail newDetail = _orderDetailMapper.MapToEntity(req);
             await _orderDetailService.Add(newDetail);
             await _newOderService.AddOrderDetail(currentOrder, newDetail);
@@ -57,6 +67,7 @@ namespace CafeManagement.Controllers
         }
         
         [HttpPut("{id}")]
+        [Authorize(Roles =Role.Manager)]
         public async Task<IActionResult> Put(Guid id, [FromBody] OrderDetailRequest request)
         {
             OrderDetail orderDetail = await _orderDetailService.GetById(id);

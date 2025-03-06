@@ -1,9 +1,11 @@
 ﻿using CafeManagement.Dtos.Request;
 using CafeManagement.Dtos.Respone;
+using CafeManagement.Helpers;
 using CafeManagement.Interfaces.Mappers;
 using CafeManagement.Interfaces.Services;
 using CafeManagement.Models;
 using CafeManagement.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,22 +25,23 @@ namespace CafeManagement.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAll() 
         {
             var customers= (await _customerService.GetAll()).ToList();
-            var customerResponses = customers.Select(c=>_customerMapper.MapToResponse(c)).ToList();
-
-            return  Ok(customerResponses);
+            return  Ok(customers);
         }
         
         [HttpGet("Id")]
+        [Authorize]
         public async Task<IActionResult> GetById(Guid Id)
         {
             var customer = await _customerService.GetById(Id);
-            return Ok(_customerMapper.MapToResponse(customer));
+            return Ok(customer);
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Add([FromBody] CustomerRequest customer)
         {
             if (!ModelState.IsValid)
@@ -51,19 +54,21 @@ namespace CafeManagement.Controllers
         }
 
         [HttpPut("{Id}")]
+        [Authorize]
         public async Task<IActionResult> Edit(Guid Id, [FromBody]  CustomerRequest customer)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var existItem = await _customerService.GetById(Id);
             if (existItem == null)
-                return NotFound();
+                return NotFound(new ErrorResponse { Error=404,Message="id customer not found"});
             _customerMapper.UpdateEntityFromRequest(existItem, customer);
             await _customerService.Update(existItem);
             return Ok(existItem);
         }
 
         [HttpDelete("Id")]
+        [Authorize(Roles =Role.Manager)]
         public async Task<IActionResult> Delete(Guid Id)
         {
             var customer = await _customerService.GetById(Id);

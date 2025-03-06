@@ -11,7 +11,7 @@ namespace CafeManagement.Mappers
         {
             return new OrderDetail
             {
-                Id = new Guid(),
+                Id = Guid.NewGuid(),
                 OderId = request.OrderId,
                 ProductId = request.ProductId,
                 Note= request.Note,

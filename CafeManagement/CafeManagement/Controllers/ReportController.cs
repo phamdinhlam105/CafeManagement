@@ -1,16 +1,19 @@
-﻿using CafeManagement.Interfaces.Services.Report;
+﻿using CafeManagement.Helpers;
+using CafeManagement.Interfaces.Services.Report;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CafeManagement.Controllers
 {
+    [Authorize(Roles = Role.Manager)]
     [Route("api/[controller]")]
     [ApiController]
     public class ReportController : ControllerBase
     {
-        private IReportCreationService _reportCreationService;
-        private IReportRetrievalService _reportRetrievalService;
-        private IYearlyReportService _yearlyReportService;
+        private readonly IReportCreationService _reportCreationService;
+        private readonly IReportRetrievalService _reportRetrievalService;
+        private readonly IYearlyReportService _yearlyReportService;
         public ReportController(IReportCreationService reportCreationService, IReportRetrievalService reportRetrievalService, IYearlyReportService yearlyReportService)
         {
             _reportCreationService = reportCreationService;
@@ -19,35 +22,35 @@ namespace CafeManagement.Controllers
         }
 
         [HttpPost]
-        public IActionResult createReport(DateTime date)
+        public async Task<IActionResult> createReport(DateTime date)
         {
-            _reportCreationService.CreateDailyReport(date);
-            return Ok(_reportRetrievalService.GetDailyReport(DateOnly.FromDateTime(date)));
+            await _reportCreationService.CreateDailyReport(date);
+            return Ok(await _reportRetrievalService.GetDailyReport(DateOnly.FromDateTime(date)));
         }
         [HttpGet("daily")] 
-        public IActionResult getDailyReport(DateOnly date) 
+        public async Task<IActionResult> getDailyReport(DateOnly date) 
         {
-            return Ok(_reportRetrievalService.GetDailyReport(date));
+            return Ok(await _reportRetrievalService.GetDailyReport(date));
         }
         [HttpGet("monthly")]
-        public IActionResult getMonthlyReport(int month, int year)
+        public async Task<IActionResult> getMonthlyReport(int month, int year)
         {
-            return Ok(_reportRetrievalService.GetMonthlyReport(month,year));
+            return Ok(await _reportRetrievalService.GetMonthlyReport(month, year));
         }
         [HttpGet("quarterly")]
-        public IActionResult getQuarterlyReport(int quarter, int year)
+        public async Task<IActionResult> getQuarterlyReport(int quarter, int year)
         {
-            return Ok(_reportRetrievalService.GetQuarterlyReport(quarter, year));
+            return Ok(await _reportRetrievalService.GetQuarterlyReport(quarter, year));
         }
         [HttpGet("yearly/GetByYear")]
-        public IActionResult getYearlyReport(int year)
+        public async Task<IActionResult> getYearlyReport(int year)
         {
-            return Ok(_yearlyReportService.GetYearlyReport(year));
+            return Ok(await _yearlyReportService.GetYearlyReport(year));
         }
         [HttpGet("yearly")]
-        public IActionResult getAllYearlyReports()
+        public async Task<IActionResult> getAllYearlyReports()
         {
-            return Ok(_yearlyReportService.GetAllYearlyReports());
+            return Ok(await _yearlyReportService.GetAllYearlyReports());
         }
     }
 }

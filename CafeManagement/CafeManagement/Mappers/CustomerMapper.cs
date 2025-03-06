@@ -22,7 +22,7 @@ namespace CafeManagement.Mappers
         {
             return new Customer
             {
-                Id = new Guid(),
+                Id = Guid.NewGuid(),
                 Name = request.Name,
                 Phone = request.Phone,
                 Address = request.Address

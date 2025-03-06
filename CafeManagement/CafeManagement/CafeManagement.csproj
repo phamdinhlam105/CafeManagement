@@ -28,7 +28,6 @@
 
   <ItemGroup>
     <Folder Include="Interfaces\Promotion\" />
-    <Folder Include="Interfaces\Services\Order\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 

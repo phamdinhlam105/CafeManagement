@@ -8,8 +8,8 @@ namespace CafeManagement.Services.Report
 {
     public class ReportCreationService : IReportCreationService
     {
-        private IUnitOfWork _unitOfWork;
-        private IReportQueryService _reportQueryService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IReportQueryService _reportQueryService;
         public ReportCreationService(IUnitOfWork unitOfWork, IReportQueryService reportQueryService)
         {
             _unitOfWork = unitOfWork;
