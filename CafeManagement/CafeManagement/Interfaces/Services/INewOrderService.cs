@@ -1,5 +1,6 @@
 ﻿using CafeManagement.Dtos.Respone;
 using CafeManagement.Enums;
+using CafeManagement.Models;
 using CafeManagement.Models.Order;
 
 namespace CafeManagement.Interfaces.Services
@@ -7,7 +8,7 @@ namespace CafeManagement.Interfaces.Services
     public interface INewOrderService
     {
         Task CreateOrder(Order order);
-        Task AddOrderDetail(Order order, OrderDetail detail);
+        Task AddOrderDetail(Order order, OrderDetail detail,Product product);
         Task<FinishOrderResponse> FinishOrder(Order order);
         Task EditOrder(Order order);
         Task<Order> GetById(Guid orderId);

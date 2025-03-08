@@ -10,5 +10,7 @@ namespace CafeManagement.Interfaces.Services
         Task Update(User user);
         Task<LoginResponse> Login(LoginRequest request);
         Task ChangeRole(SetRoleRequest request);
+        Task ChangePassword(ChangePasswordRequest request,string userId);
+        Task<Profile> UpdateProfile(Profile profile,string userId);
     }
 }

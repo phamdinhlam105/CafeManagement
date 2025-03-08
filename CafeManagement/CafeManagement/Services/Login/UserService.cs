@@ -8,6 +8,8 @@ using CafeManagement.Interfaces.Services.Login;
 using CafeManagement.Models;
 using CafeManagement.UnitOfWork;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Sprache;
 
 namespace CafeManagement.Services.Login
 {
@@ -137,6 +139,33 @@ namespace CafeManagement.Services.Login
             await _userManager.RemoveFromRolesAsync(user, currentRoles);
 
             await _userManager.AddToRoleAsync(user, newRole);
+        }
+
+        public async Task<Profile> UpdateProfile(Profile profile, string userId)
+        {
+            var existingProfile = await _unitOfWork.Profile.GetByUserId(userId);
+
+            if (existingProfile == null)
+            {
+                return null; 
+            }
+
+            profile.Id = existingProfile.Id;
+            await _unitOfWork.Profile.Update(profile);
+            return profile; 
+        }
+        public async Task ChangePassword(ChangePasswordRequest request, string userId)
+        {
+            var existingUser = await _userManager.FindByIdAsync(userId);
+            var checkOldPassword = await _userManager.CheckPasswordAsync(existingUser, request.oldPassword);
+            if (existingUser == null)
+                throw new Exception("Id Not found");
+            var result = await _userManager.ChangePasswordAsync(existingUser, request.oldPassword, request.newPassword);
+            if (!result.Succeeded)
+            {
+                throw new Exception(result.Errors.Select(e => e.Description).FirstOrDefault());
+            }
+
         }
     }
 }

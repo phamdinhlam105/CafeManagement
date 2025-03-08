@@ -80,7 +80,7 @@ namespace CafeManagement.Services.Report
                 .ToList();
         }
 
-        public async Task<IEnumerable<BestDays>> GetBestDaysInWeek(DateTime startDate, DateTime endDate, Guid reportId)
+        public async Task<IEnumerable<BestDays>> GetBestDaysInWeek(DateTime startDate, DateTime endDate)
         {
             var totalDays = (endDate.Date - startDate.Date).TotalDays + 1;
             var totalWeeks = (int)Math.Ceiling(totalDays / 7.0);
@@ -105,7 +105,6 @@ namespace CafeManagement.Services.Report
             return bestDays.Select(day => new BestDays
             {
                 Id = Guid.NewGuid(),
-                ReportId = reportId,
                 WeekDay = day.WeekDay.ToString(),
                 AvgRevenue = day.AverageRevenue
             });

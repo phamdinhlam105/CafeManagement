@@ -16,10 +16,12 @@ namespace CafeManagement.Services.Stock
 
         public async Task StockImport(StockEntry entry)
         {
-            if (entry == null || entry.StockEntryDetails == null || !entry.StockEntryDetails.Any())
+            if (!entry.StockEntryDetails.Any())
             {
-                throw new ArgumentException("Phiếu nhập không hợp lệ.");
+                throw new Exception("Không hợp lệ");
             }
+            if (entry.Id == Guid.Empty)
+                entry.Id = Guid.NewGuid();
             await _unitOfWork.StockEntry.Add(entry);
             DailyStock dailyStock = await _stockService.StockRemain();
             foreach (var entryDetail in entry.StockEntryDetails)

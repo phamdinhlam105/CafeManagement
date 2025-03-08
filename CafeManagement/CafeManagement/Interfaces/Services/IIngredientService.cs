@@ -4,8 +4,9 @@ namespace CafeManagement.Interfaces.Services
 {
     public interface IIngredientService
     {
-        Task createIngredient(Ingredient ingredient);
-        Task updateIngredient(Ingredient ingredient);
-        Task deleteIngredient(Ingredient ingredient);
+        Task<Ingredient> CreateIngredient(Ingredient ingredient);
+        Task<Ingredient> UpdateIngredient(Guid Id, Ingredient ingredient);
+        Task DeleteIngredient(Ingredient ingredient);
+        Task <IEnumerable<Ingredient>> GetAll();
     }
 }

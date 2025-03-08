@@ -22,10 +22,17 @@ namespace CafeManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> ImportStock([FromBody] StockEntry stockEntry)
         {
-            if(ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            await _stockEntryService.StockImport(stockEntry);
-            return RedirectToAction("GetStockRemain","Stock");
+            try
+            {
+                await _stockEntryService.StockImport(stockEntry);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest(ModelState);
+            }
         }
 
         [HttpGet]

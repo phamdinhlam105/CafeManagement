@@ -14,6 +14,10 @@ namespace CafeManagement.Services
         }
         public async Task Add(Product item)
         {
+            if (item.Id == Guid.Empty)
+            {
+                item.Id = Guid.NewGuid();
+            }
             await _unitOfWork.Product.Add(item);
         }
 

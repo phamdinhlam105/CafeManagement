@@ -50,6 +50,7 @@ builder.Services.AddScoped<IYearlyReportService, YearlyReportService>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IExportBillService, ExportBillService>();
+builder.Services.AddScoped<IReportUpdateService, ReportUpdateService>();
 
 //mapper
 builder.Services.AddScoped<ICustomerMapper, CustomerMapper>();
@@ -58,6 +59,18 @@ builder.Services.AddScoped<IProductMapper, ProductMapper>();
 builder.Services.AddScoped<INewOrderMapper, NewOrderMapper>();
 builder.Services.AddScoped<IOrderDetailMapper, OrderDetailMapper>();
 
+//CORS
+var MyAllowSpecificOrigins = "_myAllowAllOrigins";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+        policy =>
+        {
+            policy.AllowAnyOrigin()  // allow all domain
+                  .AllowAnyMethod()   // allow all method (GET, POST, PUT, DELETE,...)
+                  .AllowAnyHeader();  // allow all headers
+        });
+});
 //authentication
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -94,6 +107,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+app.UseCors(MyAllowSpecificOrigins);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

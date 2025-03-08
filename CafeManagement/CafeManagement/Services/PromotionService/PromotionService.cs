@@ -25,11 +25,19 @@ namespace CafeManagement.Services.PromotionService
 
         public async Task CreatePromotion(Promotion promotion)
         {
+            if (promotion.Id == Guid.Empty)
+            {
+                promotion.Id = Guid.NewGuid();
+            }
             await _unitOfWork.Promotion.Add(promotion);
         }
 
         public async Task CreatePromotionSchedule(PromotionSchedule schedule)
         {
+            if (schedule.Id == Guid.Empty)
+            {
+                schedule.Id = Guid.NewGuid();
+            }
             await _unitOfWork.PromotionSchedule.Add(schedule);
         }
 

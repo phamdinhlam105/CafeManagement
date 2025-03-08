@@ -14,6 +14,8 @@ namespace CafeManagement.Services.Store
         }
         public async Task Add(OrderDetail item)
         {
+            if (item.Id == Guid.Empty)
+                item.Id = Guid.NewGuid();
             await _unitOfWork.OrderDetail.Add(item);
         }
 

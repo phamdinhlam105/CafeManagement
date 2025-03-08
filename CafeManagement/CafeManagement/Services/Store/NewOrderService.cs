@@ -1,6 +1,7 @@
 ﻿using CafeManagement.Dtos.Respone;
 using CafeManagement.Enums;
 using CafeManagement.Interfaces.Services;
+using CafeManagement.Models;
 using CafeManagement.Models.Order;
 using CafeManagement.UnitOfWork;
 using iText.Kernel.Pdf;
@@ -18,8 +19,13 @@ namespace CafeManagement.Services.Store
             _unitOfWork = unitOfWork;
             _exportBillService = exportBillService;
         }
-        public async Task AddOrderDetail(Order order, OrderDetail detail)
+        public async Task AddOrderDetail(Order order, OrderDetail detail,Product product)
         {
+            if (detail.Id == Guid.Empty)
+                detail.Id = Guid.NewGuid();
+            order.Quantity += detail.Quantity;
+            order.Price += product.Price * detail.Quantity;
+            await _unitOfWork.Order.Update(order);
             await _unitOfWork.OrderDetail.Add(detail);
         }
 
@@ -41,6 +47,8 @@ namespace CafeManagement.Services.Store
 
         public async Task CreateOrder(Order order)
         {
+            if (order.Id == Guid.Empty)
+                order.Id = Guid.NewGuid();
             await _unitOfWork.Order.Add(order);
         }
 

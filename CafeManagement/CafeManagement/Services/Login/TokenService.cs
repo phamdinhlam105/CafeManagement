@@ -40,7 +40,7 @@ namespace CafeManagement.Services.Login
             {
                 Subject = new ClaimsIdentity(new[]
             {
-                    new Claim(JwtRegisteredClaimNames.Jti, user.Id),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id),
                     new Claim("Name", user.Profile.Name),
                     new Claim("Age", user.Profile.Age.ToString() ?? string.Empty),
                     new Claim(ClaimValueTypes.Email, user.Email),
