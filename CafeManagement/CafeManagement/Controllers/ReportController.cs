@@ -13,10 +13,12 @@ namespace CafeManagement.Controllers
     {
         private readonly IReportRetrievalService _reportRetrievalService;
         private readonly IYearlyReportService _yearlyReportService;
-        public ReportController(IReportRetrievalService reportRetrievalService, IYearlyReportService yearlyReportService)
+        private readonly IReportUpdateService _reportUpdateService;
+        public ReportController(IReportRetrievalService reportRetrievalService, IYearlyReportService yearlyReportService,IReportUpdateService reportUpdateService)
         {
             _reportRetrievalService = reportRetrievalService;
             _yearlyReportService = yearlyReportService;
+            _reportUpdateService = reportUpdateService;
         }
 
         [HttpGet("daily")] 
@@ -24,7 +26,7 @@ namespace CafeManagement.Controllers
         {
             if (date > Ultilities.GetToday())
             {
-                return BadRequest("Ngày báo cáo không thể ở tương lai.");
+                return BadRequest("Invalid date");
             }
             return Ok(await _reportRetrievalService.GetDailyReport(date));
         }
@@ -35,7 +37,7 @@ namespace CafeManagement.Controllers
 
             if (startDate > Ultilities.GetToday())
             {
-                return BadRequest("Tháng báo cáo không thể ở tương lai.");
+                return BadRequest("Invalid date");
             }
             return Ok(await _reportRetrievalService.GetMonthlyReport(month, year));
         }
@@ -47,21 +49,65 @@ namespace CafeManagement.Controllers
 
             if (startDate > today)
             {
-                return BadRequest("Quý báo cáo không thể ở tương lai.");
+                return BadRequest("Invalid date");
             }
             return Ok(await _reportRetrievalService.GetQuarterlyReport(quarter, year));
         }
-        [HttpGet("yearly/GetByYear")]
-        public async Task<IActionResult> getYearlyReport(int year)
+     
+        [HttpPost("daily")]
+        public async Task<IActionResult> UpdateDailyReport(DateOnly date)
         {
-         
-
-            return Ok(await _yearlyReportService.GetYearlyReport(year));
+            if (date > Ultilities.GetToday())
+                return BadRequest("Invalid date");
+            try
+            {
+                await _reportUpdateService.UpdateDailyReport(date);
+            }
+            catch(Exception err)
+            {
+                return BadRequest(err.Message);
+            }
+            return Ok();
         }
-        [HttpGet("yearly")]
-        public async Task<IActionResult> getAllYearlyReports()
+        [HttpPost("monthly")]
+        public async Task<IActionResult> UpdateMonthlyReport(int month, int year)
         {
-            return Ok(await _yearlyReportService.GetAllYearlyReports());
+            DateOnly today = Ultilities.GetToday();
+            var (startDate, _) = QuarterHelper.GetQuarterDates(year, month);
+
+            if (startDate > today)
+            {
+                return BadRequest("Invalid date");
+            }
+            try
+            {
+                await _reportUpdateService.UpdateMonthlyReport(month,year);
+            }
+            catch (Exception err)
+            {
+                return BadRequest(err.Message);
+            }
+            return Ok();
+        }
+        [HttpPost("quarterly")]
+        public async Task<IActionResult> UpdateQuarterlyReport(int quarter, int year)
+        {
+            DateOnly today = Ultilities.GetToday();
+            var (startDate, _) = QuarterHelper.GetQuarterDates(year, quarter);
+
+            if (startDate > today)
+            {
+                return BadRequest("Invalid date");
+            }
+            try
+            {
+                await _reportUpdateService.UpdateQuarterlyReport(quarter,year);
+            }
+            catch (Exception err)
+            {
+                return BadRequest(err.Message);
+            }
+            return Ok();
         }
     }
 }

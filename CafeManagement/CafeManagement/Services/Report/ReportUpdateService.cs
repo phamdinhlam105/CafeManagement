@@ -69,6 +69,7 @@ namespace CafeManagement.Services.Report
             {
                 if (!existingDates.Contains(date))
                 {
+                    await UpdateDailyReport(date);
                     var dailyReport = (await _reportRetrievalService.GetDailyReport(date)).Report as DailyReport;
                     dailyReports.Add(dailyReport);
                 }
@@ -113,6 +114,7 @@ namespace CafeManagement.Services.Report
             {
                 if (!existingMonths.Contains(month))
                 {
+                    await UpdateMonthlyReport(month, year);
                     var monthlyReport = (await _reportRetrievalService.GetMonthlyReport(month, year)).Report as MonthlyReport;
                     monthlyReports.Add(monthlyReport);
                 }
@@ -130,7 +132,6 @@ namespace CafeManagement.Services.Report
             quarterlyReport.TopSelling = await _reportQueryService.GetTopSellingProduct(startDate.ToDateTime(TimeOnly.MinValue), endDate.ToDateTime(TimeOnly.MaxValue));
             quarterlyReport.LeastSelling = await _reportQueryService.GetLeastSellingProduct(startDate.ToDateTime(TimeOnly.MinValue), endDate.ToDateTime(TimeOnly.MaxValue));
 
-            // Cập nhật vào DB
             try
             {
                 await _unitOfWork.QuarterlyReport.Update(quarterlyReport);
