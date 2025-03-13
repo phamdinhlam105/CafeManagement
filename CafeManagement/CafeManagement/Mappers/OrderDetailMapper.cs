@@ -15,6 +15,7 @@ namespace CafeManagement.Mappers
                 OderId = request.OrderId,
                 ProductId = request.ProductId,
                 Note= request.Note,
+                Quantity=request.Quantity
             };
         }
 

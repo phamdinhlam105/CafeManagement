@@ -19,6 +19,7 @@ namespace CafeManagement.Controllers
         {
             _userService = userService; 
         }
+
         [HttpPost("profile")]
         public async Task<IActionResult> EditProfile([FromBody]Profile updatedProfile)
         {
@@ -36,6 +37,17 @@ namespace CafeManagement.Controllers
             }
             
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProfile()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var profile = _userService.GetProfileById(userId);
+            if (profile == null)
+                return NotFound();
+            return Ok(profile);
+        }
+
         [HttpPost("password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
         {
@@ -44,6 +56,8 @@ namespace CafeManagement.Controllers
                 return NotFound();
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest();
                 await _userService.ChangePassword(request, userId);
                 return Ok();
             }

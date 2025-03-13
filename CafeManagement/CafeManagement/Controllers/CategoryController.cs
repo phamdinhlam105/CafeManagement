@@ -52,19 +52,19 @@ namespace CafeManagement.Controllers
             }
             var item = _categoryMapper.MapToEntity(category);
             await _categoryService.Add(item);
-            return CreatedAtAction(nameof(GetById), new { item.Id });
+            return Ok();
         }
 
         [HttpPut("{Id}")]
         [Authorize(Roles = Role.Manager)]
-        public async Task<ActionResult> Edit(Guid Id, [FromBody] CategoryRequest customer)
+        public async Task<ActionResult> Edit(Guid Id, [FromBody] CategoryRequest category)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var existItem = await _categoryService.GetById(Id);
             if (existItem == null)
                 return NotFound();
-            _categoryMapper.UpdateEntityFromRequest(existItem, customer);
+            _categoryMapper.UpdateEntityFromRequest(existItem, category);
             await _categoryService.Update(existItem);
             return Ok(existItem);
         }

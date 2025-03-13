@@ -23,17 +23,22 @@ namespace CafeManagement.Controllers
         {
             return Ok(await _stockService.GetAllDailyStocks());
         }
-        [HttpGet("/bydate/stock")]
+        [HttpGet("today")]
+        public async Task<IActionResult> GetToDayStock()
+        {
+            return Ok(await _stockService.NewDailyStock());
+        }
+        [HttpGet("bydate/stock")]
         public async Task<IActionResult> GetDetailByDate(DateOnly date)
         {
             return Ok(await _stockService.GetDetailByDate(date));
         }
-        [HttpGet("/remain")]
+        [HttpGet("remain")]
         public async Task<IActionResult> GetStockRemain()
         {
             return Ok(await _stockService.StockRemain());
         }
-        [HttpPost("/update")]
+        [HttpPost("update")]
         public async Task<IActionResult> UpdateRemainStock([FromBody]UpdateStockRequest updatedStock)
         {
             if (!ModelState.IsValid)

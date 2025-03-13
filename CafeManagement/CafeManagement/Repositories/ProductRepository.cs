@@ -22,6 +22,7 @@ namespace CafeManagement.Repositories
         public async Task<IEnumerable<Product>> GetByCategoryId(Guid categoryId)
         {
             return await _context.Products
+                .Include(p=>p.Category)
                   .Where(p => p.Category.Id == categoryId) 
                    .ToListAsync();
         }

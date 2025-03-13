@@ -41,13 +41,10 @@ namespace CafeManagement.Services.Login
                 Subject = new ClaimsIdentity(new[]
             {
                     new Claim(ClaimTypes.NameIdentifier, user.Id),
-                    new Claim("Name", user.Profile.Name),
-                    new Claim("Age", user.Profile.Age.ToString() ?? string.Empty),
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim("realName",user.Profile.Name),
+                    new Claim("profilePicture",user.Profile.PictureURL),
                     new Claim(ClaimValueTypes.Email, user.Email),
-                    new Claim("PhoneNumber", user.Profile.PhoneNumber),
-                    new Claim("PictureURL", user.Profile.PictureURL ?? string.Empty),
-                    new Claim("BirthDay", user.Profile.BirthDay.ToString() ?? string.Empty),
-                    new Claim("JoinDate", user.Profile.joinDate.ToString()),
                     new Claim(ClaimTypes.Role, userRole)
 
                 }

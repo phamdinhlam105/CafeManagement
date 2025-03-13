@@ -18,6 +18,9 @@ namespace CafeManagement.Repositories.Report
             (DateOnly start, DateOnly end) = MonthHelper.GetMonthHelper(month, year);
             return await _context.MonthlyReports
                  .Include(mr => mr.DailyReports)
+                 .ThenInclude(dr=>dr.TopSelling)
+                 .Include(mr => mr.DailyReports)
+                 .ThenInclude(dr => dr.LeastSelling)
                 .FirstOrDefaultAsync(mr => mr.StartDate == start & mr.EndDate == end);
                
         }

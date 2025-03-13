@@ -1,4 +1,5 @@
 ﻿using System;
+using Azure.Core;
 using CafeManagement.Dtos.Request;
 using CafeManagement.Dtos.Respone;
 using CafeManagement.Enums;
@@ -149,7 +150,16 @@ namespace CafeManagement.Services.Login
             {
                 return null; 
             }
-
+            if(profile.Email!= profile.Email)
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    return null;
+                }
+                user.Email = profile.Email;
+                await _userManager.UpdateAsync(user);
+            }
             profile.Id = existingProfile.Id;
             await _unitOfWork.Profile.Update(profile);
             return profile; 
@@ -165,6 +175,30 @@ namespace CafeManagement.Services.Login
             {
                 throw new Exception(result.Errors.Select(e => e.Description).FirstOrDefault());
             }
+
+        }
+
+        public async Task<Profile> GetProfileById(string id)
+        {
+            var existingUser = await _userManager.FindByIdAsync(id);
+            if (existingUser == null)
+                return null;
+            var userProfile = await _unitOfWork.Profile.GetByUserId(id);
+            if(userProfile==null)
+            {
+                var profile = new Profile
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = id,
+                    Name = existingUser.UserName,
+                    Email = existingUser.Email,
+                    PhoneNumber = "000",
+                    joinDate = DateTime.UtcNow
+                };
+                await _unitOfWork.Profile.Add(profile);
+                return profile;
+            }
+            return userProfile;
 
         }
     }

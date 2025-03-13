@@ -22,18 +22,18 @@ namespace CafeManagement.Services.Stock
             }
             if (entry.Id == Guid.Empty)
                 entry.Id = Guid.NewGuid();
-            await _unitOfWork.StockEntry.Add(entry);
             DailyStock dailyStock = await _stockService.StockRemain();
             foreach (var entryDetail in entry.StockEntryDetails)
             {
                 Ingredient ingredient = await _unitOfWork.Ingredient.GetById(entryDetail.IngredientId);
                 var stockDetail = dailyStock.DailyStockDetails
                     .FirstOrDefault(d => d.Ingredient.Id == entryDetail.IngredientId);
-
+                entryDetail.StockEntryId = entry.Id;
                 float amountRemain = (float)entryDetail.Quantity + stockDetail.StockRemaining;
                 await _stockService.StockUpdate(stockDetail.Id, ingredient, amountRemain);
+                await _unitOfWork.DailyStockDetail.Update(stockDetail);
             }
-            await _unitOfWork.DailyStock.Update(dailyStock);
+            await _unitOfWork.StockEntry.Add(entry);
         }
 
         public async Task<IEnumerable<StockEntry>> GetAll()

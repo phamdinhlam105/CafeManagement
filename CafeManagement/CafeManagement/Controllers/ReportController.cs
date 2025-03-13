@@ -30,6 +30,16 @@ namespace CafeManagement.Controllers
             }
             return Ok(await _reportRetrievalService.GetDailyReport(date));
         }
+
+        [HttpGet("daily/range")]
+        public async Task<IActionResult> GetDailyReportByRange(DateOnly startDate,DateOnly endDate)
+        {
+            if (startDate > Ultilities.GetToday())
+            {
+                return BadRequest("Invalid date");
+            }
+            return Ok(await _reportRetrievalService.GetReportsByRange(startDate,endDate));
+        }
         [HttpGet("monthly")]
         public async Task<IActionResult> getMonthlyReport(int month, int year)
         {

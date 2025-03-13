@@ -21,14 +21,11 @@ namespace CafeManagement.Controllers
    
         [HttpPost("promotion")]
         [Authorize(Roles = Role.Manager)]
-        public async Task<IActionResult> createPromotion(Promotion promotion)
+        public async Task<IActionResult> CreatePromotion(Promotion promotion)
         {
             if (ModelState.IsValid)
-            {
-                await _promotionService.CreatePromotion(promotion);
-                return Ok();
-            }
-               else
+                return Ok(await _promotionService.CreatePromotion(promotion));
+            else
                 return BadRequest();
         }
         [HttpPost("schedule")]
@@ -37,8 +34,8 @@ namespace CafeManagement.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _promotionService.CreatePromotionSchedule(promotionSchedule);
-                return Ok();
+                
+                return Ok(await _promotionService.CreatePromotionSchedule(promotionSchedule));
             }
             else
                 return BadRequest();
@@ -53,18 +50,12 @@ namespace CafeManagement.Controllers
         {
             return Ok(await _promotionService.GetActivePromotionByDate(startDate, endDate));
         }
-        [HttpPost("apply")]
-        [Authorize(Roles = Role.Manager)]
-        public async Task<IActionResult> ApplyPromotion(Guid idPromotion,Guid idOrder)
+        [HttpGet("schedule/byPromotionId/{id}")]
+        public async Task<IActionResult> GetScheduleByPromotionId(Guid id)
         {
-            if (ModelState.IsValid)
-            {
-                await _promotionService.ApplyPromotionToOrder(idOrder, idPromotion);
-                return Ok();
-            }
-            else
-                return BadRequest();
+            return Ok(await _promotionService.GetScheduleByPromotionId(id));
         }
+
         [HttpPut("promotion")]
         [Authorize(Roles = Role.Manager)]
         public async Task<IActionResult> updatePromotion(Guid promotionId, Promotion promotion)

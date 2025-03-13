@@ -8,6 +8,6 @@ namespace CafeManagement.Interfaces.Services.Report
         Task<ReportResponse?> GetDailyReport(DateOnly date);
         Task<ReportResponse?> GetMonthlyReport(int month, int year);
         Task<ReportResponse?> GetQuarterlyReport(int quarter, int year);
-        Task<IEnumerable<ReportResponse>> GetReportsByRange(DateOnly startDate, DateOnly endDate);
+        Task<ReportResponse> GetReportsByRange(DateOnly startDate, DateOnly endDate);
     }
 }

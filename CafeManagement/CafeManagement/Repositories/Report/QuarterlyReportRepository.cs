@@ -22,6 +22,10 @@ namespace CafeManagement.Repositories.Report
             return await _context.QuarterlyReports
                  .Include(qr => qr.MonthlyReports)
                 .ThenInclude(mr => mr.DailyReports)
+                .ThenInclude(dr=>dr.TopSelling)
+                .Include(qr => qr.MonthlyReports)
+                .ThenInclude(mr => mr.DailyReports)
+                .ThenInclude(dr => dr.LeastSelling)
                 .FirstOrDefaultAsync(qr => qr.StartDate == startDate && qr.EndDate == endDate);
         }
     }

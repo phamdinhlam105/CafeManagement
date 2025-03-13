@@ -64,7 +64,15 @@ namespace CafeManagement.Controllers
             var details = (await _orderDetailService.GetAll()).ToList();
             return Ok(details);
         }
-        
+
+        [HttpGet("bydate")]
+        public async Task<IActionResult> GetDetailsByDate(DateOnly date)
+        {
+            if (date > Ultilities.GetToday())
+                return BadRequest("invalid date");
+            return Ok(await _orderDetailService.GetByDate(date));
+        }
+
         [HttpPut("{id}")]
         [Authorize(Roles =Role.Manager)]
         public async Task<IActionResult> Put(Guid id, [FromBody] OrderDetailRequest request)

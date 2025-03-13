@@ -104,7 +104,6 @@ namespace CafeManagement.Services.Report
 
             return bestDays.Select(day => new BestDays
             {
-                Id = Guid.NewGuid(),
                 WeekDay = day.WeekDay.ToString(),
                 AvgRevenue = day.AverageRevenue
             });

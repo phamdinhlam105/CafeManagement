@@ -27,13 +27,13 @@ namespace CafeManagement.Controllers
         public async Task<ActionResult> GetAll()
         {
             var products = (await _productService.GetAll()).ToList();
-            return Ok(products.Select(c => _productMapper.MapToResponse(c)).ToList());
+            return Ok(products);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult> GetById(Guid id)
         {
-            return Ok(_productMapper.MapToResponse(await _productService.GetById(id)));
+            return Ok(await _productService.GetById(id));
         }
 
      
@@ -45,7 +45,7 @@ namespace CafeManagement.Controllers
                 return BadRequest(ModelState);
             var item = _productMapper.MapToEntity(product);
             await _productService.Add(item);
-            return CreatedAtAction(nameof(GetById), new { item.Id });
+            return Ok(item);
         }
 
         [HttpPut("{id}")]

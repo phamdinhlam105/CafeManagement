@@ -30,7 +30,9 @@ namespace CafeManagement.Services.Report
                 report = await _unitOfWork.DailyReport.GetByDate(date);
             }
 
-            return new ReportResponse { Report = report };
+            var response =  new ReportResponse { Reports = new List<DailyReport>() };
+            response.Reports.Append(report); 
+            return response;
         }
 
         public async Task<ReportResponse?> GetMonthlyReport(int month, int year)
@@ -46,11 +48,13 @@ namespace CafeManagement.Services.Report
             var startDateTime = new DateTime(year, month, 1);
             var endDateTime = startDateTime.AddMonths(1).AddSeconds(-1);
 
-            return new ReportResponse
+            var response =  new ReportResponse
             {
-                Report = report,
+                Reports = new List<MonthlyReport>(),
                 BestDays = await _reportQueryService.GetBestDaysInWeek(startDateTime, endDateTime)
             };
+            response.Reports.Append(report);
+            return response;
         }
 
         public async Task<ReportResponse?> GetQuarterlyReport(int quarter, int year)
@@ -69,19 +73,35 @@ namespace CafeManagement.Services.Report
 
             return new ReportResponse
             {
-                Report = report,
+                Reports = new List<QuarterlyReport>().Append(report),
                 BestDays = await _reportQueryService.GetBestDaysInWeek(startDate, endDate)
             };
         }
 
-        public async Task<IEnumerable<ReportResponse>> GetReportsByRange(DateOnly startDate, DateOnly endDate)
+        public async Task<ReportResponse> GetReportsByRange(DateOnly startDate, DateOnly endDate)
         {
-            var response = new List<ReportResponse>();
             var dailyReports = await _unitOfWork.DailyReport.GetByDateRange(startDate, endDate);
+            if (!dailyReports.Any())
+            {
+                var currentDate = startDate;
+                while (currentDate <= endDate)
+                {
+                    await _reportCreationService.CreateDailyReport(currentDate);
+                    currentDate = currentDate.AddDays(1);
+                }
 
+                dailyReports = await _unitOfWork.DailyReport.GetByDateRange(startDate, endDate);
+            }
+            var startDateTime = startDate.ToDateTime(new TimeOnly(0, 0));
+            var endDateTime = endDate.ToDateTime(new TimeOnly(23, 59, 59));
+            var response = new ReportResponse
+            {
+                Reports = new List<DailyReport>(),
+                BestDays = await _reportQueryService.GetBestDaysInWeek(startDateTime, endDateTime)
+            };
             foreach (var dailyReport in dailyReports)
             {
-                response.Add(new ReportResponse { Report = dailyReport });
+                response.Reports.Append(dailyReport);
             }
 
             return response;

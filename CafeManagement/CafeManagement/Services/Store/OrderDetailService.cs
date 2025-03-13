@@ -45,5 +45,16 @@ namespace CafeManagement.Services.Store
         {
             return await _unitOfWork.OrderDetail.GetDetailByOrderId(orderId);
         }
+
+        public async Task<IEnumerable<OrderDetail>> GetByDate(DateOnly date)
+        {
+            var details = new List<OrderDetail>();
+            var order = (await _unitOfWork.Order.GetAll()).Where(o => DateOnly.FromDateTime(o.createdAt) == date);
+            foreach(var item in order)
+            {
+                details.AddRange(item.Details);
+            }
+            return details;
+        }
     }
 }

@@ -4,7 +4,7 @@ namespace CafeManagement.Dtos.Respone
 {
     public class ReportResponse
     {
-        public ReportBase Report { get; set; }
+        public IEnumerable<ReportBase> Reports { get; set; }
         public IEnumerable<BestDays>? BestDays { get; set; }
 
     }

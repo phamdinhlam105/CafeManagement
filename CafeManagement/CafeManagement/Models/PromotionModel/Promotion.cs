@@ -8,10 +8,12 @@
         public int isActive {  get; set; }
         public int Discount {  get; set; }
         public ICollection<Order.Order> ApplyOrders { get; set; }
+        public ICollection<PromotionSchedule> Schedules { get; set; }
 
         public Promotion()
         {
             ApplyOrders = new List<Order.Order>();
+            Schedules = new List<PromotionSchedule>();
         }
     }
 }

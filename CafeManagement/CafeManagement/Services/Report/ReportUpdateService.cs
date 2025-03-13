@@ -25,7 +25,7 @@ namespace CafeManagement.Services.Report
 
         public async Task UpdateDailyReport(DateOnly date)
         {
-            var dailyReport = (await _reportRetrievalService.GetDailyReport(date)).Report as DailyReport;
+            var dailyReport = (await _reportRetrievalService.GetDailyReport(date)).Reports.ToList()[0] as DailyReport;
             if (dailyReport.createDate > DateTime.UtcNow.AddHours(-1))
                 return;
             DateTime startTime = date.ToDateTime(new TimeOnly(0, 0));
@@ -59,7 +59,7 @@ namespace CafeManagement.Services.Report
             var today = DateOnly.FromDateTime(DateTime.Today);
             if (endDate > today) endDate = today; 
 
-            var monthlyReport =(await _reportRetrievalService.GetMonthlyReport(month, year)).Report as MonthlyReport;
+            var monthlyReport =(await _reportRetrievalService.GetMonthlyReport(month, year)).Reports.ToList()[0] as MonthlyReport;
             if (monthlyReport.createDate > DateTime.UtcNow.AddHours(-1))
                 return;
             var dailyReports = monthlyReport.DailyReports.ToList();
@@ -70,7 +70,7 @@ namespace CafeManagement.Services.Report
                 if (!existingDates.Contains(date))
                 {
                     await UpdateDailyReport(date);
-                    var dailyReport = (await _reportRetrievalService.GetDailyReport(date)).Report as DailyReport;
+                    var dailyReport = (await _reportRetrievalService.GetDailyReport(date)).Reports.ToList()[0] as DailyReport;
                     dailyReports.Add(dailyReport);
                 }
             }
@@ -103,7 +103,7 @@ namespace CafeManagement.Services.Report
             var today = DateOnly.FromDateTime(DateTime.Today);
             if (endDate > today) endDate = today;
 
-            var quarterlyReport = (await _reportRetrievalService.GetQuarterlyReport(quarter, year)).Report as QuarterlyReport;
+            var quarterlyReport = (await _reportRetrievalService.GetQuarterlyReport(quarter, year)).Reports.ToList()[0] as QuarterlyReport;
             if (quarterlyReport.createDate > DateTime.UtcNow.AddHours(-1))
                 return;
 
@@ -115,7 +115,7 @@ namespace CafeManagement.Services.Report
                 if (!existingMonths.Contains(month))
                 {
                     await UpdateMonthlyReport(month, year);
-                    var monthlyReport = (await _reportRetrievalService.GetMonthlyReport(month, year)).Report as MonthlyReport;
+                    var monthlyReport = (await _reportRetrievalService.GetMonthlyReport(month, year)).Reports.ToList()[0] as MonthlyReport;
                     monthlyReports.Add(monthlyReport);
                 }
             }

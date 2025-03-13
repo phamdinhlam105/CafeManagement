@@ -12,33 +12,26 @@ namespace CafeManagement.Services.PromotionService
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task ApplyPromotionToOrder(Guid orderId, Guid promotionId)
-        {
-            var order = await _unitOfWork.Order.GetById(orderId);
-            var promotion = await _unitOfWork.Promotion.GetById(promotionId);
-            if (order == null || promotion == null)
-                throw new Exception("Order or Promotion not found.");
-            order.PromotionId = promotionId;
-            order.Promotion = promotion;
-            await _unitOfWork.Order.Update(order);
-        }
+        
 
-        public async Task CreatePromotion(Promotion promotion)
+        public async Task<Promotion> CreatePromotion(Promotion promotion)
         {
             if (promotion.Id == Guid.Empty)
             {
                 promotion.Id = Guid.NewGuid();
             }
             await _unitOfWork.Promotion.Add(promotion);
+            return promotion;
         }
 
-        public async Task CreatePromotionSchedule(PromotionSchedule schedule)
+        public async Task<PromotionSchedule> CreatePromotionSchedule(PromotionSchedule schedule)
         {
             if (schedule.Id == Guid.Empty)
             {
                 schedule.Id = Guid.NewGuid();
             }
             await _unitOfWork.PromotionSchedule.Add(schedule);
+            return schedule;
         }
 
         public async Task<IEnumerable<Promotion>> GetActivePromotionByDate(DateOnly startDate, DateOnly endDate)
@@ -70,6 +63,11 @@ namespace CafeManagement.Services.PromotionService
         public async Task UpdatePromotionSchedule(Guid scheduleId, PromotionSchedule scheduleUpdate)
         {
             await _unitOfWork.PromotionSchedule.Update(scheduleUpdate);
+        }
+
+        public async Task<IEnumerable<PromotionSchedule>> GetScheduleByPromotionId(Guid promotionId)
+        {
+            return await _unitOfWork.PromotionSchedule.GetByPromotionId(promotionId);
         }
     }
 }

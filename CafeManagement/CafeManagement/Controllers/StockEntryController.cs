@@ -40,7 +40,7 @@ namespace CafeManagement.Controllers
         {
             return Ok(await _stockEntryService.GetAll());
         }
-        [HttpGet("/bydate/stockentry")]
+        [HttpGet("bydate/stockentry")]
         public async Task<IActionResult> GetStockEntryByDate(DateOnly date)
         {
             return Ok(await _stockEntryService.GetByDate(date));

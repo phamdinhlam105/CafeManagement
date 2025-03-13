@@ -6,5 +6,6 @@ namespace CafeManagement.Interfaces.Services
     {
 
         Task<IEnumerable<OrderDetail>> GetDetailsByOrder(Guid orderId);
+        Task<IEnumerable<OrderDetail>> GetByDate(DateOnly date);
     }
 }

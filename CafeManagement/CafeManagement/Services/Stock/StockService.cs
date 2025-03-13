@@ -92,7 +92,8 @@ namespace CafeManagement.Services.Stock
             {
                 throw new Exception($"Không tìm thấy nguyên liệu {ingredient.Id} trong kho hôm nay.");
             }
-
+            if (amountRemain > stockDetail.StockRemaining)
+                stockDetail.StockImport = amountRemain - stockDetail.StockRemaining;
             stockDetail.StockRemaining = amountRemain;
 
             await _unitOfWork.DailyStockDetail.Update(stockDetail);

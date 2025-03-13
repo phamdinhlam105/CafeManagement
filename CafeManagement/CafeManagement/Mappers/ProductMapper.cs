@@ -14,6 +14,7 @@ namespace CafeManagement.Mappers
                 Id = Guid.NewGuid(),
                 Name = request.Name,
                 Price = request.Price,
+                Img= (request.Img==null)?string.Empty:request.Img,
                 CategoryId = request.CategoryId,
             };
         }
@@ -37,6 +38,7 @@ namespace CafeManagement.Mappers
         {
             product.Name = request.Name;
             product.Price = request.Price;
+            product.Img = (request.Img == null) ? string.Empty : request.Img;
             product.CategoryId = request.CategoryId;
         }
     }
