@@ -61,9 +61,8 @@ namespace CafeManagement.Controllers
             return Ok(await _newOrderService.FinishOrder(order));
         }
 
-
+        [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
         [HttpDelete]
-        [Authorize(Roles =Role.Manager)]
         public async Task<IActionResult> DeleteOrder(Guid orderId)
         {
             Order order = await _newOrderService.GetById(orderId);

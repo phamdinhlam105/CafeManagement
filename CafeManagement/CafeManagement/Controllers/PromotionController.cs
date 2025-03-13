@@ -18,9 +18,8 @@ namespace CafeManagement.Controllers
         {
             _promotionService = promotionService;
         }
-   
+        [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
         [HttpPost("promotion")]
-        [Authorize(Roles = Role.Manager)]
         public async Task<IActionResult> CreatePromotion(Promotion promotion)
         {
             if (ModelState.IsValid)
@@ -28,8 +27,8 @@ namespace CafeManagement.Controllers
             else
                 return BadRequest();
         }
+        [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
         [HttpPost("schedule")]
-        [Authorize(Roles = Role.Manager)]
         public async Task<IActionResult> CreatePromotionSchedule(PromotionSchedule promotionSchedule)
         {
             if (ModelState.IsValid)
@@ -55,9 +54,8 @@ namespace CafeManagement.Controllers
         {
             return Ok(await _promotionService.GetScheduleByPromotionId(id));
         }
-
+        [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
         [HttpPut("promotion")]
-        [Authorize(Roles = Role.Manager)]
         public async Task<IActionResult> updatePromotion(Guid promotionId, Promotion promotion)
         {
             if (ModelState.IsValid)
@@ -68,8 +66,8 @@ namespace CafeManagement.Controllers
             else
                 return BadRequest();
         }
+        [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
         [HttpPut("schedule")]
-        [Authorize(Roles = Role.Manager)]
         public async Task<IActionResult> updatePromotionSchedule(Guid scheduleId, PromotionSchedule schedule)
         {
             if (ModelState.IsValid)

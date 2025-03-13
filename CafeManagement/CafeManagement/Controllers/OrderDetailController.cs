@@ -72,9 +72,8 @@ namespace CafeManagement.Controllers
                 return BadRequest("invalid date");
             return Ok(await _orderDetailService.GetByDate(date));
         }
-
+        [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
         [HttpPut("{id}")]
-        [Authorize(Roles =Role.Manager)]
         public async Task<IActionResult> Put(Guid id, [FromBody] OrderDetailRequest request)
         {
             OrderDetail orderDetail = await _orderDetailService.GetById(id);

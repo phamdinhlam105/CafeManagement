@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CafeManagement.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase
@@ -25,7 +26,6 @@ namespace CafeManagement.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult> GetAll()
         {
             var categories = (await _categoryService.GetAll()).ToList();
@@ -33,7 +33,6 @@ namespace CafeManagement.Controllers
         }
 
         [HttpGet("Id")]
-        [Authorize]
         public async Task<ActionResult> GetById(Guid Id)
         {
             var category = await _categoryService.GetById(Id);
@@ -43,7 +42,7 @@ namespace CafeManagement.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Role.Manager)]
+        [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
         public async Task<ActionResult> Add([FromBody] CategoryRequest category)
         {
             if (!ModelState.IsValid)
@@ -56,7 +55,7 @@ namespace CafeManagement.Controllers
         }
 
         [HttpPut("{Id}")]
-        [Authorize(Roles = Role.Manager)]
+        [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
         public async Task<ActionResult> Edit(Guid Id, [FromBody] CategoryRequest category)
         {
             if (!ModelState.IsValid)
@@ -70,7 +69,6 @@ namespace CafeManagement.Controllers
         }
 
         [HttpGet("GetProducts/{categoryId}")]
-        [Authorize]
         public async Task<ActionResult> GetProductsByCategory(Guid categoryId)
         {
             var category = await _categoryService.GetById(categoryId);
@@ -82,7 +80,7 @@ namespace CafeManagement.Controllers
 
 
         [HttpDelete("Id")]
-        [Authorize(Roles = Role.Manager)]
+        [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
         public async Task<ActionResult> Delete(Guid Id)
         {
             var category = await _categoryService.GetById(Id);

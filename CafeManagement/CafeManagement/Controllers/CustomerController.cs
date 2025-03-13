@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CafeManagement.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CustomerController : ControllerBase
@@ -25,7 +26,6 @@ namespace CafeManagement.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetAll() 
         {
             var customers= (await _customerService.GetAll()).ToList();
@@ -33,7 +33,6 @@ namespace CafeManagement.Controllers
         }
         
         [HttpGet("Id")]
-        [Authorize]
         public async Task<IActionResult> GetById(Guid Id)
         {
             var customer = await _customerService.GetById(Id);
@@ -41,7 +40,6 @@ namespace CafeManagement.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> Add([FromBody] CustomerRequest customer)
         {
             if (!ModelState.IsValid)
@@ -54,7 +52,6 @@ namespace CafeManagement.Controllers
         }
 
         [HttpPut("{Id}")]
-        [Authorize]
         public async Task<IActionResult> Edit(Guid Id, [FromBody]  CustomerRequest customer)
         {
             if (!ModelState.IsValid)
@@ -67,8 +64,8 @@ namespace CafeManagement.Controllers
             return Ok(existItem);
         }
 
+        [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
         [HttpDelete("Id")]
-        [Authorize(Roles =Role.Manager)]
         public async Task<IActionResult> Delete(Guid Id)
         {
             var customer = await _customerService.GetById(Id);

@@ -36,9 +36,8 @@ namespace CafeManagement.Controllers
             return Ok(await _productService.GetById(id));
         }
 
-     
+        [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
         [HttpPost]
-        [Authorize(Roles =Role.Manager)]
         public async Task<ActionResult> Add([FromBody] ProductRequest product)
         {
             if (!ModelState.IsValid)
@@ -47,9 +46,8 @@ namespace CafeManagement.Controllers
             await _productService.Add(item);
             return Ok(item);
         }
-
+        [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
         [HttpPut("{id}")]
-        [Authorize(Roles =Role.Manager)]
         public async Task<ActionResult> Edit(Guid id,[FromBody] ProductRequest product)
         {
             if (!ModelState.IsValid)
@@ -62,9 +60,8 @@ namespace CafeManagement.Controllers
             await _productService.Update(existingProduct);
             return Ok(existingProduct);
         }
-
+        [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
         [HttpDelete("{id}")]
-        [Authorize(Roles =Role.Manager)]
         public async Task<ActionResult> Delete(Guid id)
         {
             var product = await _productService.GetById(id);

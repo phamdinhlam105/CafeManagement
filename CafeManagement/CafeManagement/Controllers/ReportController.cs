@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CafeManagement.Controllers
 {
-    [Authorize(Roles = Role.Manager)]
+    [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
     [Route("api/[controller]")]
     [ApiController]
     public class ReportController : ControllerBase

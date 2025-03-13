@@ -42,7 +42,7 @@ namespace CafeManagement.Controllers
         public async Task<IActionResult> GetProfile()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var profile = _userService.GetProfileById(userId);
+            var profile = await _userService.GetProfileById(userId);
             if (profile == null)
                 return NotFound();
             return Ok(profile);
