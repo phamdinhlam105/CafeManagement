@@ -15,6 +15,7 @@ namespace CafeManagement.Mappers
                 Name = request.Name,
                 Price = request.Price,
                 Img= (request.Img==null)?string.Empty:request.Img,
+                Description=request.Description,
                 CategoryId = request.CategoryId,
             };
         }
@@ -26,11 +27,9 @@ namespace CafeManagement.Mappers
                 Id = product.Id,
                 Name = product.Name,
                 Price = product.Price,
-                Category = new CategoryResponse
-                {
-                    Id = product.Category.Id,
-                    Name = product.Category.Name,
-                }
+                CategoryName = product.Category.Name,
+                Description = product.Description,
+                Img=product.Img
             };
         }
 
@@ -38,7 +37,8 @@ namespace CafeManagement.Mappers
         {
             product.Name = request.Name;
             product.Price = request.Price;
-            product.Img = (request.Img == null) ? string.Empty : request.Img;
+            product.Img = request.Img ?? string.Empty;
+            product.Description= request.Description ?? string.Empty;
             product.CategoryId = request.CategoryId;
         }
     }

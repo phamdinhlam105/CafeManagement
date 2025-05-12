@@ -23,14 +23,31 @@ namespace CafeManagement.Services.Stock
             if (entry.Id == Guid.Empty)
                 entry.Id = Guid.NewGuid();
             DailyStock dailyStock = await _stockService.StockRemain();
+
             foreach (var entryDetail in entry.StockEntryDetails)
             {
-                Ingredient ingredient = await _unitOfWork.Ingredient.GetById(entryDetail.IngredientId);
                 var stockDetail = dailyStock.DailyStockDetails
-                    .FirstOrDefault(d => d.Ingredient.Id == entryDetail.IngredientId);
-                entryDetail.StockEntryId = entry.Id;
-                float amountRemain = (float)entryDetail.Quantity + stockDetail.StockRemaining;
-                await _stockService.StockUpdate(stockDetail.Id, ingredient, amountRemain);
+                    .FirstOrDefault(d => d.IngredientId == entryDetail.IngredientId);
+                if (stockDetail == null)
+                {
+                    var newStockDetail = new DailyStockDetail
+                    {
+                        Id = Guid.NewGuid(),
+                        DailyStockId = dailyStock.Id,
+                        StockAtStartOfDay = 0,
+                        StockImport = entryDetail.Quantity,
+                        StockRemaining = entryDetail.Quantity,
+                        IngredientId = entryDetail.IngredientId,
+                    };
+                    await _unitOfWork.DailyStockDetail.Add(newStockDetail);
+                }
+                else
+                {
+                    stockDetail.StockImport += entryDetail.Quantity;
+                    stockDetail.StockRemaining += entryDetail.Quantity;
+                    await _unitOfWork.DailyStockDetail.Update(stockDetail);
+                }
+
                 await _unitOfWork.DailyStockDetail.Update(stockDetail);
             }
             await _unitOfWork.StockEntry.Add(entry);
@@ -42,8 +59,7 @@ namespace CafeManagement.Services.Stock
         }
         public async Task<IEnumerable<StockEntry>> GetByDate(DateOnly date)
         {
-            return (await _unitOfWork.StockEntry.GetAll())
-            .Where(se => DateOnly.FromDateTime(se.EntryDate) == date);
+            return await _unitOfWork.StockEntry.GetByDate(date);
         }
 
     }

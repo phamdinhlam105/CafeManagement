@@ -12,5 +12,11 @@ namespace CafeManagement.Repositories
         {
             return await _context.Categories.Include(c=>c.Products).ToListAsync();
         }
+        public override async Task<Category> GetById(Guid id)
+        {
+            return await _context.Categories
+                .Include(c => c.Products)
+                .FirstOrDefaultAsync(c=>c.Id==id);
+        }
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CafeManagement.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "NotCustomer")]
     [Route("api/[controller]")]
     [ApiController]
     public class IngredientController : ControllerBase
@@ -28,8 +28,15 @@ namespace CafeManagement.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest();
-            var newIngredient = await _ingredientService.CreateIngredient(ingredient);
-            return Ok(newIngredient);
+            try
+            {
+                var newIngredient = await _ingredientService.CreateIngredient(ingredient);
+                return Ok(newIngredient);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("{Id}")]
@@ -37,10 +44,17 @@ namespace CafeManagement.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest();
-            var updatedIngredient = await _ingredientService.UpdateIngredient(Id, ingredient);
-            if (updatedIngredient == null)
-                return NotFound(new ErrorResponse { Error = 404, Message = "Id not found" });
-            return Ok(updatedIngredient);
+            try
+            {
+                var updatedIngredient = await _ingredientService.UpdateIngredient(Id, ingredient);
+                if (updatedIngredient == null)
+                    return NotFound(new ErrorResponse { Error = 404, Message = "Id not found" });
+                return Ok(updatedIngredient);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

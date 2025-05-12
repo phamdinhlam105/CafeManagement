@@ -14,5 +14,13 @@ namespace CafeManagement.Repositories.Stock
                 .Include(ds => ds.DailyStockDetails)
                 .ThenInclude(dt => dt.Ingredient).ToListAsync();
         }
+
+        public async Task<DailyStock> GetByDate(DateOnly date)
+        {
+            return await _context.DailyStocks
+                .Include(ds=>ds.DailyStockDetails)
+                .ThenInclude(dsd=>dsd.Ingredient)
+                .FirstOrDefaultAsync(ds=>ds.createDate == date);
+        }
     }
 }

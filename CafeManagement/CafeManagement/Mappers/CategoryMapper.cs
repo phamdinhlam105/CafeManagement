@@ -7,6 +7,11 @@ namespace CafeManagement.Mappers
 {
     public class CategoryMapper : ICategoryMapper
     {
+        private readonly IProductMapper _productMapper;
+        public CategoryMapper(IProductMapper productMapper)
+        {
+            _productMapper = productMapper;
+        }
         public Category MapToEntity(CategoryRequest request)
         {
             return new Category
@@ -21,7 +26,11 @@ namespace CafeManagement.Mappers
             return new CategoryResponse
             {
                 Id = category.Id,
-                Name = category.Name
+                Name = category.Name,
+                Description=category.Description,
+                Products = category.Products != null
+            ? category.Products.Select(p => _productMapper.MapToResponse(p)).ToList()
+            : new List<ProductResponse>()
             };
         }
 

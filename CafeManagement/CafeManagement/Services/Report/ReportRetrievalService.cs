@@ -3,7 +3,7 @@ using CafeManagement.Helpers;
 using CafeManagement.Interfaces.Services.Report;
 using CafeManagement.Models.Report;
 using CafeManagement.UnitOfWork;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 namespace CafeManagement.Services.Report
 {
@@ -29,9 +29,21 @@ namespace CafeManagement.Services.Report
 
                 report = await _unitOfWork.DailyReport.GetByDate(date);
             }
-
-            var response =  new ReportResponse { Reports = new List<DailyReport>() };
-            response.Reports.Append(report); 
+            var response =  new ReportResponse { Reports = new List<OneDayReportResponse>() };
+            response.Reports.Add(new OneDayReportResponse
+            {
+                Id=report.Id,
+                TotalRevenue=report.TotalRevenue,
+                TotalExpenditure=report.TotalExpenditure,
+                TopSellingId = report.TopSellingId,
+                LeastSellingId=report.LeastSellingId,
+                NumberOfCancelledOrders=report.NumberOfCancelledOrders,
+                NumberOfFinishedOrders=report.NumberOfFinishedOrders,
+                TotalProductsSold=report.TotalProductsSold,
+                CreateDate=report.createDate,
+                ReportDate=report.ReportDate,
+                PeakHours=report.PeakHours,
+            });
             return response;
         }
 
@@ -48,12 +60,27 @@ namespace CafeManagement.Services.Report
             var startDateTime = new DateTime(year, month, 1);
             var endDateTime = startDateTime.AddMonths(1).AddSeconds(-1);
 
-            var response =  new ReportResponse
+            var reports = new List<MonthlyReport>();
+            reports.Add(report);
+            var response = new ReportResponse
             {
-                Reports = new List<MonthlyReport>(),
-                BestDays = await _reportQueryService.GetBestDaysInWeek(startDateTime, endDateTime)
+                Reports = new List<OneDayReportResponse>(),
+                BestDays = (await _reportQueryService.GetBestDaysInWeek(startDateTime, endDateTime)).ToList()
             };
-            response.Reports.Append(report);
+            response.Reports.Add(new OneDayReportResponse
+            {
+                Id = report.Id,
+                TotalRevenue = report.TotalRevenue,
+                TotalExpenditure = report.TotalExpenditure,
+                TopSellingId = report.TopSellingId,
+                LeastSellingId = report.LeastSellingId,
+                NumberOfCancelledOrders = report.NumberOfCancelledOrders,
+                NumberOfFinishedOrders = report.NumberOfFinishedOrders,
+                TotalProductsSold = report.TotalProductsSold,
+                CreateDate = report.createDate,
+                StartDate = report.StartDate,
+                EndDate = report.EndDate,
+            });
             return response;
         }
 
@@ -71,11 +98,26 @@ namespace CafeManagement.Services.Report
                 report = await _unitOfWork.QuarterlyReport.GetByQuarter(quarter,year);
             }
 
-            return new ReportResponse
+            var response =  new ReportResponse
             {
-                Reports = new List<QuarterlyReport>().Append(report),
-                BestDays = await _reportQueryService.GetBestDaysInWeek(startDate, endDate)
+                Reports = new List<OneDayReportResponse>(),
+                BestDays = (await _reportQueryService.GetBestDaysInWeek(startDate, endDate)).ToList()
             };
+            response.Reports.Add(new OneDayReportResponse
+            {
+                Id = report.Id,
+                TotalRevenue = report.TotalRevenue,
+                TotalExpenditure = report.TotalExpenditure,
+                TopSellingId = report.TopSellingId,
+                LeastSellingId = report.LeastSellingId,
+                NumberOfCancelledOrders = report.NumberOfCancelledOrders,
+                NumberOfFinishedOrders = report.NumberOfFinishedOrders,
+                TotalProductsSold = report.TotalProductsSold,
+                CreateDate = report.createDate,
+                StartDate = report.StartDate,
+                EndDate = report.EndDate,
+            });
+            return response;
         }
 
         public async Task<ReportResponse> GetReportsByRange(DateOnly startDate, DateOnly endDate)
@@ -92,16 +134,29 @@ namespace CafeManagement.Services.Report
 
                 dailyReports = await _unitOfWork.DailyReport.GetByDateRange(startDate, endDate);
             }
-            var startDateTime = startDate.ToDateTime(new TimeOnly(0, 0));
-            var endDateTime = endDate.ToDateTime(new TimeOnly(23, 59, 59));
+            var startDateTime = startDate.ToDateTime(new TimeOnly(0, 0),DateTimeKind.Utc);
+            var endDateTime = endDate.ToDateTime(new TimeOnly(23, 59, 59), DateTimeKind.Utc);
             var response = new ReportResponse
             {
-                Reports = new List<DailyReport>(),
-                BestDays = await _reportQueryService.GetBestDaysInWeek(startDateTime, endDateTime)
+                Reports = new List<OneDayReportResponse>(),
+                BestDays = (await _reportQueryService.GetBestDaysInWeek(startDateTime, endDateTime)).ToList()
             };
-            foreach (var dailyReport in dailyReports)
+            foreach (var report in dailyReports)
             {
-                response.Reports.Append(dailyReport);
+                response.Reports.Add(new OneDayReportResponse
+                {
+                    Id = report.Id,
+                    TotalRevenue = report.TotalRevenue,
+                    TotalExpenditure = report.TotalExpenditure,
+                    TopSellingId = report.TopSellingId,
+                    LeastSellingId = report.LeastSellingId,
+                    NumberOfCancelledOrders = report.NumberOfCancelledOrders,
+                    NumberOfFinishedOrders = report.NumberOfFinishedOrders,
+                    TotalProductsSold = report.TotalProductsSold,
+                    CreateDate = report.createDate,
+                    ReportDate = report.ReportDate,
+                    PeakHours = report.PeakHours,
+                });
             }
 
             return response;

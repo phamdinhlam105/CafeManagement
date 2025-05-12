@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CafeManagement.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "NotCustomer")]
     [ApiController]
     [Route("api/[controller]")]
     public class ProductController : ControllerBase
@@ -26,14 +26,13 @@ namespace CafeManagement.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
-            var products = (await _productService.GetAll()).ToList();
-            return Ok(products);
+            return Ok((await _productService.GetAll()).Select(p=>_productMapper.MapToResponse(p)));
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult> GetById(Guid id)
         {
-            return Ok(await _productService.GetById(id));
+            return Ok(_productMapper.MapToResponse(await _productService.GetById(id)));
         }
 
         [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
@@ -42,9 +41,16 @@ namespace CafeManagement.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var item = _productMapper.MapToEntity(product);
-            await _productService.Add(item);
-            return Ok(item);
+            try
+            {
+                var item = _productMapper.MapToEntity(product);
+                var newProduct = await _productService.Add(item);
+                return Ok(_productMapper.MapToResponse(newProduct));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
         [HttpPut("{id}")]
@@ -52,13 +58,19 @@ namespace CafeManagement.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
-            var existingProduct = await _productService.GetById(id);
-            if (existingProduct == null)
-                return NotFound();
-            _productMapper.UpdateEntityFromRequest(existingProduct, product);
-            await _productService.Update(existingProduct);
-            return Ok(existingProduct);
+            try
+            {
+                var existingProduct = await _productService.GetById(id);
+                if (existingProduct == null)
+                    return NotFound();
+                _productMapper.UpdateEntityFromRequest(existingProduct, product);
+                var edittedProduct = await _productService.Update(existingProduct);
+                return Ok(_productMapper.MapToResponse(edittedProduct));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
         [HttpDelete("{id}")]

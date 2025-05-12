@@ -1,10 +1,12 @@
-﻿using CafeManagement.Models;
+﻿using CafeManagement.Interfaces;
+using CafeManagement.Models;
 using CafeManagement.Models.Order;
 using CafeManagement.Models.PromotionModel;
 using CafeManagement.Models.Report;
 using CafeManagement.Models.Stock;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace CafeManagement.Data
 {
@@ -38,44 +40,39 @@ namespace CafeManagement.Data
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Product>(e =>
             {
-                e.Property(p => p.Name).IsRequired();
-                e.Property(p => p.Price).IsRequired().HasColumnType("decimal(18,2)");
-                e.HasMany(p => p.Details)
-                    .WithOne(od => od.Product)
-                    .HasForeignKey(od => od.ProductId);
+                e.Property(p => p.IsDeleted)
+                   .HasDefaultValue(false);
+                e.HasQueryFilter(p => !p.IsDeleted);
             });
-
-
 
             modelBuilder.Entity<Order>(e =>
             {
-                e.Property(e => e.No).IsRequired();
-                e.Property(e => e.Price).IsRequired().HasColumnType("decimal(18,2)");
-                e.Property(e => e.Quantity).IsRequired();
-                e.Property(e => e.createdAt).IsRequired();
-                e.Property(e => e.Note).HasMaxLength(500);
-                e.Property(e => e.OrderStatus).IsRequired();
-
+                e.Property(p => p.IsDeleted)
+                   .HasDefaultValue(false);
                 e.HasMany(od => od.Details)
                     .WithOne(o => o.Order)
-                    .HasForeignKey(od => od.OderId);
+                    .HasForeignKey(od => od.OrderId);
+                e.HasQueryFilter(p => !p.IsDeleted);
             });
 
 
             modelBuilder.Entity<Category>(e =>
             {
-                e.HasKey(c => c.Id);
-                e.Property(c => c.Name).IsRequired();
+                e.Property(p => p.IsDeleted)
+                 .HasDefaultValue(false);
                 e.HasMany(c => c.Products)
                     .WithOne(p => p.Category)
                     .HasForeignKey(p => p.CategoryId);
+                e.HasQueryFilter(p => !p.IsDeleted);
             });
             modelBuilder.Entity<Customer>(e =>
             {
-                e.HasKey(c => c.Id);
+                e.Property(p => p.IsDeleted)
+                 .HasDefaultValue(false);
                 e.HasMany(c => c.Orders)
                     .WithOne(o => o.Customer)
                     .HasForeignKey(o => o.CustomerId);
+                e.HasQueryFilter(p => !p.IsDeleted);
             });
 
             modelBuilder.Entity<OrderStatusHistory>(e =>
@@ -84,12 +81,8 @@ namespace CafeManagement.Data
                 e.Property(sh => sh.Description).IsRequired();
             });
 
-
             modelBuilder.Entity<Promotion>(e =>
             {
-                e.HasKey(p => p.Id);
-                e.Property(p => p.Name).IsRequired();
-                e.Property(p => p.Description).IsRequired();
                 e.HasMany(p => p.ApplyOrders)
                     .WithOne(od => od.Promotion)
                     .HasForeignKey(od => od.PromotionId);
@@ -106,10 +99,10 @@ namespace CafeManagement.Data
                 e.ToTable("Profiles");
                 e.HasKey(p => p.Id);
                 e.Property(p => p.Name).IsRequired();
-                e.Property(p => p.Age).IsRequired();
+                e.Property(p => p.Age);
                 e.Property(p => p.BirthDay);
                 e.Property(p => p.Email).IsRequired();
-                e.Property(p => p.PhoneNumber).IsRequired();
+                e.Property(p => p.PhoneNumber);
                 e.Property(p => p.PictureURL);
                 e.Property(p => p.joinDate).IsRequired();
             });
@@ -118,40 +111,46 @@ namespace CafeManagement.Data
             {
                 entity.HasOne(r => r.TopSelling)
                       .WithMany()
-                      .HasForeignKey(r => r.TopSellingId)
-                      .OnDelete(DeleteBehavior.NoAction);
+                      .HasForeignKey(r => r.TopSellingId);
 
                 entity.HasOne(r => r.LeastSelling)
                       .WithMany()
-                      .HasForeignKey(r => r.LeastSellingId)
-                      .OnDelete(DeleteBehavior.NoAction);
+                      .HasForeignKey(r => r.LeastSellingId);
             });
 
             modelBuilder.Entity<QuarterlyReport>(entity =>
             {
                 entity.HasOne(r => r.TopSelling)
                       .WithMany()
-                      .HasForeignKey(r => r.TopSellingId)
-                      .OnDelete(DeleteBehavior.NoAction);
+                      .HasForeignKey(r => r.TopSellingId);
 
                 entity.HasOne(r => r.LeastSelling)
                       .WithMany()
-                      .HasForeignKey(r => r.LeastSellingId)
-                      .OnDelete(DeleteBehavior.NoAction);
+                      .HasForeignKey(r => r.LeastSellingId);
             });
 
             modelBuilder.Entity<DailyReport>(entity =>
             {
                 entity.HasOne(r => r.TopSelling)
                       .WithMany()
-                      .HasForeignKey(r => r.TopSellingId)
-                      .OnDelete(DeleteBehavior.NoAction);
+                      .HasForeignKey(r => r.TopSellingId);
 
                 entity.HasOne(r => r.LeastSelling)
                       .WithMany()
-                      .HasForeignKey(r => r.LeastSellingId)
-                      .OnDelete(DeleteBehavior.NoAction);
+                      .HasForeignKey(r => r.LeastSellingId);
             });
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                if (entityType.ClrType is ISoftDeletable)
+                {
+                    var parameter = Expression.Parameter(entityType.ClrType, "e");
+                    var property = Expression.Property(parameter, nameof(ISoftDeletable.IsDeleted));
+                    var condition = Expression.Equal(property, Expression.Constant(false));
+                    var lambda = Expression.Lambda(condition, parameter);
+
+                    modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
+                }
+            }
         }
     }
 }

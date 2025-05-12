@@ -13,11 +13,9 @@ namespace CafeManagement.Services.Store
     public class NewOrderService : INewOrderService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IExportBillService _exportBillService;
         public NewOrderService(IUnitOfWork unitOfWork, IExportBillService exportBillService)
         {
             _unitOfWork = unitOfWork;
-            _exportBillService = exportBillService;
         }
         public async Task AddOrderDetail(Order order, OrderDetail detail,Product product)
         {
@@ -34,22 +32,28 @@ namespace CafeManagement.Services.Store
             await _unitOfWork.Order.Update(order);
         }
 
-        public async Task<FinishOrderResponse> FinishOrder(Order order)
+        public async Task FinishOrder(Order order)
         {
             order.OrderStatus = OrderStatus.Completed;
+            order.Customer.NumberOfOrders++;
             await _unitOfWork.Order.Update(order);
-            return new FinishOrderResponse
-            {
-                order = order,
-                bill = _exportBillService.GenerateInvoicePdf(order)
-            };
+            await _unitOfWork.Customer.Update(order.Customer);
         }
 
-        public async Task CreateOrder(Order order)
+        public async Task CancelOrder(Guid orderId)
+        {
+            var currentOrder = await _unitOfWork.Order.GetById(orderId) ?? throw new Exception("id not found");
+            currentOrder.OrderStatus = OrderStatus.Cancelled;
+            await _unitOfWork.Order.Update(currentOrder);
+        }
+
+        public async Task<Order> CreateOrder(Order order)
         {
             if (order.Id == Guid.Empty)
                 order.Id = Guid.NewGuid();
             await _unitOfWork.Order.Add(order);
+            var newOrder = await _unitOfWork.Order.GetById(order.Id);
+            return newOrder;
         }
 
 

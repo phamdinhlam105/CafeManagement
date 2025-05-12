@@ -12,11 +12,12 @@ namespace CafeManagement.Services.Store
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task Add(OrderDetail item)
+        public async Task<OrderDetail> Add(OrderDetail item)
         {
             if (item.Id == Guid.Empty)
                 item.Id = Guid.NewGuid();
             await _unitOfWork.OrderDetail.Add(item);
+            return item;
         }
 
         public async Task Delete(OrderDetail item)
@@ -35,10 +36,11 @@ namespace CafeManagement.Services.Store
             return await _unitOfWork.OrderDetail.GetById(id);
         }
 
-        public async Task Update(OrderDetail item)
+        public async Task<OrderDetail> Update(OrderDetail item)
         {
             if (item != null)
                 await _unitOfWork.OrderDetail.Update(item);
+            return item;
         }
 
         public async Task<IEnumerable<OrderDetail>> GetDetailsByOrder(Guid orderId)

@@ -1,4 +1,5 @@
-﻿using CafeManagement.Helpers;
+﻿using CafeManagement.Dtos.Request;
+using CafeManagement.Helpers;
 using CafeManagement.Interfaces.Services.PromotionService;
 using CafeManagement.Models.PromotionModel;
 using CafeManagement.Services.PromotionService;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CafeManagement.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "NotCustomer")]
     [Route("api/[controller]")]
     [ApiController]
     public class PromotionController : ControllerBase
@@ -20,24 +21,34 @@ namespace CafeManagement.Controllers
         }
         [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
         [HttpPost("promotion")]
-        public async Task<IActionResult> CreatePromotion(Promotion promotion)
+        public async Task<IActionResult> CreatePromotion([FromBody] Promotion promotion)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
                 return Ok(await _promotionService.CreatePromotion(promotion));
-            else
-                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+               
         }
         [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
         [HttpPost("schedule")]
-        public async Task<IActionResult> CreatePromotionSchedule(PromotionSchedule promotionSchedule)
+        public async Task<IActionResult> CreatePromotionSchedule([FromBody]PromotionSchedule promotionSchedule)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return BadRequest();
+            try
             {
-                
                 return Ok(await _promotionService.CreatePromotionSchedule(promotionSchedule));
             }
-            else
-                return BadRequest();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpGet("promotion")]
         public async Task<IActionResult> GetAllPromotion()
@@ -55,28 +66,42 @@ namespace CafeManagement.Controllers
             return Ok(await _promotionService.GetScheduleByPromotionId(id));
         }
         [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
-        [HttpPut("promotion")]
-        public async Task<IActionResult> updatePromotion(Guid promotionId, Promotion promotion)
+        [HttpPut("promotion/{promotionId}")]
+        public async Task<IActionResult> updatePromotion(Guid promotionId, [FromBody] EditPromotionRequest request)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                BadRequest(ModelState);
+            try
             {
+                var promotion = new Promotion
+                {
+                    Name = request.Name,
+                    Description = request.Description,
+                    Discount = request.Discount
+                };
                 await _promotionService.UpdatePromotion(promotionId, promotion);
                 return Ok();
             }
-            else
-                return BadRequest();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
-        [HttpPut("schedule")]
-        public async Task<IActionResult> updatePromotionSchedule(Guid scheduleId, PromotionSchedule schedule)
+        [HttpPut("schedule/{scheduleId}")]
+        public async Task<IActionResult> updatePromotionSchedule(Guid scheduleId, [FromBody] PromotionSchedule schedule)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                BadRequest(ModelState);
+            try
             {
                 await _promotionService.UpdatePromotionSchedule(scheduleId, schedule);
                 return Ok();
             }
-            else
-                return BadRequest();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

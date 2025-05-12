@@ -13,5 +13,12 @@ namespace CafeManagement.Repositories.Stock
         {
             return await _context.DailyStockDetails.Include(dsd => dsd.Ingredient).ToListAsync();
         }
+        public override async Task<DailyStockDetail> GetById(Guid id)
+        {
+            return await _context.DailyStockDetails
+                .Include(dsd => dsd.Ingredient)
+                .FirstOrDefaultAsync(dsd=>dsd.Id==id);
+        }
+
     }
 }

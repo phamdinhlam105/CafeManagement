@@ -6,6 +6,7 @@ namespace CafeManagement.Dtos.Request
     {
         public string? Note { get; set; }
         public Guid? CustomerId {  get; set; }
+        public int No {  get; set; }
 
     }
 }

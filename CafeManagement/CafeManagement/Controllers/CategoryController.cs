@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CafeManagement.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "NotCustomer")]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase
@@ -28,30 +28,37 @@ namespace CafeManagement.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
-            var categories = (await _categoryService.GetAll()).ToList();
-            return Ok(categories);
+            return Ok((await _categoryService.GetAll()).Select(c=>_categoryMapper.MapToResponse(c)));
         }
 
-        [HttpGet("Id")]
+        [HttpGet("getbyid/{Id}")]
         public async Task<ActionResult> GetById(Guid Id)
         {
             var category = await _categoryService.GetById(Id);
             if (category == null)
                 return NotFound();
-            return Ok(category);
+            return Ok(_categoryMapper.MapToResponse(category));
         }
 
         [HttpPost]
         [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
-        public async Task<ActionResult> Add([FromBody] CategoryRequest category)
+        public async Task<ActionResult> Add([FromBody] CategoryRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var item = _categoryMapper.MapToEntity(category);
-            await _categoryService.Add(item);
-            return Ok();
+            try
+            {
+                var item = _categoryMapper.MapToEntity(request);
+                var category = await _categoryService.Add(item);
+                return Ok(_categoryMapper.MapToResponse(category));
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         [HttpPut("{Id}")]
@@ -60,12 +67,19 @@ namespace CafeManagement.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var existItem = await _categoryService.GetById(Id);
-            if (existItem == null)
-                return NotFound();
-            _categoryMapper.UpdateEntityFromRequest(existItem, category);
-            await _categoryService.Update(existItem);
-            return Ok(existItem);
+            try
+            {
+                var existItem = await _categoryService.GetById(Id);
+                if (existItem == null)
+                    return NotFound();
+                _categoryMapper.UpdateEntityFromRequest(existItem, category);
+                var edittedCategory = await _categoryService.Update(existItem);
+                return Ok(_categoryMapper.MapToResponse(edittedCategory));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("GetProducts/{categoryId}")]
@@ -75,7 +89,7 @@ namespace CafeManagement.Controllers
             if(category == null) 
                 return NotFound(new ErrorResponse{Error= 404, Message= "id category not found"});
             var products = await _categoryService.GetProductsByCategory(categoryId);
-            return Ok(products);
+            return Ok(products.Select(p => _productMapper.MapToResponse(p))) ;
         }
 
 

@@ -18,7 +18,7 @@ namespace CafeManagement.Services.Report
         }
         public async Task CreateDailyReport(DateOnly date)
         {
-            DateTime startTime = date.ToDateTime(new TimeOnly(0, 0));
+            DateTime startTime = date.ToDateTime(new TimeOnly(0, 0), DateTimeKind.Utc);
             DateTime endTime = startTime.AddDays(1);
             DailyReport dailyReport = new DailyReport();
             dailyReport.Id = Guid.NewGuid();
@@ -43,8 +43,8 @@ namespace CafeManagement.Services.Report
             DateOnly endDate = startDate.AddMonths(1).AddDays(-1);
             DateOnly today = Ultilities.GetToday();
             DateOnly lastDate = endDate < today ? endDate : today;
-            DateTime startDateTime = startDate.ToDateTime(new TimeOnly(0, 0));
-            DateTime lastDateTime = lastDate.ToDateTime(new TimeOnly(23, 59, 59));
+            DateTime startDateTime = startDate.ToDateTime(new TimeOnly(0, 0), DateTimeKind.Utc);
+            DateTime lastDateTime = lastDate.ToDateTime(new TimeOnly(23, 59, 59), DateTimeKind.Utc);
             var dailyReports = (await _unitOfWork.DailyReport.GetAll())
                 .Where(dr => dr.ReportDate >= startDate && dr.ReportDate <= lastDate)
                 .ToList();
@@ -85,8 +85,8 @@ namespace CafeManagement.Services.Report
 
             int startMonth = (quarter - 1) * 3 + 1;
             int endMonth = startMonth + 2;
-            DateTime startDateTime = startDate.ToDateTime(new TimeOnly(0, 0));
-            DateTime lastDateTime = lastDate.ToDateTime(new TimeOnly(23, 59, 59));
+            DateTime startDateTime = startDate.ToDateTime(new TimeOnly(0, 0), DateTimeKind.Utc);
+            DateTime lastDateTime = lastDate.ToDateTime(new TimeOnly(23, 59, 59), DateTimeKind.Utc);
             var monthlyReports = (await _unitOfWork.MonthlyReport.GetAll())
                 .Where(mr => mr.StartDate.Year == year
                           && mr.StartDate.Month >= startMonth

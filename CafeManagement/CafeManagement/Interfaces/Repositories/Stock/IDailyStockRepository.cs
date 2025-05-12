@@ -4,5 +4,6 @@ namespace CafeManagement.Interfaces.Repositories.Stock
 {
     public interface IDailyStockRepository : IRepository<DailyStock>
     {
+        Task<DailyStock> GetByDate(DateOnly date);
     }
 }

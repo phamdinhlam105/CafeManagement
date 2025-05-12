@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CafeManagement.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "NotCustomer")]
     [Route("api/[controller]")]
     [ApiController]
     public class CustomerController : ControllerBase
@@ -32,7 +32,7 @@ namespace CafeManagement.Controllers
             return  Ok(customers);
         }
         
-        [HttpGet("Id")]
+        [HttpGet("getbyid/{Id}")]
         public async Task<IActionResult> GetById(Guid Id)
         {
             var customer = await _customerService.GetById(Id);
@@ -46,9 +46,16 @@ namespace CafeManagement.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var item = _customerMapper.MapToEntity(customer);
-            await _customerService.Add(item);
-            return CreatedAtAction(nameof(GetById), new { item.Id });
+            try
+            {
+                var item = _customerMapper.MapToEntity(customer);
+                var newCustomer = await _customerService.Add(item);
+                return Ok(newCustomer);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("{Id}")]
@@ -56,12 +63,20 @@ namespace CafeManagement.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var existItem = await _customerService.GetById(Id);
-            if (existItem == null)
-                return NotFound(new ErrorResponse { Error=404,Message="id customer not found"});
-            _customerMapper.UpdateEntityFromRequest(existItem, customer);
-            await _customerService.Update(existItem);
-            return Ok(existItem);
+            try
+            {
+
+                var existItem = await _customerService.GetById(Id);
+                if (existItem == null)
+                    return NotFound(new ErrorResponse { Error = 404, Message = "id customer not found" });
+                _customerMapper.UpdateEntityFromRequest(existItem, customer);
+                await _customerService.Update(existItem);
+                return Ok(existItem);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]

@@ -6,7 +6,7 @@ namespace CafeManagement.Interfaces.Services.Stock
     {
         Task<DailyStock> StockRemain();
 
-        Task StockUpdate(Guid stockId, Ingredient ingredient, float amountRemain);
+        Task StockUpdate(Guid ingredientId, float amountRemain);
         Task<DailyStock> NewDailyStock();
         Task<IEnumerable<DailyStock>> GetAllDailyStocks();
         Task<IEnumerable<DailyStockDetail>> GetDetailByDate(DateOnly date);

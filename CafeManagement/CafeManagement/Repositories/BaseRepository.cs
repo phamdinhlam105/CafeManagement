@@ -1,4 +1,5 @@
 ﻿using CafeManagement.Data;
+using CafeManagement.Interfaces;
 using CafeManagement.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
@@ -41,7 +42,17 @@ namespace CafeManagement.Repositories
 
         public virtual async Task Delete(T entity)
         {
-            _dbSet.Remove(entity);
+
+            if (entity is ISoftDeletable softDeletable)
+            {
+                softDeletable.IsDeleted = true;
+                _context.Update(entity);
+            }
+            else
+            {
+                _dbSet.Remove(entity);
+            }
+
             await _context.SaveChangesAsync();
         }
 

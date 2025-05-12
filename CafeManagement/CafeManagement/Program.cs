@@ -21,6 +21,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using DotNetEnv;
+using CafeManagement.Helpers;
+using Microsoft.AspNetCore.Http.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +37,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //services
+#region Service
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<INewOrderService, NewOrderService>();
@@ -43,6 +46,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IStockService, StockService>();
 builder.Services.AddScoped<IStockEntryService, StockEntryService>();
+builder.Services.AddScoped<IIngredientService, IngredientService>();
 builder.Services.AddScoped<IReportQueryService, ReportQueryService>();
 builder.Services.AddScoped<IReportCreationService, ReportCreationService>();
 builder.Services.AddScoped<IReportRetrievalService, ReportRetrievalService>();
@@ -51,16 +55,21 @@ builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IExportBillService, ExportBillService>();
 builder.Services.AddScoped<IReportUpdateService, ReportUpdateService>();
-
+#endregion
 //mapper
+#region Mapper
 builder.Services.AddScoped<ICustomerMapper, CustomerMapper>();
 builder.Services.AddScoped<ICategoryMapper, CategoryMapper>();
 builder.Services.AddScoped<IProductMapper, ProductMapper>();
 builder.Services.AddScoped<INewOrderMapper, NewOrderMapper>();
 builder.Services.AddScoped<IOrderDetailMapper, OrderDetailMapper>();
-
+builder.Services.AddScoped<IStockMapper, StockMapper>();
+builder.Services.AddScoped<IStockEntryMapper, StockEntryMapper>();
+#endregion
 //CORS
+
 var MyAllowSpecificOrigins = "_myAllowAllOrigins";
+//cors
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
@@ -71,13 +80,17 @@ builder.Services.AddCors(options =>
                   .AllowAnyHeader();  // allow all headers
         });
 });
+
+builder.Services.Configure<JsonOptions>(options =>
+{
+    options.SerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+});
 //authentication
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.Password.RequireDigit = false;
     options.Password.RequireUppercase = false;
     options.Password.RequireLowercase = false;
-    // require symbol
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 6;
 });
@@ -91,7 +104,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options=>
 {
-    options.RequireHttpsMetadata = false;
+    options.RequireHttpsMetadata = true;
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -104,7 +117,12 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true
     };
 });
-builder.Services.AddAuthorization();
+//Policy
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("NotCustomer", policy =>
+        policy.RequireRole(Role.Admin, Role.Manager, Role.Employee)); 
+});
 
 var app = builder.Build();
 app.UseCors(MyAllowSpecificOrigins);

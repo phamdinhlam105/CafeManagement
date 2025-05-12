@@ -14,7 +14,8 @@ namespace CafeManagement.Mappers
                 Id = customer.Id,
                 Name = customer.Name,
                 Phone = customer.Phone,
-                Address = customer.Address
+                Address = customer.Address,
+                NumberOfOrders = customer.NumberOfOrders,
             };
         }
 

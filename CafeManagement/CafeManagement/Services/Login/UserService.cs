@@ -1,7 +1,7 @@
 ﻿using System;
 using Azure.Core;
-using CafeManagement.Dtos.Request;
-using CafeManagement.Dtos.Respone;
+using CafeManagement.Dtos.Request.UserReq;
+using CafeManagement.Dtos.Respone.UserRes;
 using CafeManagement.Enums;
 using CafeManagement.Helpers;
 using CafeManagement.Interfaces.Services;
@@ -32,8 +32,22 @@ namespace CafeManagement.Services.Login
             _tokenService = tokenService;
         }
 
-        public async Task Signup(SignupRequest request)
+        public async Task<RegisterResponse> Signup(SignupRequest request)
         {
+            var existingUser = await _userManager.FindByEmailAsync(request.Email);
+            if (existingUser != null)
+                return new RegisterResponse
+                {
+                    status = 0,
+                    message = "email"
+                };
+            existingUser = await _userManager.FindByNameAsync(request.UserName);
+            if(existingUser!=null)
+                return new RegisterResponse
+                {
+                    status = 0,
+                    message = "userName"
+                };
             var user = new User
             {
                 UserName = request.UserName,
@@ -48,8 +62,6 @@ namespace CafeManagement.Services.Login
                     UserId = user.Id,
                     Name = request.Name,
                     Email = request.Email,
-                    BirthDay = request.BirthDay,
-                    PhoneNumber = request.PhoneNumber,
                     joinDate = DateTime.UtcNow
                 };
                 if(request.BirthDay!=null)
@@ -58,15 +70,22 @@ namespace CafeManagement.Services.Login
                     int age = today.Year - request.BirthDay.Value.Year;
                     profile.Age = age;
                 }
-                if (!await _roleManager.RoleExistsAsync(Role.Employee))
+                if(request.PhoneNumber!=null)
+                    profile.PhoneNumber = request.PhoneNumber;
+                if (!await _roleManager.RoleExistsAsync(Role.Customer))
                 {
-                    await _roleManager.CreateAsync(new IdentityRole(Role.Employee));
+                    await _roleManager.CreateAsync(new IdentityRole(Role.Customer));
                 }
-                await _userManager.AddToRoleAsync(user, Role.Employee);
+                await _userManager.AddToRoleAsync(user, Role.Customer);
                 await _unitOfWork.Profile.Add(profile);
                 user.Profile = profile;
                 await _userManager.UpdateAsync(user);
-            }   
+                return new RegisterResponse
+                {
+                    status = 1
+                };
+            }
+            throw new Exception("Cant create new user");
         }
 
         public async Task Update(User user)
@@ -97,11 +116,8 @@ namespace CafeManagement.Services.Login
                     Id = Guid.NewGuid(),
                     Name = request.UserName,
                     Email = userAccount.Email,
-                    PhoneNumber = "111111",
                     joinDate = DateTime.UtcNow,
                     UserId=userAccount.Id,
-                    Age=0,
-                    PictureURL=""
                 };
                 await _unitOfWork.Profile.Add(profile);
             }
@@ -124,22 +140,14 @@ namespace CafeManagement.Services.Login
                 throw new ArgumentNullException(nameof(user), "User không được null");
             }
 
-            if (!Enum.IsDefined(typeof(UserRole), request.Role))
-            {
-                throw new ArgumentException("Vai trò không hợp lệ", nameof(request.Role));
-            }
+            var newRole = await _roleManager.Roles.FirstOrDefaultAsync(r => r.Id == request.RoleId);
 
-            string newRole = Role.GetRoleName(request.Role);
-
-            if (!await _roleManager.RoleExistsAsync(newRole))
-            {
-                await _roleManager.CreateAsync(new IdentityRole(newRole));
-            }
+            if (newRole == null)
+                throw new Exception("Not found RoleId");
 
             var currentRoles = await _userManager.GetRolesAsync(user);
             await _userManager.RemoveFromRolesAsync(user, currentRoles);
-
-            await _userManager.AddToRoleAsync(user, newRole);
+            await _userManager.AddToRoleAsync(user, newRole.Name);
         }
 
         public async Task<Profile> UpdateProfile(Profile profile, string userId)
@@ -150,7 +158,7 @@ namespace CafeManagement.Services.Login
             {
                 return null; 
             }
-            if(profile.Email!= profile.Email)
+            if(profile.Email!= existingProfile.Email)
             {
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user == null)
@@ -160,7 +168,6 @@ namespace CafeManagement.Services.Login
                 user.Email = profile.Email;
                 await _userManager.UpdateAsync(user);
             }
-            profile.Id = existingProfile.Id;
             await _unitOfWork.Profile.Update(profile);
             return profile; 
         }
@@ -173,7 +180,7 @@ namespace CafeManagement.Services.Login
             var result = await _userManager.ChangePasswordAsync(existingUser, request.oldPassword, request.newPassword);
             if (!result.Succeeded)
             {
-                throw new Exception(result.Errors.Select(e => e.Description).FirstOrDefault());
+                throw new Exception("wrong password");
             }
 
         }
@@ -200,6 +207,35 @@ namespace CafeManagement.Services.Login
             }
             return userProfile;
 
+        }
+        public async Task<IEnumerable<UserResponse>> GetAllUser()
+        {
+            var userList= await _userManager.Users.Include(u => u.Profile).ToListAsync();
+            List<UserResponse> userResponses = new List<UserResponse>();
+            foreach (User user in userList)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+
+                if (roles.Any())
+                {
+                    var role = await _roleManager.FindByNameAsync(roles.First());
+                    userResponses.Add(new UserResponse
+                    {
+                        Id = user.Id,
+                        UserName = user.UserName,
+                        RealName = user.Profile.Name,
+                        RoleName= role.Name,
+                        Role = role.Id
+                    });
+                }
+            }
+            return userResponses;
+
+        }
+
+        public async Task<List<IdentityRole>> GetAllRole()
+        {
+            return await _roleManager.Roles.ToListAsync();
         }
     }
 }

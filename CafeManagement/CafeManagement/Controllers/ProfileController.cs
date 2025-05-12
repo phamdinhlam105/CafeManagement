@@ -1,4 +1,4 @@
-﻿using CafeManagement.Dtos.Request;
+﻿using CafeManagement.Dtos.Request.UserReq;
 using CafeManagement.Dtos.Respone;
 using CafeManagement.Interfaces.Services;
 using CafeManagement.Models;
@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace CafeManagement.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "NotCustomer")]
     [Route("api/[controller]")]
     [ApiController]
     public class ProfileController : ControllerBase
@@ -29,6 +29,8 @@ namespace CafeManagement.Controllers
             try
             {
                 var newProfile = await _userService.UpdateProfile(updatedProfile, userId);
+                if (newProfile == null)
+                    return NotFound("Not found user");
                 return Ok(newProfile);
             }
             catch
@@ -61,9 +63,9 @@ namespace CafeManagement.Controllers
                 await _userService.ChangePassword(request, userId);
                 return Ok();
             }
-            catch
+            catch(Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
     }

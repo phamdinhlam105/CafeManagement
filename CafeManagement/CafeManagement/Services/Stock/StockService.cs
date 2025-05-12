@@ -15,14 +15,12 @@ namespace CafeManagement.Services.Stock
 
         public async Task<DailyStock> NewDailyStock()
         {
-            var listStock = await _unitOfWork.DailyStock.GetAll();
-            DailyStock todayStock =listStock.FirstOrDefault(ds => ds.createDate == Ultilities.GetToday());
-
+            var todayStock = await _unitOfWork.DailyStock.GetByDate(Ultilities.GetToday());
             if (todayStock != null)
             {
                 return todayStock;
             }
-            DailyStock yesterdayStock = listStock.FirstOrDefault(ds => ds.createDate == Ultilities.GetYesterday());
+            DailyStock yesterdayStock = await _unitOfWork.DailyStock.GetByDate(Ultilities.GetYesterday());
 
             todayStock = new DailyStock
             {
@@ -45,6 +43,8 @@ namespace CafeManagement.Services.Stock
                     {
                         startStock = lastDetail.StockRemaining;
                     }
+                    else
+                        startStock = 0;
                 }
 
                 var stockDetail = new DailyStockDetail
@@ -66,8 +66,7 @@ namespace CafeManagement.Services.Stock
         public async Task<DailyStock> StockRemain()
         {
             DateOnly today = Ultilities.GetToday();
-            var listStock = await _unitOfWork.DailyStock.GetAll();
-            DailyStock currentStock = listStock.FirstOrDefault(ds => ds.createDate == today);
+            var currentStock = await _unitOfWork.DailyStock.GetByDate(today);
 
             if (currentStock == null)
                 currentStock = await NewDailyStock();
@@ -75,25 +74,16 @@ namespace CafeManagement.Services.Stock
             return currentStock;
         }
 
-        public async Task StockUpdate(Guid stockId, Ingredient ingredient, float amountRemain)
+        public async Task StockUpdate(Guid ingredientId, float amountRemain)
         {
-            var listStock = await _unitOfWork.DailyStock.GetAll();
-            DailyStock dailyStock = listStock.FirstOrDefault(ds => ds.Id == stockId);
-
-            if (dailyStock == null)
-            {
-                throw new Exception("DailyStock không tồn tại.");
-            }
-
+            var dailyStock = await StockRemain();
             DailyStockDetail stockDetail = dailyStock.DailyStockDetails
-                .FirstOrDefault(d => d.Ingredient.Id == ingredient.Id);
+                .FirstOrDefault(d => d.IngredientId == ingredientId);
 
             if (stockDetail == null)
             {
-                throw new Exception($"Không tìm thấy nguyên liệu {ingredient.Id} trong kho hôm nay.");
+                throw new Exception("No ingredient on today");
             }
-            if (amountRemain > stockDetail.StockRemaining)
-                stockDetail.StockImport = amountRemain - stockDetail.StockRemaining;
             stockDetail.StockRemaining = amountRemain;
 
             await _unitOfWork.DailyStockDetail.Update(stockDetail);
@@ -105,12 +95,7 @@ namespace CafeManagement.Services.Stock
         }
         public async Task<IEnumerable<DailyStockDetail>> GetDetailByDate(DateOnly date)
         {
-            var stock = (await _unitOfWork.DailyStock.GetAll()).FirstOrDefault(d => d.createDate == date);
-            if (stock == null)
-            {
-                return null;
-            }
-            return stock.DailyStockDetails.ToList();
+            return (await _unitOfWork.DailyStock.GetByDate(date)).DailyStockDetails;
         }
     }
 }

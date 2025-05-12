@@ -1,4 +1,6 @@
-﻿using CafeManagement.Dtos.Request;
+﻿using CafeManagement.Dtos.Request.UserReq;
+using CafeManagement.Dtos.Respone;
+using CafeManagement.Dtos.Respone.UserRes;
 using CafeManagement.Helpers;
 using CafeManagement.Interfaces.Services;
 using CafeManagement.Models;
@@ -28,16 +30,16 @@ namespace CafeManagement.Controllers
             }
             try
             {
-                await _userSerivce.Signup(request);
-                return Ok();
+                
+                return Ok(await _userSerivce.Signup(request));
             }
-            catch
+            catch(Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex);
             }
         }
-        [HttpPost("setrole")]
         [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
+        [HttpPost("setrole")]
         public async Task<IActionResult> SetRole([FromBody] SetRoleRequest request )
         {
             if (!ModelState.IsValid)
@@ -54,6 +56,37 @@ namespace CafeManagement.Controllers
                 return BadRequest();
             }
 
+        }
+        [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
+        [HttpGet("alluser")]
+        public async Task<IActionResult> GetUserList()
+        {
+            try
+            {
+                var userList= await _userSerivce.GetAllUser();
+                return Ok(userList);
+            }
+            catch(Exception exp)
+            {
+                return BadRequest(exp.Message);
+            }
+        }
+        [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
+        [HttpGet("allrole")]
+        public async Task<IActionResult> GetRolesList()
+        {
+            try
+            {
+                return Ok((await _userSerivce.GetAllRole()).Select(r => new RoleResponse
+                {
+                    Id = r.Id,
+                    RoleName = r.Name
+                }));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

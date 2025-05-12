@@ -4,8 +4,13 @@ namespace CafeManagement.Dtos.Respone
 {
     public class ReportResponse
     {
-        public IEnumerable<ReportBase> Reports { get; set; }
-        public IEnumerable<BestDays>? BestDays { get; set; }
+        public ICollection<OneDayReportResponse> Reports { get; set; }
+        public ICollection<BestDays>? BestDays { get; set; }
 
+        public ReportResponse() 
+        {
+            Reports = new List<OneDayReportResponse>();
+
+        }
     }
 }

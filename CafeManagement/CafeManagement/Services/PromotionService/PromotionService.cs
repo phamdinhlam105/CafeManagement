@@ -57,7 +57,13 @@ namespace CafeManagement.Services.PromotionService
 
         public async Task UpdatePromotion(Guid promotionId, Promotion promotionUpdate)
         {
-            await _unitOfWork.Promotion.Update(promotionUpdate);
+            var existPromotion = await _unitOfWork.Promotion.GetById(promotionId);
+            if (existPromotion == null)
+                throw new Exception("id Promotion not found");
+            existPromotion.Name=promotionUpdate.Name;
+            existPromotion.Description = promotionUpdate.Description;
+            existPromotion.Discount = promotionUpdate.Discount;
+            await _unitOfWork.Promotion.Update(existPromotion);
         }
 
         public async Task UpdatePromotionSchedule(Guid scheduleId, PromotionSchedule scheduleUpdate)

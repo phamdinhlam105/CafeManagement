@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CafeManagement.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "NotCustomer")]
     [Route("api/[controller]")]
     [ApiController]
     public class OrderDetailController : ControllerBase
@@ -38,15 +38,24 @@ namespace CafeManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> AddDetail([FromBody] OrderDetailRequest req)
         {
-            Order currentOrder = await _newOderService.GetById(req.OrderId);
-            if (currentOrder == null)
-                return NotFound(new ErrorResponse { Error = 404, Message = "id order not found" });
-            var product = await _productService.GetById(req.ProductId);
-            if (product == null)
-                return NotFound(new ErrorResponse { Error = 404, Message = "id product not found" });
-            OrderDetail newDetail = _orderDetailMapper.MapToEntity(req);
-            await _newOderService.AddOrderDetail(currentOrder,newDetail,product);
-            return Ok(newDetail);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                Order currentOrder = await _newOderService.GetById(req.OrderId);
+                if (currentOrder == null)
+                    return NotFound(new ErrorResponse { Error = 404, Message = "id order not found" });
+                var product = await _productService.GetById(req.ProductId);
+                if (product == null)
+                    return NotFound(new ErrorResponse { Error = 404, Message = "id product not found" });
+                OrderDetail newDetail = _orderDetailMapper.MapToEntity(req);
+                await _newOderService.AddOrderDetail(currentOrder, newDetail, product);
+                return Ok(_orderDetailMapper.MapToResponse(newDetail));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("GetByOrderId/{orderId}")]
@@ -62,7 +71,7 @@ namespace CafeManagement.Controllers
         public async Task<IActionResult> GetAll()
         {
             var details = (await _orderDetailService.GetAll()).ToList();
-            return Ok(details);
+            return Ok(details.Select(od=>_orderDetailMapper.MapToResponse(od)));
         }
 
         [HttpGet("bydate")]
@@ -70,17 +79,36 @@ namespace CafeManagement.Controllers
         {
             if (date > Ultilities.GetToday())
                 return BadRequest("invalid date");
-            return Ok(await _orderDetailService.GetByDate(date));
+            return Ok((await _orderDetailService.GetByDate(date)).Select(od=>_orderDetailMapper.MapToResponse(od)));
         }
-        [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(Guid id, [FromBody] OrderDetailRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                OrderDetail orderDetail = await _orderDetailService.GetById(id);
+                if (orderDetail == null)
+                    return NotFound(id);
+                _orderDetailMapper.UpdateEntityFromRequest(orderDetail, request);
+                var edittedDetails = await _orderDetailService.Update(orderDetail);
+                return Ok(_orderDetailMapper.MapToResponse(edittedDetails));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
         {
             OrderDetail orderDetail = await _orderDetailService.GetById(id);
             if (orderDetail == null)
                 return NotFound(id);
-            _orderDetailMapper.UpdateEntityFromRequest(orderDetail, request);
-            await _orderDetailService.Update(orderDetail);
+
+            await _orderDetailService.Delete(orderDetail);
             return Ok();
         }
     }

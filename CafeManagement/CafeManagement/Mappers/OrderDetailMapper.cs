@@ -12,7 +12,7 @@ namespace CafeManagement.Mappers
             return new OrderDetail
             {
                 Id = Guid.NewGuid(),
-                OderId = request.OrderId,
+                OrderId = request.OrderId,
                 ProductId = request.ProductId,
                 Note= request.Note,
                 Quantity=request.Quantity
@@ -23,21 +23,23 @@ namespace CafeManagement.Mappers
         {
             return new OrderDetailResponse
             {
-                OderId = orderDetail.Id,
+                Id=orderDetail.Id,
+                OrderId = orderDetail.OrderId,
+                ProductId = orderDetail.ProductId,
                 ProductName = orderDetail.Product.Name,
                 Quantity = orderDetail.Quantity,
                 Total = orderDetail.Quantity * orderDetail.Product.Price,
-                Note = orderDetail.Note
+                Note = orderDetail.Note ?? ""
             };
         }
 
         public void UpdateEntityFromRequest(OrderDetail orderDetail, OrderDetailRequest request)
         {
-            orderDetail.OderId = request.OrderId;
+            orderDetail.OrderId = request.OrderId;
             orderDetail.ProductId = request.ProductId;
             orderDetail.Quantity = request.Quantity;
-            orderDetail.Note = request.Note;
-            orderDetail.Quantity = request.Quantity;
+            if (request.Note != null)
+                orderDetail.Note = request.Note;
         }
     }
 }

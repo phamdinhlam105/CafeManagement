@@ -7,9 +7,10 @@ namespace CafeManagement.Interfaces.Services
 {
     public interface INewOrderService
     {
-        Task CreateOrder(Order order);
+        Task<Order> CreateOrder(Order order);
+        Task CancelOrder(Guid orderId);
         Task AddOrderDetail(Order order, OrderDetail detail,Product product);
-        Task<FinishOrderResponse> FinishOrder(Order order);
+        Task FinishOrder(Order order);
         Task EditOrder(Order order);
         Task<Order> GetById(Guid orderId);
         Task<IEnumerable<Order>> GetAll();

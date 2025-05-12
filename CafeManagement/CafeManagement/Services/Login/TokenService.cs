@@ -14,6 +14,7 @@ using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 namespace CafeManagement.Services.Login
 {
@@ -36,19 +37,25 @@ namespace CafeManagement.Services.Login
             string roleName = userRole != null && Enum.TryParse(typeof(UserRole), userRole, out var roleEnum)
             ? Role.GetRoleName((UserRole)roleEnum)
     : string.Empty;
-            var tokenDesciptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
+
+            var claims = new List<Claim>
             {
                     new Claim(ClaimTypes.NameIdentifier, user.Id),
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim("realName",user.Profile.Name),
-                    new Claim("profilePicture",user.Profile.PictureURL),
                     new Claim(ClaimValueTypes.Email, user.Email),
                     new Claim(ClaimTypes.Role, userRole)
 
-                }
-                ),
+                };
+
+            if (!string.IsNullOrEmpty(user.Profile.PictureURL))
+            {
+                claims.Add(new Claim("profilePicture", user.Profile.PictureURL));
+            }
+
+            var tokenDesciptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddHours(12),
                 Issuer = _configuration["JwtConfig:Issuer"],
                 Audience = _configuration["JwtConfig:Audience"],

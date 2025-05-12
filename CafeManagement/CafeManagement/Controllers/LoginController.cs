@@ -1,4 +1,4 @@
-﻿using CafeManagement.Dtos.Request;
+﻿using CafeManagement.Dtos.Request.UserReq;
 using CafeManagement.Interfaces.Services;
 using CafeManagement.Interfaces.Services.Login;
 using CafeManagement.Models;
@@ -21,8 +21,15 @@ namespace CafeManagement.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest();
-            var response = await _userService.Login(request);
-            return Ok(response);
+            try
+            {
+                var response = await _userService.Login(request);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
     }

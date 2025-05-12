@@ -25,10 +25,10 @@ namespace CafeManagement.Services.Report
 
         public async Task UpdateDailyReport(DateOnly date)
         {
-            var dailyReport = (await _reportRetrievalService.GetDailyReport(date)).Reports.ToList()[0] as DailyReport;
+            var dailyReport = await _unitOfWork.DailyReport.GetByDate(date);
             if (dailyReport.createDate > DateTime.UtcNow.AddHours(-1))
                 return;
-            DateTime startTime = date.ToDateTime(new TimeOnly(0, 0));
+            DateTime startTime = date.ToDateTime(new TimeOnly(0, 0), DateTimeKind.Utc);
             DateTime endTime = startTime.AddDays(1);
 
             dailyReport.createDate = DateTime.UtcNow;
@@ -59,7 +59,7 @@ namespace CafeManagement.Services.Report
             var today = DateOnly.FromDateTime(DateTime.Today);
             if (endDate > today) endDate = today; 
 
-            var monthlyReport =(await _reportRetrievalService.GetMonthlyReport(month, year)).Reports.ToList()[0] as MonthlyReport;
+            var monthlyReport =await _unitOfWork.MonthlyReport.GetByMonth(month, year);
             if (monthlyReport.createDate > DateTime.UtcNow.AddHours(-1))
                 return;
             var dailyReports = monthlyReport.DailyReports.ToList();
@@ -70,7 +70,7 @@ namespace CafeManagement.Services.Report
                 if (!existingDates.Contains(date))
                 {
                     await UpdateDailyReport(date);
-                    var dailyReport = (await _reportRetrievalService.GetDailyReport(date)).Reports.ToList()[0] as DailyReport;
+                    var dailyReport = await _unitOfWork.DailyReport.GetByDate(date);
                     dailyReports.Add(dailyReport);
                 }
             }
@@ -83,8 +83,8 @@ namespace CafeManagement.Services.Report
             monthlyReport.TotalExpenditure = dailyReports.Sum(dr => dr.TotalExpenditure);
             monthlyReport.NumberOfFinishedOrders = dailyReports.Sum(dr => dr.NumberOfFinishedOrders);
             monthlyReport.NumberOfCancelledOrders = dailyReports.Sum(dr => dr.NumberOfCancelledOrders);
-            monthlyReport.TopSelling = await _reportQueryService.GetTopSellingProduct(startDate.ToDateTime(TimeOnly.MinValue), endDate.ToDateTime(TimeOnly.MaxValue));
-            monthlyReport.LeastSelling = await _reportQueryService.GetLeastSellingProduct(startDate.ToDateTime(TimeOnly.MinValue), endDate.ToDateTime(TimeOnly.MaxValue));
+            monthlyReport.TopSelling = await _reportQueryService.GetTopSellingProduct(startDate.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc), endDate.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc));
+            monthlyReport.LeastSelling = await _reportQueryService.GetLeastSellingProduct(startDate.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc), endDate.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc));
 
             try
             {
@@ -103,7 +103,7 @@ namespace CafeManagement.Services.Report
             var today = DateOnly.FromDateTime(DateTime.Today);
             if (endDate > today) endDate = today;
 
-            var quarterlyReport = (await _reportRetrievalService.GetQuarterlyReport(quarter, year)).Reports.ToList()[0] as QuarterlyReport;
+            var quarterlyReport = await _unitOfWork.QuarterlyReport.GetByQuarter(quarter, year);
             if (quarterlyReport.createDate > DateTime.UtcNow.AddHours(-1))
                 return;
 
@@ -115,7 +115,7 @@ namespace CafeManagement.Services.Report
                 if (!existingMonths.Contains(month))
                 {
                     await UpdateMonthlyReport(month, year);
-                    var monthlyReport = (await _reportRetrievalService.GetMonthlyReport(month, year)).Reports.ToList()[0] as MonthlyReport;
+                    var monthlyReport = await _unitOfWork.MonthlyReport.GetByMonth(month, year);
                     monthlyReports.Add(monthlyReport);
                 }
             }
@@ -129,8 +129,8 @@ namespace CafeManagement.Services.Report
             quarterlyReport.TotalExpenditure = monthlyReports.Sum(mr => mr.TotalExpenditure);
             quarterlyReport.NumberOfFinishedOrders = monthlyReports.Sum(mr => mr.NumberOfFinishedOrders);
             quarterlyReport.NumberOfCancelledOrders = monthlyReports.Sum(mr => mr.NumberOfCancelledOrders);
-            quarterlyReport.TopSelling = await _reportQueryService.GetTopSellingProduct(startDate.ToDateTime(TimeOnly.MinValue), endDate.ToDateTime(TimeOnly.MaxValue));
-            quarterlyReport.LeastSelling = await _reportQueryService.GetLeastSellingProduct(startDate.ToDateTime(TimeOnly.MinValue), endDate.ToDateTime(TimeOnly.MaxValue));
+            quarterlyReport.TopSelling = await _reportQueryService.GetTopSellingProduct(startDate.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc), endDate.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc));
+            quarterlyReport.LeastSelling = await _reportQueryService.GetLeastSellingProduct(startDate.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc), endDate.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc));
 
             try
             {

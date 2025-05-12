@@ -1,11 +1,11 @@
-﻿namespace CafeManagement.Dtos.Request
+﻿namespace CafeManagement.Dtos.Request.Stock
 {
     public class UpdateStockRequest
     {
-        public Guid Id {  get; set; }
+        public Guid Id { get; set; }
         public IEnumerable<UpdateStockDetailRequest> Details { get; set; }
 
-        public UpdateStockRequest() 
+        public UpdateStockRequest()
         {
             Details = new List<UpdateStockDetailRequest>();
         }

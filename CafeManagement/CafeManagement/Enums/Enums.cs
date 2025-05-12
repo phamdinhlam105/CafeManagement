@@ -4,12 +4,12 @@
     {
         Admin = 1,
         Manager = 2,
-        Employee = 3
+        Employee = 3,
+        Customer = 4,
     }
     public enum OrderStatus
     {
         New,
-        Confirmed,
         Completed,
         Cancelled
     }

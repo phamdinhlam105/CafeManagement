@@ -12,13 +12,14 @@ namespace CafeManagement.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task Add(Product item)
+        public async Task<Product> Add(Product item)
         {
             if (item.Id == Guid.Empty)
             {
                 item.Id = Guid.NewGuid();
             }
             await _unitOfWork.Product.Add(item);
+            return item;
         }
 
         public async Task Delete(Product item)
@@ -38,10 +39,12 @@ namespace CafeManagement.Services
         }
 
 
-        public async Task Update(Product item)
+        public async Task<Product> Update(Product item)
         {
             if (item != null)
                 await _unitOfWork.Product.Update(item);
+            return item;
         }
+
     }
 }

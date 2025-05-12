@@ -12,13 +12,14 @@ namespace CafeManagement.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Add(Category item)
+        public async Task<Category> Add(Category item)
         {
             if (item.Id == Guid.Empty)
             {
                 item.Id = Guid.NewGuid();
             }
             await _unitOfWork.Category.Add(item);
+            return item;
         }
 
         public async Task Delete(Category item)
@@ -41,10 +42,11 @@ namespace CafeManagement.Services
             return await _unitOfWork.Product.GetByCategoryId(categoryId);
         }
 
-        public async Task Update(Category item)
+        public async Task<Category> Update(Category item)
         {
             if (item != null)
                 await _unitOfWork.Category.Update(item);
+            return item;
         }
     }
 }

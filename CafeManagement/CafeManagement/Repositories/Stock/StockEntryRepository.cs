@@ -14,5 +14,12 @@ namespace CafeManagement.Repositories.Stock
                 .Include(se => se.StockEntryDetails)
                 .ThenInclude(dt => dt.Ingredient).ToListAsync();
         }
+        public async Task<IEnumerable<StockEntry>> GetByDate(DateOnly date)
+        {
+            return await _context.StockEntries
+                 .Include(se => se.StockEntryDetails)
+                 .Where(se=> DateOnly.FromDateTime(se.EntryDate) == date)
+                 .ToListAsync();
+        }
     }
 }

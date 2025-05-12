@@ -9,9 +9,9 @@ namespace CafeManagement.Interfaces.Services
 
         Task<T> GetById(Guid id);
 
-        Task Add(T item);
+        Task<T> Add(T item);
 
-        Task Update(T item);
+        Task<T> Update(T item);
 
         Task Delete(T item);
     }

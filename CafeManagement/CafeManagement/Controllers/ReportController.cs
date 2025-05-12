@@ -28,7 +28,14 @@ namespace CafeManagement.Controllers
             {
                 return BadRequest("Invalid date");
             }
-            return Ok(await _reportRetrievalService.GetDailyReport(date));
+            try
+            {
+                return Ok(await _reportRetrievalService.GetDailyReport(date));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("daily/range")]
@@ -38,7 +45,14 @@ namespace CafeManagement.Controllers
             {
                 return BadRequest("Invalid date");
             }
-            return Ok(await _reportRetrievalService.GetReportsByRange(startDate,endDate));
+            try
+            {
+                return Ok(await _reportRetrievalService.GetReportsByRange(startDate, endDate));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpGet("monthly")]
         public async Task<IActionResult> getMonthlyReport(int month, int year)
@@ -49,7 +63,14 @@ namespace CafeManagement.Controllers
             {
                 return BadRequest("Invalid date");
             }
-            return Ok(await _reportRetrievalService.GetMonthlyReport(month, year));
+            try
+            {
+                return Ok(await _reportRetrievalService.GetMonthlyReport(month, year));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpGet("quarterly")]
         public async Task<IActionResult> getQuarterlyReport(int quarter, int year)
@@ -61,7 +82,11 @@ namespace CafeManagement.Controllers
             {
                 return BadRequest("Invalid date");
             }
-            return Ok(await _reportRetrievalService.GetQuarterlyReport(quarter, year));
+            try
+            {
+                return Ok(await _reportRetrievalService.GetQuarterlyReport(quarter, year));
+            }
+            catch (Exception ex) { return BadRequest(ex.Message); }
         }
      
         [HttpPost("daily")]

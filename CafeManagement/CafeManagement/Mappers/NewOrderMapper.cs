@@ -3,35 +3,52 @@ using CafeManagement.Dtos.Respone;
 using CafeManagement.Enums;
 using CafeManagement.Interfaces.Mappers;
 using CafeManagement.Models.Order;
+using CafeManagement.Models.PromotionModel;
 
 namespace CafeManagement.Mappers
 {
     public class NewOrderMapper : INewOrderMapper
     {
+        private readonly IOrderDetailMapper _orderDetailMapper;
+        public NewOrderMapper(IOrderDetailMapper orderDetailMapper)
+        {
+            _orderDetailMapper = orderDetailMapper;
+        }
         public Order MapToEntity(NewOrderRequest request)
         {
-                return new Order
-                {
-                    Id = Guid.NewGuid(),
-                    Note = request.Note,
-                    OrderStatus=OrderStatus.New,
-                    CustomerId= request.CustomerId
+            return new Order
+            {
+                Id = Guid.NewGuid(),
+                No = request.No,
+                Price = 0,
+                Quantity = 0,
+                createdAt = DateTime.UtcNow,
+                CustomerId = request.CustomerId,
+                Note = request.Note,
+                OrderStatus = OrderStatus.New
 
-                };
+            };
         }
 
         public NewOrderResponse MapToResponse(Order order)
         {
 
-            NewOrderResponse response = new NewOrderResponse
+            return new NewOrderResponse
             {
                 Id = order.Id,
-                Note = order.Note,
+                No=order.No,
+                Note = order.Note ?? "",
                 Total = order.Price,
                 Amount = order.Quantity,
-                Status = order.OrderStatus
+                Status = order.OrderStatus,
+                CustomerId= order.Customer != null ? order.Customer.Id : null,
+                CustomerName = order.Customer != null ? order.Customer.Name : "",
+                PromotionId = order.PromotionId,
+                CreatedAt=order.createdAt,
+                Details = order.Details != null ? 
+                order.Details.Select(od => _orderDetailMapper.MapToResponse(od)).ToList()
+                : new List<OrderDetailResponse>()
             };
-            return response;
         }
 
         public void UpdateEntityFromRequest(Order order, NewOrderRequest request)
