@@ -1,6 +1,7 @@
 ﻿using CafeManagement.Interfaces;
 using CafeManagement.Models;
 using CafeManagement.Models.Order;
+using CafeManagement.Models.Stock;
 using Newtonsoft.Json;
 
 namespace CafeManagement.Models
@@ -13,6 +14,8 @@ namespace CafeManagement.Models
         public string? Img {  get; set; }
         public string? Description {  get; set; }
         public Guid CategoryId { get; set; }
+        public Guid RecipeId {  get; set; }
+        public Recipe Recipe { get; set; }
         public Category? Category { get; set; }
         public ICollection<OrderDetail> Details { get; set; }
 

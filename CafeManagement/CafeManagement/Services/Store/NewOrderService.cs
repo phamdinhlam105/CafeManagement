@@ -1,19 +1,18 @@
-﻿using CafeManagement.Dtos.Respone;
-using CafeManagement.Enums;
+﻿using CafeManagement.Enums;
+using CafeManagement.Interfaces.Observer;
 using CafeManagement.Interfaces.Services;
 using CafeManagement.Models;
 using CafeManagement.Models.Order;
 using CafeManagement.UnitOfWork;
-using iText.Kernel.Pdf;
-using iText.Layout.Element;
-using System.Text;
 
 namespace CafeManagement.Services.Store
 {
     public class NewOrderService : INewOrderService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public NewOrderService(IUnitOfWork unitOfWork, IExportBillService exportBillService)
+        private IObserver customerObserver;
+        private ISubject orderCompleteEvent;
+        public NewOrderService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -35,9 +34,8 @@ namespace CafeManagement.Services.Store
         public async Task FinishOrder(Order order)
         {
             order.OrderStatus = OrderStatus.Completed;
-            order.Customer.NumberOfOrders++;
             await _unitOfWork.Order.Update(order);
-            await _unitOfWork.Customer.Update(order.Customer);
+            await orderCompleteEvent.Notify(order);
         }
 
         public async Task CancelOrder(Guid orderId)
@@ -49,6 +47,7 @@ namespace CafeManagement.Services.Store
 
         public async Task<Order> CreateOrder(Order order)
         {
+            orderCompleteEvent.Attach(customerObserver);
             if (order.Id == Guid.Empty)
                 order.Id = Guid.NewGuid();
             await _unitOfWork.Order.Add(order);

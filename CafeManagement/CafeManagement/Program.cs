@@ -48,14 +48,11 @@ builder.Services.AddScoped<IStockService, StockService>();
 builder.Services.AddScoped<IStockEntryService, StockEntryService>();
 builder.Services.AddScoped<IIngredientService, IngredientService>();
 builder.Services.AddScoped<IReportQueryService, ReportQueryService>();
-builder.Services.AddScoped<IReportCreationService, ReportCreationService>();
 builder.Services.AddScoped<IReportRetrievalService, ReportRetrievalService>();
-builder.Services.AddScoped<IYearlyReportService, YearlyReportService>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IExportBillService, ExportBillService>();
-builder.Services.AddScoped<IReportUpdateService, ReportUpdateService>();
 #endregion
+
 //mapper
 #region Mapper
 builder.Services.AddScoped<ICustomerMapper, CustomerMapper>();
@@ -66,8 +63,8 @@ builder.Services.AddScoped<IOrderDetailMapper, OrderDetailMapper>();
 builder.Services.AddScoped<IStockMapper, StockMapper>();
 builder.Services.AddScoped<IStockEntryMapper, StockEntryMapper>();
 #endregion
-//CORS
 
+//CORS
 var MyAllowSpecificOrigins = "_myAllowAllOrigins";
 //cors
 builder.Services.AddCors(options =>

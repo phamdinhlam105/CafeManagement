@@ -11,155 +11,49 @@ namespace CafeManagement.Services.Report
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IReportQueryService _reportQueryService;
-        private readonly IReportCreationService _reportCreationService;
-        public ReportRetrievalService(IUnitOfWork unitOfWork , IReportQueryService reportQueryService, IReportCreationService reportCreationService)
+        public ReportRetrievalService(IUnitOfWork unitOfWork , IReportQueryService reportQueryService)
         {
             _unitOfWork = unitOfWork;
             _reportQueryService = reportQueryService;
-            _reportCreationService = reportCreationService;
         }
-        public async Task<ReportResponse?> GetDailyReport(DateOnly date)
+        public async Task<DailyReport?> GetDailyReport(DateOnly date)
         {
-
-            var report = await _unitOfWork.DailyReport.GetByDate(date);
-
-            if (report == null)
+            var todayReport = await _unitOfWork.DailyReport.GetByDate(date);
+            
+            if(!todayReport.IsOrderReportUpToDate)
             {
-                await _reportCreationService.CreateDailyReport(date);
-
-                report = await _unitOfWork.DailyReport.GetByDate(date);
+                todayReport.OrderReport.TopSelling = todayReport.ProductReports.OrderByDescending(pr => pr.QuantitySold).FirstOrDefault().Product;
+                todayReport.OrderReport.LeastSelling = todayReport.ProductReports.OrderBy(pr => pr.QuantitySold).FirstOrDefault().Product;
+                todayReport.IsOrderReportUpToDate = true;
+                await _unitOfWork.DailyReport.Update(todayReport);
             }
-            var response =  new ReportResponse { Reports = new List<OneDayReportResponse>() };
-            response.Reports.Add(new OneDayReportResponse
-            {
-                Id=report.Id,
-                TotalRevenue=report.TotalRevenue,
-                TotalExpenditure=report.TotalExpenditure,
-                TopSellingId = report.TopSellingId,
-                LeastSellingId=report.LeastSellingId,
-                NumberOfCancelledOrders=report.NumberOfCancelledOrders,
-                NumberOfFinishedOrders=report.NumberOfFinishedOrders,
-                TotalProductsSold=report.TotalProductsSold,
-                CreateDate=report.createDate,
-                ReportDate=report.ReportDate,
-                PeakHours=report.PeakHours,
-            });
-            return response;
+            return todayReport;
         }
 
         public async Task<ReportResponse?> GetMonthlyReport(int month, int year)
         {
-            var report = await _unitOfWork.MonthlyReport.GetByMonth(month, year);
-
-            if (report == null)
-            {
-                await _reportCreationService.CreateMonthlyReport(month, year);
-                report = await _unitOfWork.MonthlyReport.GetByMonth(month,year);
-            }
-
-            var startDateTime = new DateTime(year, month, 1);
-            var endDateTime = startDateTime.AddMonths(1).AddSeconds(-1);
-
-            var reports = new List<MonthlyReport>();
-            reports.Add(report);
-            var response = new ReportResponse
-            {
-                Reports = new List<OneDayReportResponse>(),
-                BestDays = (await _reportQueryService.GetBestDaysInWeek(startDateTime, endDateTime)).ToList()
-            };
-            response.Reports.Add(new OneDayReportResponse
-            {
-                Id = report.Id,
-                TotalRevenue = report.TotalRevenue,
-                TotalExpenditure = report.TotalExpenditure,
-                TopSellingId = report.TopSellingId,
-                LeastSellingId = report.LeastSellingId,
-                NumberOfCancelledOrders = report.NumberOfCancelledOrders,
-                NumberOfFinishedOrders = report.NumberOfFinishedOrders,
-                TotalProductsSold = report.TotalProductsSold,
-                CreateDate = report.createDate,
-                StartDate = report.StartDate,
-                EndDate = report.EndDate,
-            });
-            return response;
+            return null;
         }
 
         public async Task<ReportResponse?> GetQuarterlyReport(int quarter, int year)
         {
-            var (startDateTime, endDateTime) = QuarterHelper.GetQuarterDates(year, quarter);
-            var startDate = startDateTime.ToDateTime(new TimeOnly(0, 0));
-            var endDate = endDateTime.ToDateTime(new TimeOnly(23, 59, 59));
-
-            var report = await _unitOfWork.QuarterlyReport.GetByQuarter(quarter, year);
-
-            if (report == null)
-            {
-                await _reportCreationService.CreateQuarterlyReport(quarter, year);
-                report = await _unitOfWork.QuarterlyReport.GetByQuarter(quarter,year);
-            }
-
-            var response =  new ReportResponse
-            {
-                Reports = new List<OneDayReportResponse>(),
-                BestDays = (await _reportQueryService.GetBestDaysInWeek(startDate, endDate)).ToList()
-            };
-            response.Reports.Add(new OneDayReportResponse
-            {
-                Id = report.Id,
-                TotalRevenue = report.TotalRevenue,
-                TotalExpenditure = report.TotalExpenditure,
-                TopSellingId = report.TopSellingId,
-                LeastSellingId = report.LeastSellingId,
-                NumberOfCancelledOrders = report.NumberOfCancelledOrders,
-                NumberOfFinishedOrders = report.NumberOfFinishedOrders,
-                TotalProductsSold = report.TotalProductsSold,
-                CreateDate = report.createDate,
-                StartDate = report.StartDate,
-                EndDate = report.EndDate,
-            });
-            return response;
+            return null;
         }
 
-        public async Task<ReportResponse> GetReportsByRange(DateOnly startDate, DateOnly endDate)
+        public async Task<List<DailyReport>> GetReportsByRange(DateOnly startDate, DateOnly endDate)
         {
-            var dailyReports = await _unitOfWork.DailyReport.GetByDateRange(startDate, endDate);
-            if (!dailyReports.Any())
+            var dailyReportList = (await _unitOfWork.DailyReport.GetByDateRange(startDate, endDate)).ToList();
+            foreach (var dailyReport in dailyReportList)
             {
-                var currentDate = startDate;
-                while (currentDate <= endDate)
+                if (!dailyReport.IsOrderReportUpToDate)
                 {
-                    await _reportCreationService.CreateDailyReport(currentDate);
-                    currentDate = currentDate.AddDays(1);
+                    dailyReport.OrderReport.TopSelling = dailyReport.ProductReports.OrderByDescending(pr => pr.QuantitySold).FirstOrDefault().Product;
+                    dailyReport.OrderReport.LeastSelling = dailyReport.ProductReports.OrderBy(pr => pr.QuantitySold).FirstOrDefault().Product;
+                    dailyReport.IsOrderReportUpToDate = true;
+                    await _unitOfWork.DailyReport.Update(dailyReport);
                 }
-
-                dailyReports = await _unitOfWork.DailyReport.GetByDateRange(startDate, endDate);
             }
-            var startDateTime = startDate.ToDateTime(new TimeOnly(0, 0),DateTimeKind.Utc);
-            var endDateTime = endDate.ToDateTime(new TimeOnly(23, 59, 59), DateTimeKind.Utc);
-            var response = new ReportResponse
-            {
-                Reports = new List<OneDayReportResponse>(),
-                BestDays = (await _reportQueryService.GetBestDaysInWeek(startDateTime, endDateTime)).ToList()
-            };
-            foreach (var report in dailyReports)
-            {
-                response.Reports.Add(new OneDayReportResponse
-                {
-                    Id = report.Id,
-                    TotalRevenue = report.TotalRevenue,
-                    TotalExpenditure = report.TotalExpenditure,
-                    TopSellingId = report.TopSellingId,
-                    LeastSellingId = report.LeastSellingId,
-                    NumberOfCancelledOrders = report.NumberOfCancelledOrders,
-                    NumberOfFinishedOrders = report.NumberOfFinishedOrders,
-                    TotalProductsSold = report.TotalProductsSold,
-                    CreateDate = report.createDate,
-                    ReportDate = report.ReportDate,
-                    PeakHours = report.PeakHours,
-                });
-            }
-
-            return response;
+            return dailyReportList;
         }
     }
 }
