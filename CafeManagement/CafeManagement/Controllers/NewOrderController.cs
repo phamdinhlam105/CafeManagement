@@ -20,13 +20,11 @@ namespace CafeManagement.Controllers
     {
         private readonly INewOrderService _newOrderService;
         private readonly INewOrderMapper _newOrderMapper;
-        private readonly IExportBillService _exportBillService;
 
-        public NewOrderController(INewOrderService newOrderService, INewOrderMapper newOrderMapper,IExportBillService exportBillService)
+        public NewOrderController(INewOrderService newOrderService, INewOrderMapper newOrderMapper)
         {
             _newOrderService = newOrderService;
             _newOrderMapper = newOrderMapper;
-            _exportBillService = exportBillService;
         }
 
         [HttpPost]

@@ -1,6 +1,6 @@
 ﻿namespace CafeManagement.Models.Report
 {
-    public class YearlyReport : ReportBase
+    public class YearlyReport
     {
         public List<Customer> TopLoyalCustomers { get; set; }
         public List<QuarterlyReport> QuarterlyReports { get; set; }

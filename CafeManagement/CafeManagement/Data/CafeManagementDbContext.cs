@@ -22,18 +22,32 @@ namespace CafeManagement.Data
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Category> Categories { get; set; }
+        #region Promotion
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<PromotionSchedule> PromotionSchedules {  get; set; }
+        #endregion
+
+        #region Stock
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<DailyStock> DailyStocks {  get; set; }
         public DbSet<DailyStockDetail> DailyStockDetails {  get; set; }
         public DbSet<StockEntry> StockEntries { get; set; }
         public DbSet<StockEntryDetail> StockEntryDetails {  get; set; }
+        #endregion
+
+        #region Report
+        public DbSet<OrderReport> OrderReports {  get; set; }
+        public DbSet<StockReport> StockReports { get; set; }
+        public DbSet<ProductReport> ProductReports { get; set; }
         public DbSet<DailyReport> DailyReports { get; set; }
         public DbSet<MonthlyReport> MonthlyReports { get; set; }
         public DbSet<QuarterlyReport> QuarterlyReports { get; set; }
         public DbSet<YearlyReport> YearlyReports { get; set; }
+        #endregion
+
+        #region User
         public DbSet<Profile> Profiles { get; set; }
+        #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -107,38 +121,8 @@ namespace CafeManagement.Data
                 e.Property(p => p.joinDate).IsRequired();
             });
 
-            modelBuilder.Entity<MonthlyReport>(entity =>
-            {
-                entity.HasOne(r => r.TopSelling)
-                      .WithMany()
-                      .HasForeignKey(r => r.TopSellingId);
 
-                entity.HasOne(r => r.LeastSelling)
-                      .WithMany()
-                      .HasForeignKey(r => r.LeastSellingId);
-            });
-
-            modelBuilder.Entity<QuarterlyReport>(entity =>
-            {
-                entity.HasOne(r => r.TopSelling)
-                      .WithMany()
-                      .HasForeignKey(r => r.TopSellingId);
-
-                entity.HasOne(r => r.LeastSelling)
-                      .WithMany()
-                      .HasForeignKey(r => r.LeastSellingId);
-            });
-
-            modelBuilder.Entity<DailyReport>(entity =>
-            {
-                entity.HasOne(r => r.TopSelling)
-                      .WithMany()
-                      .HasForeignKey(r => r.TopSellingId);
-
-                entity.HasOne(r => r.LeastSelling)
-                      .WithMany()
-                      .HasForeignKey(r => r.LeastSellingId);
-            });
+            #region SoftDeleteFilter
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
                 if (entityType.ClrType is ISoftDeletable)
@@ -151,6 +135,7 @@ namespace CafeManagement.Data
                     modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
                 }
             }
+            #endregion
         }
     }
 }

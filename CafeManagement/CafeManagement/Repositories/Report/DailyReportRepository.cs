@@ -14,30 +14,34 @@ namespace CafeManagement.Repositories.Report
         public async Task<IEnumerable<DailyReport>> GetByDateRange(DateOnly start, DateOnly end)
         {
             return await _context.DailyReports
-                .Include(dr => dr.TopSelling)
-                .Include(dr => dr.LeastSelling)
+                .Include(dr => dr.OrderReport)
+                .Include(dr => dr.StockReport)
+                .Include(dr=>dr.ProductReports)
                 .Where(dr => dr.ReportDate >=start && dr.ReportDate<=end)
                 .ToListAsync();
         }
         public override async Task<DailyReport> GetById(Guid id)
         {
             return await _context.DailyReports
-                .Include(dr => dr.TopSelling)
-                .Include(dr => dr.LeastSelling)
+                .Include(dr => dr.OrderReport)
+                .Include(dr => dr.StockReport)
+                .Include(dr => dr.ProductReports)
                 .FirstOrDefaultAsync(dr=>dr.Id==id);
         }
         public async Task<DailyReport> GetByDate(DateOnly date)
         {
             return await _context.DailyReports
-               .Include(dr => dr.TopSelling)
-               .Include(dr => dr.LeastSelling)
+               .Include(dr => dr.OrderReport)
+               .Include(dr => dr.StockReport)
+               .Include(dr => dr.ProductReports)
                .FirstOrDefaultAsync(dr => dr.ReportDate == date);
         }
         public async Task<IEnumerable<DailyReport>> GetAll()
         {
             return await _context.DailyReports
-              .Include(dr => dr.TopSelling)
-              .Include(dr => dr.LeastSelling)
+              .Include(dr => dr.OrderReport)
+              .Include(dr => dr.StockReport)
+              .Include(dr => dr.ProductReports)
               .ToListAsync();
         }
     }

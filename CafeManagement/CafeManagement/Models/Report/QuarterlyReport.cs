@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace CafeManagement.Models.Report
 {
-    public class QuarterlyReport : ReportBase
+    public class QuarterlyReport
     {
         public int Quarter { get; set; }
         [JsonConverter(typeof(DateOnlyJsonConverter))]

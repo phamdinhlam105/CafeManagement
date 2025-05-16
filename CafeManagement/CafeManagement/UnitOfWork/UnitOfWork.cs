@@ -26,6 +26,9 @@ namespace CafeManagement.UnitOfWork
         private IDailyStockDetailRepository _dailyStockDetailRepository ;
         private IStockEntryRepository _stockEntryRepository ;
         private IStockEntryDetailRepository _stockEntryDetailRepository ;
+        private IOrderReportRepository _orderReportRepository ;
+        private IStockReportRepository _stockReportRepository ;
+        private IProductReportRepository _productReportRepository;
         private IDailyReportRepository _dailyReportRepository ;
         private IMonthlyReportRepository _monthlyReportRepository ;
         private IQuarterlyReportRepository _quarterlyReportRepository ;
@@ -51,7 +54,6 @@ namespace CafeManagement.UnitOfWork
                 return _product;
             }
         }
-        
         public ICategoryRepository Category
         {
             get
@@ -63,8 +65,6 @@ namespace CafeManagement.UnitOfWork
                 return _category;
             }
         }
-
-       
         public IOrderRepository Order
         {
             get
@@ -76,7 +76,6 @@ namespace CafeManagement.UnitOfWork
                 return _order;
             }
         }
-
         public IOrderDetailRepository OrderDetail
         {
             get
@@ -88,7 +87,6 @@ namespace CafeManagement.UnitOfWork
                 return _orderDetail;
             }
         }
-
         public ICustomerRepository Customer
         {
             get
@@ -100,7 +98,7 @@ namespace CafeManagement.UnitOfWork
                 return _customer;
             }
         }
-
+        #region Stock
         public IIngredientRepository Ingredient
         {
             get
@@ -134,7 +132,6 @@ namespace CafeManagement.UnitOfWork
                 return _dailyStockDetailRepository;
             }
         }
-
         public IStockEntryRepository StockEntry
         {
             get
@@ -155,6 +152,41 @@ namespace CafeManagement.UnitOfWork
                         if (_stockEntryDetailRepository == null)
                             return _stockEntryDetailRepository = new StockEntryDetailRepository(_context);
                 return _stockEntryDetailRepository;
+            }
+        }
+        #endregion
+        #region Report
+        public IOrderReportRepository OrderReport
+        {
+            get
+            {
+                if (_orderReportRepository == null)
+                    lock (_lock)
+                        if (_orderReportRepository == null)
+                            return _orderReportRepository = new OrderReportRepository(_context);
+                return _orderReportRepository;
+            }
+        }
+        public IStockReportRepository StockReport
+        {
+            get
+            {
+                if (_stockReportRepository == null)
+                    lock (_lock)
+                        if (_stockReportRepository == null)
+                            return _stockReportRepository = new StockReportRepository(_context);
+                return _stockReportRepository;
+            }
+        }
+        public IProductReportRepository ProductReport
+        {
+            get
+            {
+                if (_productReportRepository == null)
+                    lock (_lock)
+                        if (_productReportRepository == null)
+                            return _productReportRepository = new ProductReportRepository(_context);
+                return _productReportRepository;
             }
         }
         public IDailyReportRepository DailyReport
@@ -201,6 +233,8 @@ namespace CafeManagement.UnitOfWork
                 return _yearlyReportRepository;
             }
         }
+        #endregion
+        #region Promotion
         public IPromotion Promotion
         {
             get
@@ -223,6 +257,8 @@ namespace CafeManagement.UnitOfWork
                 return _promotionScheduleRepository;
             }
         }
+        #endregion
+        #region User
         public IProfileRepository Profile
         {
             get
@@ -234,6 +270,7 @@ namespace CafeManagement.UnitOfWork
                 return _profileRepository;
             }
         }
+        #endregion
         public async ValueTask DisposeAsync()
         {
 
