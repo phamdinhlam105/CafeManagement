@@ -1,6 +1,7 @@
 ﻿using CafeManagement.Dtos.Request;
 using CafeManagement.Dtos.Respone;
 using CafeManagement.Interfaces.Mappers;
+using CafeManagement.Interfaces.Mappers.BaseMapper;
 using CafeManagement.Models.Order;
 
 namespace CafeManagement.Mappers
@@ -33,7 +34,7 @@ namespace CafeManagement.Mappers
             };
         }
 
-        public void UpdateEntityFromRequest(OrderDetail orderDetail, OrderDetailRequest request)
+        public void UpdateEntityFromRequest(OrderDetailRequest request, OrderDetail orderDetail)
         {
             orderDetail.OrderId = request.OrderId;
             orderDetail.ProductId = request.ProductId;

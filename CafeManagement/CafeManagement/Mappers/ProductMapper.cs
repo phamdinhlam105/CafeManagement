@@ -1,6 +1,7 @@
 ﻿using CafeManagement.Dtos.Request;
 using CafeManagement.Dtos.Respone;
 using CafeManagement.Interfaces.Mappers;
+using CafeManagement.Interfaces.Mappers.BaseMapper;
 using CafeManagement.Models;
 
 namespace CafeManagement.Mappers
@@ -33,7 +34,7 @@ namespace CafeManagement.Mappers
             };
         }
 
-        public void UpdateEntityFromRequest(Product product, ProductRequest request)
+        public void UpdateEntityFromRequest(ProductRequest request, Product product)
         {
             product.Name = request.Name;
             product.Price = request.Price;

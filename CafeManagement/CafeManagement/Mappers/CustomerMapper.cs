@@ -1,6 +1,7 @@
 ﻿using CafeManagement.Dtos.Request;
 using CafeManagement.Dtos.Respone;
 using CafeManagement.Interfaces.Mappers;
+using CafeManagement.Interfaces.Mappers.BaseMapper;
 using CafeManagement.Models;
 
 namespace CafeManagement.Mappers
@@ -29,7 +30,7 @@ namespace CafeManagement.Mappers
                 Address = request.Address
             };
         }
-        public void UpdateEntityFromRequest(Customer customer, CustomerRequest request)
+        public void UpdateEntityFromRequest(CustomerRequest request, Customer customer)
         {
             customer.Name= request.Name;
             customer.Phone= request.Phone;

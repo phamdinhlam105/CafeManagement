@@ -1,13 +1,14 @@
 ﻿using CafeManagement.Dtos.Request;
 using CafeManagement.Dtos.Respone;
+using CafeManagement.Interfaces.Mappers.BaseMapper;
 using CafeManagement.Models.Order;
 
 namespace CafeManagement.Interfaces.Mappers
 {
-    public interface IOrderDetailMapper
+    public interface IOrderDetailMapper : IRequestToEntity<OrderDetailRequest, OrderDetail>,
+        IEntityToResponse<OrderDetail, OrderDetailResponse>,
+        IRequestToUpdate<OrderDetailRequest, OrderDetail>
     {
-        OrderDetailResponse MapToResponse(OrderDetail orderDetail);
-        OrderDetail MapToEntity(OrderDetailRequest request);
-        void UpdateEntityFromRequest(OrderDetail orderDetail, OrderDetailRequest request);
+
     }
 }

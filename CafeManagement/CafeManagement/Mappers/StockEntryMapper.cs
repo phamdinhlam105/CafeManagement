@@ -1,13 +1,20 @@
 ﻿using CafeManagement.Dtos.Request.Stock;
 using CafeManagement.Dtos.Respone.Stock;
 using CafeManagement.Interfaces.Mappers;
+using CafeManagement.Interfaces.Mappers.BaseMapper;
 using CafeManagement.Models.Stock;
 
 namespace CafeManagement.Mappers
 {
     public class StockEntryMapper : IStockEntryMapper
     {
-        public StockEntry MaptoEntity(StockEntryRequest request)
+        private readonly IStockEntryDetailMapper _stockEntryDetailMapper;
+        public StockEntryMapper(IStockEntryDetailMapper stockEntryDetailMapper)
+        {
+            _stockEntryDetailMapper = stockEntryDetailMapper;
+        }
+
+        public StockEntry MapToEntity(StockEntryRequest request)
         {
             var newStockId = Guid.NewGuid();
             return new StockEntry
@@ -15,13 +22,11 @@ namespace CafeManagement.Mappers
                 Id = newStockId,
                 EntryDate = request.EntryDate,
                 TotalValue = request.TotalValue,
-                StockEntryDetails = request.Details.Select(d => new StockEntryDetail
+                StockEntryDetails = request.Details.Select(d =>
                 {
-                    Id = Guid.NewGuid(),
-                    IngredientId = d.IngredientId,
-                    StockEntryId = newStockId,
-                    Quantity = d.Quantity,
-                    Price = d.Price
+                    var detail = _stockEntryDetailMapper.MapToEntity(d);
+                    detail.StockEntryId = newStockId;
+                    return detail;
                 }).ToList()
             };
         }
@@ -33,15 +38,7 @@ namespace CafeManagement.Mappers
                 Id = entry.Id,
                 EntryDate = entry.EntryDate,
                 TotalValue = entry.TotalValue,
-                Details = entry.StockEntryDetails.Select(sed => new StockEntryDetailResponse
-                {
-                    Id = sed.Id,
-                    Quantity = sed.Quantity,
-                    Price = sed.Price,
-                    Ingredient = sed.Ingredient,
-                    IngredientId = sed.IngredientId,
-                    StockEntryId = sed.StockEntryId
-                }).ToList()
+                Details = entry.StockEntryDetails.Select(sed => _stockEntryDetailMapper.MapToResponse(sed)).ToList()
             };
         }
     }

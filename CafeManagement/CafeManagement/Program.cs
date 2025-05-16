@@ -76,6 +76,7 @@ builder.Services.AddScoped<INewOrderMapper, NewOrderMapper>();
 builder.Services.AddScoped<IOrderDetailMapper, OrderDetailMapper>();
 builder.Services.AddScoped<IStockMapper, StockMapper>();
 builder.Services.AddScoped<IStockEntryMapper, StockEntryMapper>();
+builder.Services.AddScoped<IStockEntryDetailMapper, StockEntryDetailMapper>();
 #endregion
 
 //CORS

@@ -2,6 +2,7 @@
 using CafeManagement.Dtos.Respone;
 using CafeManagement.Dtos.Respone.Stock;
 using CafeManagement.Interfaces.Mappers;
+using CafeManagement.Interfaces.Mappers.BaseMapper;
 using CafeManagement.Models.Stock;
 
 namespace CafeManagement.Mappers

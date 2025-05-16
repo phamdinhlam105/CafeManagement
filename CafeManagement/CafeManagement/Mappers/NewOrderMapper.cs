@@ -2,6 +2,7 @@
 using CafeManagement.Dtos.Respone;
 using CafeManagement.Enums;
 using CafeManagement.Interfaces.Mappers;
+using CafeManagement.Interfaces.Mappers.BaseMapper;
 using CafeManagement.Models.Order;
 using CafeManagement.Models.PromotionModel;
 
@@ -45,15 +46,8 @@ namespace CafeManagement.Mappers
                 CustomerName = order.Customer != null ? order.Customer.Name : "",
                 PromotionId = order.PromotionId,
                 CreatedAt=order.createdAt,
-                Details = order.Details != null ? 
-                order.Details.Select(od => _orderDetailMapper.MapToResponse(od)).ToList()
-                : new List<OrderDetailResponse>()
+                Details =order.Details.Select(od => _orderDetailMapper.MapToResponse(od)).ToList() ?? []
             };
-        }
-
-        public void UpdateEntityFromRequest(Order order, NewOrderRequest request)
-        {
-            throw new NotImplementedException();
         }
     }
 }
