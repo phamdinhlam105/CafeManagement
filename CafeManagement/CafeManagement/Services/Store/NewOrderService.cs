@@ -1,4 +1,5 @@
 ﻿using CafeManagement.Enums;
+using CafeManagement.Interfaces.Factory;
 using CafeManagement.Interfaces.Observer;
 using CafeManagement.Interfaces.Services;
 using CafeManagement.Models;
@@ -10,11 +11,15 @@ namespace CafeManagement.Services.Store
     public class NewOrderService : INewOrderService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private IObserver customerObserver;
-        private ISubject orderCompleteEvent;
-        public NewOrderService(IUnitOfWork unitOfWork)
+        private readonly ISubject _orderCompleteEvent;
+        private readonly IFactory<IObserver> _factory;
+        public NewOrderService(IUnitOfWork unitOfWork, ISubject orderCompleteEvent, IFactory<IObserver> factory)
         {
             _unitOfWork = unitOfWork;
+            _orderCompleteEvent = orderCompleteEvent;
+            _factory = factory;
+            _orderCompleteEvent.Attach(_factory.Create("customer"));
+            _orderCompleteEvent.Attach(_factory.Create("report"));
         }
         public async Task AddOrderDetail(Order order, OrderDetail detail,Product product)
         {
@@ -35,7 +40,7 @@ namespace CafeManagement.Services.Store
         {
             order.OrderStatus = OrderStatus.Completed;
             await _unitOfWork.Order.Update(order);
-            await orderCompleteEvent.Notify(order);
+            await _orderCompleteEvent.Notify(order);
         }
 
         public async Task CancelOrder(Guid orderId)
@@ -47,7 +52,6 @@ namespace CafeManagement.Services.Store
 
         public async Task<Order> CreateOrder(Order order)
         {
-            orderCompleteEvent.Attach(customerObserver);
             if (order.Id == Guid.Empty)
                 order.Id = Guid.NewGuid();
             await _unitOfWork.Order.Add(order);

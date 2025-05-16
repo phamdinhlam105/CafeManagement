@@ -23,6 +23,11 @@ using System.Text;
 using DotNetEnv;
 using CafeManagement.Helpers;
 using Microsoft.AspNetCore.Http.Json;
+using CafeManagement.Observers;
+using CafeManagement.Interfaces.Observer;
+using CafeManagement.Factories;
+using CafeManagement.Interfaces.Factory;
+using CafeManagement.Observers.Subjects;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,6 +58,15 @@ builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 #endregion
 
+#region Observer
+builder.Services.AddScoped< CustomerUpdater>();
+builder.Services.AddScoped< ReportUpdater>();
+builder.Services.AddScoped<ISubject, OrderCompleteEvent>();
+#endregion
+
+#region Factory
+builder.Services.AddScoped<IFactory<IObserver>, ObserverFactory>();
+#endregion
 //mapper
 #region Mapper
 builder.Services.AddScoped<ICustomerMapper, CustomerMapper>();

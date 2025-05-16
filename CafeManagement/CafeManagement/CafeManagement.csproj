@@ -27,8 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\Promotion\" />
-    <Folder Include="Interfaces\ReportUpdate\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 

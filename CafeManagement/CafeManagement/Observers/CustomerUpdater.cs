@@ -2,7 +2,7 @@
 using CafeManagement.Models.Order;
 using CafeManagement.UnitOfWork;
 
-namespace CafeManagement.Services.ObserverPattern
+namespace CafeManagement.Observers
 {
     public class CustomerUpdater : IObserver
     {

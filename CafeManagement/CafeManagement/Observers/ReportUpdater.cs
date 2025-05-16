@@ -4,7 +4,7 @@ using CafeManagement.Models.Order;
 using CafeManagement.Models.Report;
 using CafeManagement.UnitOfWork;
 
-namespace CafeManagement.Services.ObserverPattern
+namespace CafeManagement.Observers
 {
     public class ReportUpdater : IObserver
     {
@@ -20,7 +20,7 @@ namespace CafeManagement.Services.ObserverPattern
                 todayReport = new DailyReport();
             if (data is Order order)
             {
-                foreach(OrderDetail detail in order.Details)
+                foreach (OrderDetail detail in order.Details)
                 {
                     var productReport = todayReport.ProductReports.FirstOrDefault(pr => pr.ProductId == detail.ProductId);
                     if (productReport == null)
@@ -33,7 +33,7 @@ namespace CafeManagement.Services.ObserverPattern
                         };
                         todayReport.ProductReports.Add(productReport);
                     }
-                      else
+                    else
                         productReport.QuantitySold += detail.Quantity;
                 }
                 todayReport.OrderReport.TotalRevenue += order.Price;

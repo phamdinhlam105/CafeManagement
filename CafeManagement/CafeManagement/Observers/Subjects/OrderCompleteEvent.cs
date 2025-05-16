@@ -1,6 +1,6 @@
 ﻿using CafeManagement.Interfaces.Observer;
 
-namespace CafeManagement.Services.ObserverPattern
+namespace CafeManagement.Observers.Subjects
 {
     public class OrderCompleteEvent : ISubject
     {
