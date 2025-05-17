@@ -1,23 +1,25 @@
-﻿using CafeManagement.Interfaces.Observer;
+﻿
+using CafeManagement.Interfaces.Observer;
+using CafeManagement.Models.Order;
 
 namespace CafeManagement.Observers.Subjects
 {
-    public class OrderCompleteEvent : ISubject
+    public class OrderCompleteEvent : ISubject<Order>
     {
-        private List<IObserver> _observers = new List<IObserver>();
-        public void Attach(IObserver observer)
+        private readonly List<IAppObserver<Order>> _observers = new List<IAppObserver<Order>>();
+        public void Attach(IAppObserver<Order> observer)
         {
             _observers.Add(observer);
         }
 
-        public void Detach(IObserver observer)
+        public void Detach(IAppObserver<Order> observer)
         {
             _observers.Remove(observer);
         }
 
-        public async Task Notify(object data)
+        public async Task Notify(Order data)
         {
-            foreach (IObserver observer in _observers)
+            foreach (IAppObserver<Order> observer in _observers)
             {
                 await observer.Update(data);
             }

@@ -1,4 +1,4 @@
-﻿using CafeManagement.Dtos.Respone;
+﻿using CafeManagement.Dtos.Respone.ReportRes;
 using CafeManagement.Models.Report;
 
 namespace CafeManagement.Interfaces.Services.Report

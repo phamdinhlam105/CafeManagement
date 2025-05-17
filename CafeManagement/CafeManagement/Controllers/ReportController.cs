@@ -1,4 +1,5 @@
 ﻿using CafeManagement.Helpers;
+using CafeManagement.Interfaces.Mappers;
 using CafeManagement.Interfaces.Services.Report;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,9 +13,11 @@ namespace CafeManagement.Controllers
     public class ReportController : ControllerBase
     {
         private readonly IReportRetrievalService _reportRetrievalService;
-        public ReportController(IReportRetrievalService reportRetrievalService)
+        private readonly IReportMapper _reportMapper;
+        public ReportController(IReportRetrievalService reportRetrievalService,IReportMapper reportMapper)
         {
             _reportRetrievalService = reportRetrievalService;
+            _reportMapper = reportMapper;
         }
 
         [HttpGet("daily")] 
@@ -26,7 +29,10 @@ namespace CafeManagement.Controllers
             }
             try
             {
-                return Ok(await _reportRetrievalService.GetDailyReport(date));
+                var dailyReport = await _reportRetrievalService.GetDailyReport(date);
+                if (dailyReport == null)
+                    return NoContent();
+                return Ok(_reportMapper.MapToResponse(dailyReport));
             }
             catch (Exception ex)
             {
@@ -43,7 +49,8 @@ namespace CafeManagement.Controllers
             }
             try
             {
-                return Ok(await _reportRetrievalService.GetReportsByRange(startDate, endDate));
+                var listReport = await _reportRetrievalService.GetReportsByRange(startDate, endDate);
+                return Ok(listReport.Select(dr=>_reportMapper.MapToResponse(dr)));
             }
             catch (Exception ex)
             {

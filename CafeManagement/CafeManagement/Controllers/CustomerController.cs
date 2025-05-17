@@ -68,8 +68,8 @@ namespace CafeManagement.Controllers
 
                 var existItem = await _customerService.GetById(Id);
                 if (existItem == null)
-                    return NotFound(new ErrorResponse { Error = 404, Message = "id customer not found" });
-                _customerMapper.UpdateEntityFromRequest(existItem, customer);
+                    return NotFound(new  { Error = 404, Message = "id customer not found" });
+                _customerMapper.UpdateEntityFromRequest(customer, existItem);
                 await _customerService.Update(existItem);
                 return Ok(existItem);
             }

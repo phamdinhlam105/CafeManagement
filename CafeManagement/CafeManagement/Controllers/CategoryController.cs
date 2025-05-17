@@ -72,7 +72,7 @@ namespace CafeManagement.Controllers
                 var existItem = await _categoryService.GetById(Id);
                 if (existItem == null)
                     return NotFound();
-                _categoryMapper.UpdateEntityFromRequest(existItem, category);
+                _categoryMapper.UpdateEntityFromRequest(category, existItem);
                 var edittedCategory = await _categoryService.Update(existItem);
                 return Ok(_categoryMapper.MapToResponse(edittedCategory));
             }
@@ -87,7 +87,7 @@ namespace CafeManagement.Controllers
         {
             var category = await _categoryService.GetById(categoryId);
             if(category == null) 
-                return NotFound(new ErrorResponse{Error= 404, Message= "id category not found"});
+                return NotFound(new {Error= 404, Message= "id category not found"});
             var products = await _categoryService.GetProductsByCategory(categoryId);
             return Ok(products.Select(p => _productMapper.MapToResponse(p))) ;
         }

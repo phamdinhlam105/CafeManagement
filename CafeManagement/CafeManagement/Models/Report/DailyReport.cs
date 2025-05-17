@@ -18,6 +18,8 @@ namespace CafeManagement.Models.Report
         public DailyReport()
         {
             ProductReports = new List<ProductReport>();
+            OrderReport = new OrderReport();
+            StockReport = new StockReport();
             IsOrderReportUpToDate = true;
             IsStockReportUpToDate = true;
         }

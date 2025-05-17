@@ -1,4 +1,4 @@
-﻿using CafeManagement.Dtos.Request;
+﻿using CafeManagement.Dtos.Request.OrderReq;
 using CafeManagement.Dtos.Respone;
 using CafeManagement.Helpers;
 using CafeManagement.Interfaces.Mappers;
@@ -44,10 +44,10 @@ namespace CafeManagement.Controllers
             {
                 Order currentOrder = await _newOderService.GetById(req.OrderId);
                 if (currentOrder == null)
-                    return NotFound(new ErrorResponse { Error = 404, Message = "id order not found" });
+                    return NotFound(new  { Error = 404, Message = "id order not found" });
                 var product = await _productService.GetById(req.ProductId);
                 if (product == null)
-                    return NotFound(new ErrorResponse { Error = 404, Message = "id product not found" });
+                    return NotFound(new  { Error = 404, Message = "id product not found" });
                 OrderDetail newDetail = _orderDetailMapper.MapToEntity(req);
                 await _newOderService.AddOrderDetail(currentOrder, newDetail, product);
                 return Ok(_orderDetailMapper.MapToResponse(newDetail));
@@ -92,7 +92,7 @@ namespace CafeManagement.Controllers
                 OrderDetail orderDetail = await _orderDetailService.GetById(id);
                 if (orderDetail == null)
                     return NotFound(id);
-                _orderDetailMapper.UpdateEntityFromRequest(orderDetail, request);
+                _orderDetailMapper.UpdateEntityFromRequest(request, orderDetail);
                 var edittedDetails = await _orderDetailService.Update(orderDetail);
                 return Ok(_orderDetailMapper.MapToResponse(edittedDetails));
             }

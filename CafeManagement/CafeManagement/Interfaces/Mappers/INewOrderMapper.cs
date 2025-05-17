@@ -1,5 +1,5 @@
-﻿using CafeManagement.Dtos.Request;
-using CafeManagement.Dtos.Respone;
+﻿using CafeManagement.Dtos.Request.OrderReq;
+using CafeManagement.Dtos.Respone.OrderRes;
 using CafeManagement.Interfaces.Mappers.BaseMapper;
 using CafeManagement.Models.Order;
 

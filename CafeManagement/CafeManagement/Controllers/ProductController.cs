@@ -63,7 +63,7 @@ namespace CafeManagement.Controllers
                 var existingProduct = await _productService.GetById(id);
                 if (existingProduct == null)
                     return NotFound();
-                _productMapper.UpdateEntityFromRequest(existingProduct, product);
+                _productMapper.UpdateEntityFromRequest(product, existingProduct);
                 var edittedProduct = await _productService.Update(existingProduct);
                 return Ok(_productMapper.MapToResponse(edittedProduct));
             }

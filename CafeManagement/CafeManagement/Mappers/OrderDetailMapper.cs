@@ -1,5 +1,5 @@
-﻿using CafeManagement.Dtos.Request;
-using CafeManagement.Dtos.Respone;
+﻿using CafeManagement.Dtos.Request.OrderReq;
+using CafeManagement.Dtos.Respone.OrderRes;
 using CafeManagement.Interfaces.Mappers;
 using CafeManagement.Interfaces.Mappers.BaseMapper;
 using CafeManagement.Models.Order;
@@ -16,7 +16,8 @@ namespace CafeManagement.Mappers
                 OrderId = request.OrderId,
                 ProductId = request.ProductId,
                 Note= request.Note,
-                Quantity=request.Quantity
+                Quantity=request.Quantity,
+                CurrentPrice= request.CurrentPrice,
             };
         }
 
@@ -29,7 +30,8 @@ namespace CafeManagement.Mappers
                 ProductId = orderDetail.ProductId,
                 ProductName = orderDetail.Product.Name,
                 Quantity = orderDetail.Quantity,
-                Total = orderDetail.Quantity * orderDetail.Product.Price,
+                Price=orderDetail.CurrentPrice,
+                Total = orderDetail.Quantity * orderDetail.CurrentPrice,
                 Note = orderDetail.Note ?? ""
             };
         }

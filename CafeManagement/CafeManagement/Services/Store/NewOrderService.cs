@@ -12,8 +12,8 @@ namespace CafeManagement.Services.Store
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISubject _orderCompleteEvent;
-        private readonly IFactory<IObserver> _factory;
-        public NewOrderService(IUnitOfWork unitOfWork, ISubject orderCompleteEvent, IFactory<IObserver> factory)
+        private readonly IObserverFactory<IAppObserver> _factory;
+        public NewOrderService(IUnitOfWork unitOfWork, ISubject orderCompleteEvent, IObserverFactory<IAppObserver> factory)
         {
             _unitOfWork = unitOfWork;
             _orderCompleteEvent = orderCompleteEvent;

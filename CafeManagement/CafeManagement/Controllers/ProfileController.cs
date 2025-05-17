@@ -35,7 +35,7 @@ namespace CafeManagement.Controllers
             }
             catch
             {
-                return BadRequest(new ErrorResponse { Error = 401, Message = "Cant update" });
+                return BadRequest(new { Error = 401, Message = "Cant update" });
             }
             
         }

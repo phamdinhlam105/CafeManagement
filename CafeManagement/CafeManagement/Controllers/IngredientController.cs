@@ -48,7 +48,7 @@ namespace CafeManagement.Controllers
             {
                 var updatedIngredient = await _ingredientService.UpdateIngredient(Id, ingredient);
                 if (updatedIngredient == null)
-                    return NotFound(new ErrorResponse { Error = 404, Message = "Id not found" });
+                    return NotFound(new  { Error = 404, Message = "Id not found" });
                 return Ok(updatedIngredient);
             }
             catch (Exception ex)

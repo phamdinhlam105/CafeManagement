@@ -13,4 +13,15 @@
         Completed,
         Cancelled
     }
+
+    public enum AssignmentStatus
+    {
+        Scheduled,
+        CheckedIn,
+        Absent,
+        Late,
+        LeftEarly,
+        Completed,
+        Cancelled
+    }
 }

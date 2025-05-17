@@ -25,9 +25,11 @@ using CafeManagement.Helpers;
 using Microsoft.AspNetCore.Http.Json;
 using CafeManagement.Observers;
 using CafeManagement.Interfaces.Observer;
-using CafeManagement.Factories;
 using CafeManagement.Interfaces.Factory;
 using CafeManagement.Observers.Subjects;
+using CafeManagement.Models.Order;
+using CafeManagement.Models.Stock;
+using CafeManagement.Factories.Observers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,20 +54,21 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IStockService, StockService>();
 builder.Services.AddScoped<IStockEntryService, StockEntryService>();
 builder.Services.AddScoped<IIngredientService, IngredientService>();
-builder.Services.AddScoped<IReportQueryService, ReportQueryService>();
+builder.Services.AddScoped<IReportUpdateService, ReportUpdateService>();
 builder.Services.AddScoped<IReportRetrievalService, ReportRetrievalService>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 #endregion
 
 #region Observer
-builder.Services.AddScoped< CustomerUpdater>();
-builder.Services.AddScoped< ReportUpdater>();
-builder.Services.AddScoped<ISubject, OrderCompleteEvent>();
+builder.Services.AddScoped<IAppObserver<Order>, CustomerUpdater>();
+builder.Services.AddScoped<IAppObserver<Order>, OrderReportUpdater>();
+builder.Services.AddScoped<ISubject<Order>, OrderCompleteEvent>();
+builder.Services.AddScoped<ISubject<StockEntry>, StockImportEvent>();
 #endregion
 
 #region Factory
-builder.Services.AddScoped<IFactory<IObserver>, ObserverFactory>();
+builder.Services.AddScoped<IObserverFactory<IAppObserver<Order>>, OrderObsFactory>();
 #endregion
 //mapper
 #region Mapper
@@ -77,6 +80,7 @@ builder.Services.AddScoped<IOrderDetailMapper, OrderDetailMapper>();
 builder.Services.AddScoped<IStockMapper, StockMapper>();
 builder.Services.AddScoped<IStockEntryMapper, StockEntryMapper>();
 builder.Services.AddScoped<IStockEntryDetailMapper, StockEntryDetailMapper>();
+builder.Services.AddScoped<IReportMapper,ReportMapper>();
 #endregion
 
 //CORS

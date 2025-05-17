@@ -1,25 +1,20 @@
 ﻿using CafeManagement.Interfaces.Observer;
+using CafeManagement.Interfaces.Services;
 using CafeManagement.Models.Order;
-using CafeManagement.UnitOfWork;
 
 namespace CafeManagement.Observers
 {
-    public class CustomerUpdater : IObserver
+    public class CustomerUpdater : IAppObserver<Order>
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public CustomerUpdater(IUnitOfWork unitOfWork)
+        private readonly ICustomerService _customerService;
+        public CustomerUpdater(ICustomerService customerService)
         {
-            _unitOfWork = unitOfWork;
+            _customerService = customerService;
         }
-        public async Task Update(object data)
+        public async Task Update(Order data)
         {
-            if (data is Order order)
-            {
-                order.Customer.NumberOfOrders++;
-                await _unitOfWork.Customer.Update(order.Customer);
-            }
-            else
-                throw new Exception("Not valid data type");
+            data.Customer.NumberOfOrders++;
+                await _customerService.Update(data.Customer);
         }
     }
 }

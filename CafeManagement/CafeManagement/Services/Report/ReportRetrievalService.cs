@@ -1,32 +1,27 @@
-﻿using CafeManagement.Dtos.Respone;
+﻿using CafeManagement.Dtos.Respone.ReportRes;
 using CafeManagement.Helpers;
 using CafeManagement.Interfaces.Services.Report;
 using CafeManagement.Models.Report;
 using CafeManagement.UnitOfWork;
-using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 namespace CafeManagement.Services.Report
 {
     public class ReportRetrievalService : IReportRetrievalService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IReportQueryService _reportQueryService;
-        public ReportRetrievalService(IUnitOfWork unitOfWork , IReportQueryService reportQueryService)
+        private readonly IReportUpdateService _reportUpdateService;
+        public ReportRetrievalService(IUnitOfWork unitOfWork , IReportUpdateService reportUpdateService)
         {
             _unitOfWork = unitOfWork;
-            _reportQueryService = reportQueryService;
+            _reportUpdateService = reportUpdateService;
         }
         public async Task<DailyReport?> GetDailyReport(DateOnly date)
         {
             var todayReport = await _unitOfWork.DailyReport.GetByDate(date);
-            
-            if(!todayReport.IsOrderReportUpToDate)
-            {
-                todayReport.OrderReport.TopSelling = todayReport.ProductReports.OrderByDescending(pr => pr.QuantitySold).FirstOrDefault().Product;
-                todayReport.OrderReport.LeastSelling = todayReport.ProductReports.OrderBy(pr => pr.QuantitySold).FirstOrDefault().Product;
-                todayReport.IsOrderReportUpToDate = true;
-                await _unitOfWork.DailyReport.Update(todayReport);
-            }
+            if (todayReport == null)
+                return null;
+            if (!todayReport.IsOrderReportUpToDate)
+                await _reportUpdateService.UpdateProductReport(todayReport);
             return todayReport;
         }
 
@@ -46,12 +41,7 @@ namespace CafeManagement.Services.Report
             foreach (var dailyReport in dailyReportList)
             {
                 if (!dailyReport.IsOrderReportUpToDate)
-                {
-                    dailyReport.OrderReport.TopSelling = dailyReport.ProductReports.OrderByDescending(pr => pr.QuantitySold).FirstOrDefault().Product;
-                    dailyReport.OrderReport.LeastSelling = dailyReport.ProductReports.OrderBy(pr => pr.QuantitySold).FirstOrDefault().Product;
-                    dailyReport.IsOrderReportUpToDate = true;
-                    await _unitOfWork.DailyReport.Update(dailyReport);
-                }
+                    await _reportUpdateService.UpdateProductReport(dailyReport);
             }
             return dailyReportList;
         }

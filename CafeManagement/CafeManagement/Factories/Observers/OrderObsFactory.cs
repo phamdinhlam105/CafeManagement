@@ -1,26 +1,27 @@
 ﻿using CafeManagement.Interfaces.Factory;
 using CafeManagement.Interfaces.Observer;
+using CafeManagement.Models.Order;
 using CafeManagement.Observers;
 
-namespace CafeManagement.Factories
+namespace CafeManagement.Factories.Observers
 {
-    public class ObserverFactory : IFactory<IObserver>
+    public class OrderObsFactory : IObserverFactory<IAppObserver<Order>>
     {
         private readonly IServiceProvider _serviceProvider;
-        public ObserverFactory(IServiceProvider serviceProvider)
+        public OrderObsFactory(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
-        public IObserver Create(string type)
+        public IAppObserver<Order> Create(string type)
         {
-            switch(type)
+            switch (type)
             {
                 case "customer": return _serviceProvider.GetRequiredService<CustomerUpdater>();
-                case "report": return _serviceProvider.GetRequiredService<ReportUpdater>();
+                case "report": return _serviceProvider.GetRequiredService<OrderReportUpdater>();
                 default:
                     throw new Exception("Invalid type");
             }
-            
+
         }
     }
 }

@@ -30,7 +30,7 @@ namespace CafeManagement.Controllers
                 return BadRequest(ModelState);
             try
             {
-                await _stockEntryService.StockImport(_stockEntryMapper.MaptoEntity(stockEntry));
+                await _stockEntryService.StockImport(_stockEntryMapper.MapToEntity(stockEntry));
                 return Ok();
             }
             catch(Exception ex) 
