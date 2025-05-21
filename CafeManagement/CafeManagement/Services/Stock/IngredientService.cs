@@ -11,7 +11,7 @@ namespace CafeManagement.Services.Stock
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<Ingredient> CreateIngredient(Ingredient ingredient)
+        public async Task<Ingredient> Add(Ingredient ingredient)
         {
             if (ingredient.Id == Guid.Empty)
                 ingredient.Id = Guid.NewGuid();
@@ -19,22 +19,27 @@ namespace CafeManagement.Services.Stock
             return ingredient;
         }
 
-        public async Task DeleteIngredient(Ingredient ingredient)
+        public async Task Delete(Ingredient ingredient)
         {
             await _unitOfWork.Ingredient.Delete(ingredient);
         }
 
-        public async Task<Ingredient> UpdateIngredient(Guid Id,Ingredient ingredient)
+        public async Task<Ingredient> Update(Ingredient ingredient)
         {
-            var oldIngredient = await _unitOfWork.Ingredient.GetById(Id);
+            var oldIngredient = await _unitOfWork.Ingredient.GetById(ingredient.Id);
             if (oldIngredient == null)
                 return null;
             if (ingredient.Id == Guid.Empty)
-                ingredient.Id = Id;
+                ingredient.Id = ingredient.Id;
             await _unitOfWork.Ingredient.Update(ingredient);
             return ingredient;
 
         }
+        public async Task<Ingredient> GetById(Guid Id)
+        {
+            return await _unitOfWork.Ingredient.GetById(Id);
+        }
+
         public async Task<IEnumerable<Ingredient>> GetAll()
         {
             return await _unitOfWork.Ingredient.GetAll();

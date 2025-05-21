@@ -6,13 +6,12 @@ namespace CafeManagement.Models.Stock
     public class DailyStock
     {
         public Guid Id { get; set; }
+        public float StockAtStartOfDay { get; set; }
+        public float StockImport { get; set; }
+        public float StockRemaining { get; set; }
+        public Guid IngredientId { get; set; }
         [JsonConverter(typeof(DateOnlyJsonConverter))]
-        public DateOnly createDate { get; set; }
-        public ICollection<DailyStockDetail> DailyStockDetails { get; set; }
-
-        public DailyStock()
-        {
-            DailyStockDetails = new List<DailyStockDetail>();
-        }
+        public DateOnly CreateDate { get; set; }
+        public Ingredient Ingredient { get; set; }
     }
 }

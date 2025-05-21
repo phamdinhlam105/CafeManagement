@@ -1,27 +1,27 @@
 ﻿using CafeManagement.Interfaces.Factory;
 using CafeManagement.Interfaces.Observer;
 using CafeManagement.Models.Order;
+using CafeManagement.Models.Stock;
 using CafeManagement.Observers;
 
 namespace CafeManagement.Factories.Observers
 {
-    public class OrderObsFactory : IObserverFactory<Order>
+    public class StockObsFactory:IObserverFactory<StockEntry>
     {
         private readonly IServiceProvider _serviceProvider;
-        public OrderObsFactory(IServiceProvider serviceProvider)
+        public StockObsFactory(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
-        public IAppObserver<Order> Create(string type)
+        public IAppObserver<StockEntry> Create(string type)
         {
             switch (type)
             {
-                case "customer": return _serviceProvider.GetRequiredService<CustomerUpdater>();
-                case "report": return _serviceProvider.GetRequiredService<OrderReportUpdater>();
+                case "stock": return _serviceProvider.GetRequiredService<StockUpdater>();
+                case "report": return _serviceProvider.GetRequiredService<StockReportUpdater>();
                 default:
                     throw new Exception("Invalid type");
             }
-
         }
     }
 }

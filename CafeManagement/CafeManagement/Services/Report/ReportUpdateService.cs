@@ -30,6 +30,7 @@ namespace CafeManagement.Services.Report
                     productReport = new ProductReport
                     {
                         Id = new Guid(),
+                        DailyReportId=todayReport.Id,
                         QuantitySold = detail.Quantity,
                         Product = detail.Product
                     };
@@ -37,6 +38,7 @@ namespace CafeManagement.Services.Report
                 }
                 else
                     productReport.QuantitySold += detail.Quantity;
+
             }
             todayReport.OrderReport.TotalRevenue += order.Price;
             todayReport.OrderReport.NumberOfFinishedOrders++;
@@ -45,9 +47,14 @@ namespace CafeManagement.Services.Report
             await _unitOfWork.DailyReport.Update(todayReport);
         }
 
-        public Task UpdateStockReport(StockEntry stockEntry)
+        public async Task UpdateStockReport(StockEntry stockEntry)
         {
-            throw new NotImplementedException();
+            var todayReport = await _unitOfWork.DailyReport.GetByDate(Ultilities.GetToday());
+            if (todayReport == null)
+                todayReport = new DailyReport();
+            todayReport.StockReport.NumberOfImports++;
+            todayReport.StockReport.TotalExpenditure += stockEntry.TotalValue;
+            await _unitOfWork.StockReport.Update(todayReport.StockReport);
         }
 
         public async Task UpdateProductReport(DailyReport todayReport)

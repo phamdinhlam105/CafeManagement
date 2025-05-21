@@ -7,77 +7,49 @@ namespace CafeManagement.Services.Stock
 {
     public class StockService : IStockService
     {
-        private IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
         public StockService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<DailyStock> NewDailyStock()
+        private async Task<IEnumerable<DailyStock>> NewDailyStock()
         {
-            var todayStock = await _unitOfWork.DailyStock.GetByDate(Ultilities.GetToday());
-            if (todayStock != null)
+            var todayStock = (await _unitOfWork.DailyStock.GetByDate(Ultilities.GetToday())).ToList();
+            if (todayStock.Any())
             {
                 return todayStock;
             }
-            DailyStock yesterdayStock = await _unitOfWork.DailyStock.GetByDate(Ultilities.GetYesterday());
-
-            todayStock = new DailyStock
+            IEnumerable<DailyStock> lastestDayStock = await _unitOfWork.DailyStock.GetLastestStock();
+            todayStock = new List<DailyStock>();
+            foreach(DailyStock stock in lastestDayStock)
             {
-                Id = Guid.NewGuid(),
-                createDate = Ultilities.GetToday(),
-                DailyStockDetails = new List<DailyStockDetail>()
-            };
-
-            var ingredients = await _unitOfWork.Ingredient.GetAll();
-
-            foreach (var ingredient in ingredients)
-            {
-                float startStock = 0;
-                if (yesterdayStock != null)
-                {
-                    var lastDetail = yesterdayStock.DailyStockDetails
-                        .FirstOrDefault(d => d.Ingredient.Id == ingredient.Id);
-
-                    if (lastDetail != null)
-                    {
-                        startStock = lastDetail.StockRemaining;
-                    }
-                    else
-                        startStock = 0;
-                }
-
-                var stockDetail = new DailyStockDetail
+                var oneStock = new DailyStock
                 {
                     Id = Guid.NewGuid(),
-                    Ingredient = ingredient,
-                    StockAtStartOfDay = startStock,
+                    CreateDate = Ultilities.GetToday(),
+                    Ingredient = stock.Ingredient,
+                    StockAtStartOfDay = stock.StockRemaining,
                     StockImport = 0,
-                    StockRemaining = startStock
+                    StockRemaining = stock.StockRemaining
                 };
-
-                todayStock.DailyStockDetails.Add(stockDetail);
+                todayStock.Add(oneStock);
+                await _unitOfWork.DailyStock.Add(oneStock);
             }
-
-            await _unitOfWork.DailyStock.Add(todayStock);
             return todayStock;
         }
 
-        public async Task<DailyStock> StockRemain()
+        public async Task<IEnumerable<DailyStock>> StockRemain()
         {
             DateOnly today = Ultilities.GetToday();
-            var currentStock = await _unitOfWork.DailyStock.GetByDate(today);
-
-            if (currentStock == null)
-                currentStock = await NewDailyStock();
-
+            var currentStock = await _unitOfWork.DailyStock.GetByDate(today) ?? await NewDailyStock();
             return currentStock;
         }
 
         public async Task StockUpdate(Guid ingredientId, float amountRemain)
         {
             var dailyStock = await StockRemain();
-            DailyStockDetail stockDetail = dailyStock.DailyStockDetails
+            DailyStock stockDetail = dailyStock
                 .FirstOrDefault(d => d.IngredientId == ingredientId);
 
             if (stockDetail == null)
@@ -86,16 +58,16 @@ namespace CafeManagement.Services.Stock
             }
             stockDetail.StockRemaining = amountRemain;
 
-            await _unitOfWork.DailyStockDetail.Update(stockDetail);
+            await _unitOfWork.DailyStock.Update(stockDetail);
         }
 
         public async Task<IEnumerable<DailyStock>> GetAllDailyStocks()
         {
             return await _unitOfWork.DailyStock.GetAll();
         }
-        public async Task<IEnumerable<DailyStockDetail>> GetDetailByDate(DateOnly date)
+        public async Task<IEnumerable<DailyStock>> GetByDate(DateOnly date)
         {
-            return (await _unitOfWork.DailyStock.GetByDate(date)).DailyStockDetails;
+            return await _unitOfWork.DailyStock.GetByDate(date);
         }
     }
 }

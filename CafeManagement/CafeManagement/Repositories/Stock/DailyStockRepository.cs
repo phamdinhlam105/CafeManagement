@@ -11,16 +11,24 @@ namespace CafeManagement.Repositories.Stock
         public override async Task<IEnumerable<DailyStock>> GetAll()
         {
             return await _context.DailyStocks
-                .Include(ds => ds.DailyStockDetails)
-                .ThenInclude(dt => dt.Ingredient).ToListAsync();
+                .Include(dt => dt.Ingredient).ToListAsync();
         }
 
-        public async Task<DailyStock> GetByDate(DateOnly date)
+        public async Task<IEnumerable<DailyStock>> GetByDate(DateOnly date)
         {
             return await _context.DailyStocks
-                .Include(ds=>ds.DailyStockDetails)
-                .ThenInclude(dsd=>dsd.Ingredient)
-                .FirstOrDefaultAsync(ds=>ds.createDate == date);
+                .Include(dsd=>dsd.Ingredient)
+                .Where(ds=>ds.CreateDate == date).ToListAsync();
+        }
+
+        public async Task<IEnumerable<DailyStock>> GetLastestStock()
+        {
+            var latestDate = await _context.DailyStocks
+                .MaxAsync(ds => ds.CreateDate);
+            return await _context.DailyStocks
+                .Include(dsd => dsd.Ingredient)
+                .Where(ds => ds.CreateDate == latestDate)
+                .ToListAsync();
         }
     }
 }

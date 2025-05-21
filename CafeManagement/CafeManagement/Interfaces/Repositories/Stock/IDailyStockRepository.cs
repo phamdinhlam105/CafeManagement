@@ -1,9 +1,11 @@
 ﻿using CafeManagement.Models.Stock;
+using System.Collections.Generic;
 
 namespace CafeManagement.Interfaces.Repositories.Stock
 {
     public interface IDailyStockRepository : IRepository<DailyStock>
     {
-        Task<DailyStock> GetByDate(DateOnly date);
+        Task<IEnumerable<DailyStock>> GetByDate(DateOnly date);
+        Task<IEnumerable<DailyStock>> GetLastestStock();
     }
 }

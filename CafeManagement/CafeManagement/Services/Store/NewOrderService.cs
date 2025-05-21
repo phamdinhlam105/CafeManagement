@@ -11,9 +11,9 @@ namespace CafeManagement.Services.Store
     public class NewOrderService : INewOrderService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ISubject _orderCompleteEvent;
-        private readonly IObserverFactory<IAppObserver> _factory;
-        public NewOrderService(IUnitOfWork unitOfWork, ISubject orderCompleteEvent, IObserverFactory<IAppObserver> factory)
+        private readonly ISubject<Order> _orderCompleteEvent;
+        private readonly IObserverFactory<Order> _factory;
+        public NewOrderService(IUnitOfWork unitOfWork, ISubject<Order> orderCompleteEvent, IObserverFactory<Order> factory)
         {
             _unitOfWork = unitOfWork;
             _orderCompleteEvent = orderCompleteEvent;
@@ -21,16 +21,6 @@ namespace CafeManagement.Services.Store
             _orderCompleteEvent.Attach(_factory.Create("customer"));
             _orderCompleteEvent.Attach(_factory.Create("report"));
         }
-        public async Task AddOrderDetail(Order order, OrderDetail detail,Product product)
-        {
-            if (detail.Id == Guid.Empty)
-                detail.Id = Guid.NewGuid();
-            order.Quantity += detail.Quantity;
-            order.Price += product.Price * detail.Quantity;
-            await _unitOfWork.Order.Update(order);
-            await _unitOfWork.OrderDetail.Add(detail);
-        }
-
         public async Task EditOrder(Order order)
         {
             await _unitOfWork.Order.Update(order);
@@ -58,7 +48,6 @@ namespace CafeManagement.Services.Store
             var newOrder = await _unitOfWork.Order.GetById(order.Id);
             return newOrder;
         }
-
 
         public async Task<Order> GetById(Guid orderId)
         {

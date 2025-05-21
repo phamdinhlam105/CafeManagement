@@ -23,7 +23,6 @@ namespace CafeManagement.UnitOfWork
         private ICustomerRepository _customer ;
         private IIngredientRepository _ingredientRepository ;
         private IDailyStockRepository _dailyStockRepository ;
-        private IDailyStockDetailRepository _dailyStockDetailRepository ;
         private IStockEntryRepository _stockEntryRepository ;
         private IStockEntryDetailRepository _stockEntryDetailRepository ;
         private IOrderReportRepository _orderReportRepository ;
@@ -119,17 +118,6 @@ namespace CafeManagement.UnitOfWork
                         if (_dailyStockRepository == null)
                             return _dailyStockRepository = new DailyStockRepository(_context);
                 return _dailyStockRepository;
-            }
-        }
-        public IDailyStockDetailRepository DailyStockDetail
-        {
-            get
-            {
-                if (_dailyStockDetailRepository == null)
-                    lock (_lock)
-                        if (_dailyStockDetailRepository == null)
-                            return _dailyStockDetailRepository = new DailyStockDetailRepository(_context);
-                return _dailyStockDetailRepository;
             }
         }
         public IStockEntryRepository StockEntry
