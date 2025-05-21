@@ -1,7 +1,7 @@
 ﻿using CafeManagement.Dtos.Request;
 using CafeManagement.Dtos.Respone;
 using CafeManagement.Interfaces.Mappers.BaseMapper;
-using CafeManagement.Models;
+using CafeManagement.Models.ProductModel;
 
 namespace CafeManagement.Interfaces.Mappers
 {

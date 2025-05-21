@@ -1,6 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using CafeManagement.Models.ProductModel;
+using Newtonsoft.Json;
 
-namespace CafeManagement.Models.Order
+namespace CafeManagement.Models.OrderModel
 {
     public class OrderDetail
     {

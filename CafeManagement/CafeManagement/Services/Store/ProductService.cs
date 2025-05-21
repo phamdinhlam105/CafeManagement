@@ -1,13 +1,13 @@
 ﻿using CafeManagement.Interfaces.Services;
-using CafeManagement.Models;
+using CafeManagement.Models.ProductModel;
 using CafeManagement.UnitOfWork;
 
-namespace CafeManagement.Services
+namespace CafeManagement.Services.Store
 {
     public class ProductService : IProductService
     {
         private readonly IUnitOfWork _unitOfWork;
-        
+
         public ProductService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -24,7 +24,7 @@ namespace CafeManagement.Services
 
         public async Task Delete(Product item)
         {
-            if(item!=null)
+            if (item != null)
                 await _unitOfWork.Product.Delete(item);
         }
 

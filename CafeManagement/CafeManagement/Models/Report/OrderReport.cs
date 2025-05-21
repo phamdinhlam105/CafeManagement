@@ -1,4 +1,6 @@
-﻿namespace CafeManagement.Models.Report
+﻿using CafeManagement.Models.ProductModel;
+
+namespace CafeManagement.Models.Report
 {
     public class OrderReport
     {

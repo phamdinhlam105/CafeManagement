@@ -1,8 +1,8 @@
 ﻿using CafeManagement.Interfaces.Services;
-using CafeManagement.Models;
+using CafeManagement.Models.ProductModel;
 using CafeManagement.UnitOfWork;
 
-namespace CafeManagement.Services
+namespace CafeManagement.Services.Store
 {
     public class CategoryService : ICategoryService
     {

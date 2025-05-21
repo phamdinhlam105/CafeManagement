@@ -1,4 +1,4 @@
-﻿namespace CafeManagement.Models.Order
+﻿namespace CafeManagement.Models.OrderModel
 {
     public class OrderStatusHistory
     {

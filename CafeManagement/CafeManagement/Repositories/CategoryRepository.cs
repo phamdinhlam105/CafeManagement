@@ -1,7 +1,7 @@
 ﻿using CafeManagement.Data;
-using CafeManagement.Models;
 using Microsoft.EntityFrameworkCore;
 using CafeManagement.Interfaces.Repositories;
+using CafeManagement.Models.ProductModel;
 
 namespace CafeManagement.Repositories
 {

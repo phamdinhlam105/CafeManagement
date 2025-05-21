@@ -3,7 +3,7 @@ using CafeManagement.Interfaces;
 using CafeManagement.Models.PromotionModel;
 using Newtonsoft.Json;
 
-namespace CafeManagement.Models.Order
+namespace CafeManagement.Models.OrderModel
 {
     public class Order:ISoftDeletable
     {

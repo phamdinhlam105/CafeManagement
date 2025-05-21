@@ -1,6 +1,7 @@
 ﻿using CafeManagement.Interfaces;
 using CafeManagement.Models;
 using CafeManagement.Models.Order;
+using CafeManagement.Models.ProductModel;
 using CafeManagement.Models.PromotionModel;
 using CafeManagement.Models.Report;
 using CafeManagement.Models.Stock;

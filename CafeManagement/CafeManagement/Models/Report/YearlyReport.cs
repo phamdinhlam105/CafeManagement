@@ -1,4 +1,6 @@
-﻿namespace CafeManagement.Models.Report
+﻿using CafeManagement.Models.Order;
+
+namespace CafeManagement.Models.Report
 {
     public class YearlyReport
     {

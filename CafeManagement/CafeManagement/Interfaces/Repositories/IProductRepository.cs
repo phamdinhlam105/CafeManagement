@@ -1,4 +1,4 @@
-﻿using CafeManagement.Models;
+﻿using CafeManagement.Models.ProductModel;
 
 namespace CafeManagement.Interfaces.Repositories
 {

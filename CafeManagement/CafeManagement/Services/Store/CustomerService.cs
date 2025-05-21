@@ -1,10 +1,10 @@
 ﻿using CafeManagement.Interfaces.Services;
-using CafeManagement.Models;
+using CafeManagement.Models.Order;
 using CafeManagement.UnitOfWork;
 
-namespace CafeManagement.Services
+namespace CafeManagement.Services.Store
 {
-    public class CustomerService:ICustomerService
+    public class CustomerService : ICustomerService
     {
         private readonly IUnitOfWork _unitOfWork;
 
