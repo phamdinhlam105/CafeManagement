@@ -38,6 +38,10 @@ namespace CafeManagement.Data
         public DbSet<DailyStock> DailyStocks {  get; set; }
         public DbSet<StockEntry> StockEntries { get; set; }
         public DbSet<StockEntryDetail> StockEntryDetails {  get; set; }
+        public DbSet<StockUsageLog> StockUsageLogs {  get; set; }
+        public DbSet<StockUsageDetail> StockUsageDetails { get; set; }
+        public DbSet<StockAdjustment> StockAdjustments { get; set; }
+        public DbSet<AdjustmentDetail> AdjustmentDetails { get; set; }
         #endregion
 
         #region Report

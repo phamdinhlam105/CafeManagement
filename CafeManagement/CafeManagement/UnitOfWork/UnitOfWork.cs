@@ -18,17 +18,28 @@ namespace CafeManagement.UnitOfWork
     public class UnitOfWork : IUnitOfWork
     {
         private readonly CafeManagementDbContext _context;
+        #region Product
         private IProductRepository _product;
         private ICategoryRepository _category;
+        private IRecipeRepository _recipeRepository;
+        private IRecipeDetailRepository _recipeDetailRepository;
+        #endregion
+        #region Order
         private IOrderRepository _order ;
         private IOrderDetailRepository _orderDetail ;
+        #endregion
         private ICustomerRepository _customer ;
+        #region Stock
         private IIngredientRepository _ingredientRepository ;
         private IDailyStockRepository _dailyStockRepository ;
         private IStockEntryRepository _stockEntryRepository ;
         private IStockEntryDetailRepository _stockEntryDetailRepository ;
-        private IRecipeRepository _recipeRepository ;
-        private IRecipeDetailRepository _recipeDetailRepository;
+        private IStockUsageLogRepository _stockUsageLogRepository;
+        private IStockUsageDetailRepository _stockUsageDetailRepository;
+        private IStockAdjustmentRepository _stockAdjustmentRepository;
+        private IAdjustmentDetailRepository _adjustmentDetailRepository;
+        #endregion
+        #region Report
         private IOrderReportRepository _orderReportRepository ;
         private IStockReportRepository _stockReportRepository ;
         private IProductReportRepository _productReportRepository;
@@ -36,8 +47,11 @@ namespace CafeManagement.UnitOfWork
         private IMonthlyReportRepository _monthlyReportRepository ;
         private IQuarterlyReportRepository _quarterlyReportRepository ;
         private IYearlyReportRepository _yearlyReportRepository ;
+        #endregion
+        #region Promotion
         private IPromotion _promotionRepository;
         private IPromotionSchedule _promotionScheduleRepository;
+        #endregion
         private IProfileRepository _profileRepository ;
         private static readonly object _lock = new object();
 
@@ -92,6 +106,7 @@ namespace CafeManagement.UnitOfWork
             }
         }
         #endregion
+        #region Order
         public IOrderRepository Order
         {
             get
@@ -114,6 +129,7 @@ namespace CafeManagement.UnitOfWork
                 return _orderDetail;
             }
         }
+        #endregion
         public ICustomerRepository Customer
         {
             get
@@ -169,6 +185,50 @@ namespace CafeManagement.UnitOfWork
                         if (_stockEntryDetailRepository == null)
                             return _stockEntryDetailRepository = new StockEntryDetailRepository(_context);
                 return _stockEntryDetailRepository;
+            }
+        }
+        public IStockUsageLogRepository StockUsageLog
+        {
+            get
+            {
+                if (_stockUsageLogRepository == null)
+                    lock (_lock)
+                        if (_stockUsageLogRepository == null)
+                            return _stockUsageLogRepository = new StockUsageLogRepository(_context);
+                return _stockUsageLogRepository;
+            }
+        }
+        public IStockUsageDetailRepository StockUsageDetail
+        {
+            get
+            {
+                if (_stockUsageDetailRepository == null)
+                    lock (_lock)
+                        if (_stockUsageDetailRepository == null)
+                            return _stockUsageDetailRepository = new StockUsageDetailRepository(_context);
+                return _stockUsageDetailRepository;
+            }
+        }
+        public IStockAdjustmentRepository StockAdjustment
+        {
+            get
+            {
+                if (_stockAdjustmentRepository == null)
+                    lock (_lock)
+                        if (_stockAdjustmentRepository == null)
+                            return _stockAdjustmentRepository = new StockAdjustmentRepository(_context);
+                return _stockAdjustmentRepository;
+            }
+        }
+        public IAdjustmentDetailRepository AdjustmentDetail
+        {
+            get
+            {
+                if (_adjustmentDetailRepository == null)
+                    lock (_lock)
+                        if (_adjustmentDetailRepository == null)
+                            return _adjustmentDetailRepository = new AdjustmentDetailRepository(_context);
+                return _adjustmentDetailRepository;
             }
         }
         #endregion
