@@ -1,6 +1,7 @@
 ﻿using CafeManagement.Interfaces;
 using CafeManagement.Models;
 using CafeManagement.Models.Order;
+using CafeManagement.Models.OrderModel;
 using CafeManagement.Models.ProductModel;
 using CafeManagement.Models.PromotionModel;
 using CafeManagement.Models.Report;
@@ -17,12 +18,16 @@ namespace CafeManagement.Data
             : base(options)
         {
         }
-
+        #region Product
         public DbSet<Product> Products { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Recipe> Recipes { get; set; }
+        public DbSet<RecipeDetail> RecipeDetails { get; set; }
+        #endregion
+
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Customer> Customers { get; set; }
-        public DbSet<Category> Categories { get; set; }
         #region Promotion
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<PromotionSchedule> PromotionSchedules {  get; set; }
@@ -31,7 +36,6 @@ namespace CafeManagement.Data
         #region Stock
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<DailyStock> DailyStocks {  get; set; }
-        public DbSet<DailyStockDetail> DailyStockDetails {  get; set; }
         public DbSet<StockEntry> StockEntries { get; set; }
         public DbSet<StockEntryDetail> StockEntryDetails {  get; set; }
         #endregion

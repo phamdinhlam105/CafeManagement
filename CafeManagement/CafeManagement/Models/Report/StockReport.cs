@@ -9,5 +9,12 @@ namespace CafeManagement.Models.Report
         public DailyReport DailyReport {  get; set; }
         public decimal TotalExpenditure { get; set; }
         public int NumberOfImports {  get; set; }
+        public Guid? AdjustmentId {  get; set; }
+
+        public List<StockReportDetail> StockReportDetails {  get; set; }
+        public StockReport()
+        {
+            StockReportDetails = new List<StockReportDetail>();
+        }
     }
 }

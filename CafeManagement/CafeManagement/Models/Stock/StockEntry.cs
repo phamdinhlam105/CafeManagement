@@ -1,5 +1,4 @@
-﻿using CafeManagement.Dtos.Respone.Stock;
-using CafeManagement.Interfaces;
+﻿using CafeManagement.Interfaces;
 
 namespace CafeManagement.Models.Stock
 {

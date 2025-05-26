@@ -1,7 +1,7 @@
 ﻿using CafeManagement.Helpers;
 using CafeManagement.Interfaces.Services.Report;
 using CafeManagement.Models;
-using CafeManagement.Models.Order;
+using CafeManagement.Models.OrderModel;
 using CafeManagement.Models.Report;
 using CafeManagement.Models.Stock;
 using CafeManagement.UnitOfWork;
@@ -19,50 +19,17 @@ namespace CafeManagement.Services.Report
 
         public async Task UpdateOrderReport(Order order)
         {
-            var todayReport = await _unitOfWork.DailyReport.GetByDate(Ultilities.GetToday());
-            if (todayReport == null)
-                todayReport = new DailyReport();
-            foreach (OrderDetail detail in order.Details)
-            {
-                var productReport = todayReport.ProductReports.FirstOrDefault(pr => pr.ProductId == detail.ProductId);
-                if (productReport == null)
-                {
-                    productReport = new ProductReport
-                    {
-                        Id = new Guid(),
-                        DailyReportId=todayReport.Id,
-                        QuantitySold = detail.Quantity,
-                        Product = detail.Product
-                    };
-                    todayReport.ProductReports.Add(productReport);
-                }
-                else
-                    productReport.QuantitySold += detail.Quantity;
-
-            }
-            todayReport.OrderReport.TotalRevenue += order.Price;
-            todayReport.OrderReport.NumberOfFinishedOrders++;
-            todayReport.OrderReport.TotalProductsSold += order.Quantity;
-            todayReport.IsOrderReportUpToDate = false;
-            await _unitOfWork.DailyReport.Update(todayReport);
+          
         }
 
         public async Task UpdateStockReport(StockEntry stockEntry)
         {
-            var todayReport = await _unitOfWork.DailyReport.GetByDate(Ultilities.GetToday());
-            if (todayReport == null)
-                todayReport = new DailyReport();
-            todayReport.StockReport.NumberOfImports++;
-            todayReport.StockReport.TotalExpenditure += stockEntry.TotalValue;
-            await _unitOfWork.StockReport.Update(todayReport.StockReport);
+         
         }
 
         public async Task UpdateProductReport(DailyReport todayReport)
         {
-            todayReport.OrderReport.TopSelling = todayReport.ProductReports.OrderByDescending(pr => pr.QuantitySold).FirstOrDefault().Product;
-            todayReport.OrderReport.LeastSelling = todayReport.ProductReports.OrderBy(pr => pr.QuantitySold).FirstOrDefault().Product;
-            todayReport.IsOrderReportUpToDate = true;
-            await _unitOfWork.DailyReport.Update(todayReport);
+        
         }
         /*
         public async Task<List<int>> GetPeakHours(DateOnly date)

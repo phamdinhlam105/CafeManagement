@@ -18,5 +18,12 @@ namespace CafeManagement.Repositories.Stock
                 .Include(sed => sed.Ingredient)
                 .FirstOrDefaultAsync(sed => sed.Id == id);
         }
+        public async Task<List<StockEntryDetail>> GetAvailableIngredient(Guid ingredientId)
+        {
+            return await _context.StockEntryDetails.Include(sed=>sed.StockEntry)
+                .Where(sed => sed.IngredientId == ingredientId && sed.RemainQuantity > 0)
+                .OrderBy(sed=>sed.StockEntry.EntryDate)
+                .ToListAsync();
+        }
     }
 }

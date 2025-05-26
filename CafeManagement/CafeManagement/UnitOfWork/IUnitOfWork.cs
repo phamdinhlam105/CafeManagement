@@ -1,4 +1,5 @@
 ﻿using CafeManagement.Interfaces.Repositories;
+using CafeManagement.Interfaces.Repositories.ProductRepo;
 using CafeManagement.Interfaces.Repositories.PromotionRepo;
 using CafeManagement.Interfaces.Repositories.Report;
 using CafeManagement.Interfaces.Repositories.Stock;
@@ -16,6 +17,8 @@ namespace CafeManagement.UnitOfWork
         IDailyStockRepository DailyStock { get; }
         IStockEntryRepository StockEntry { get; }
         IStockEntryDetailRepository StockEntryDetail { get; }
+        IRecipeDetailRepository RecipeDetail {  get; }
+        IRecipeRepository Recipe {  get; }
         IOrderReportRepository OrderReport { get; }
         IStockReportRepository StockReport { get; }
         IProductReportRepository ProductReport {  get; }

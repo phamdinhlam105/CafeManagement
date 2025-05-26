@@ -1,9 +1,11 @@
 ﻿using CafeManagement.Data;
 using CafeManagement.Interfaces.Repositories;
+using CafeManagement.Interfaces.Repositories.ProductRepo;
 using CafeManagement.Interfaces.Repositories.PromotionRepo;
 using CafeManagement.Interfaces.Repositories.Report;
 using CafeManagement.Interfaces.Repositories.Stock;
 using CafeManagement.Repositories;
+using CafeManagement.Repositories.ProductRepo;
 using CafeManagement.Repositories.PromotionRepo;
 using CafeManagement.Repositories.Report;
 using CafeManagement.Repositories.Stock;
@@ -25,6 +27,8 @@ namespace CafeManagement.UnitOfWork
         private IDailyStockRepository _dailyStockRepository ;
         private IStockEntryRepository _stockEntryRepository ;
         private IStockEntryDetailRepository _stockEntryDetailRepository ;
+        private IRecipeRepository _recipeRepository ;
+        private IRecipeDetailRepository _recipeDetailRepository;
         private IOrderReportRepository _orderReportRepository ;
         private IStockReportRepository _stockReportRepository ;
         private IProductReportRepository _productReportRepository;
@@ -41,7 +45,8 @@ namespace CafeManagement.UnitOfWork
         {
             _context = context;
         }
-       
+
+        #region Product
         public IProductRepository Product
         {
             get
@@ -51,6 +56,28 @@ namespace CafeManagement.UnitOfWork
                         if (_product == null)
                             return _product = new ProductRepository(_context);
                 return _product;
+            }
+        }
+        public IRecipeRepository Recipe
+        {
+            get
+            {
+                if (_recipeRepository == null)
+                    lock (_lock)
+                        if (_recipeRepository == null)
+                            return _recipeRepository = new RecipeRepository(_context);
+                return _recipeRepository;
+            }
+        }
+        public IRecipeDetailRepository RecipeDetail
+        {
+            get
+            {
+                if (_recipeDetailRepository == null)
+                    lock (_lock)
+                        if (_recipeDetailRepository == null)
+                            return _recipeDetailRepository = new RecipeDetailRepository(_context);
+                return _recipeDetailRepository;
             }
         }
         public ICategoryRepository Category
@@ -64,6 +91,7 @@ namespace CafeManagement.UnitOfWork
                 return _category;
             }
         }
+        #endregion
         public IOrderRepository Order
         {
             get
@@ -109,6 +137,7 @@ namespace CafeManagement.UnitOfWork
                 return _ingredientRepository;
             }
         }
+       
         public IDailyStockRepository DailyStock
         {
             get

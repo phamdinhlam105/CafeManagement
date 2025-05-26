@@ -1,5 +1,5 @@
 ﻿
-using CafeManagement.Models.Order;
+using CafeManagement.Models.OrderModel;
 using CafeManagement.Models.Report;
 using CafeManagement.Models.Stock;
 
