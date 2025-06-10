@@ -24,4 +24,12 @@
         Completed,
         Cancelled
     }
+    public enum FilterType
+    {
+
+    }
+    public enum PageSize
+    {
+
+    }
 }
