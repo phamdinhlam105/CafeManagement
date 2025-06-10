@@ -1,6 +1,6 @@
 ﻿using CafeManagement.Dtos.Request.UserReq;
 using CafeManagement.Dtos.Respone;
-using CafeManagement.Interfaces.Services;
+using CafeManagement.Interfaces.Services.Login;
 using CafeManagement.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

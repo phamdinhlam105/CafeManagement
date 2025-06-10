@@ -1,7 +1,7 @@
-﻿using CafeManagement.Interfaces.Factory;
+﻿using CafeManagement.Events.Obsersvers;
+using CafeManagement.Interfaces.Factory;
 using CafeManagement.Interfaces.Observer;
-using CafeManagement.Models.Order;
-using CafeManagement.Observers;
+using CafeManagement.Models.OrderModel;
 
 namespace CafeManagement.Factories.Observers
 {

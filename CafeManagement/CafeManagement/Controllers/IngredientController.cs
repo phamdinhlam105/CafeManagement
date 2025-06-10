@@ -1,5 +1,5 @@
 ﻿using CafeManagement.Dtos.Respone;
-using CafeManagement.Interfaces.Services;
+using CafeManagement.Interfaces.Services.StockService;
 using CafeManagement.Models.Stock;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

@@ -1,5 +1,5 @@
 ﻿using CafeManagement.Interfaces;
-using CafeManagement.Models.Order;
+using CafeManagement.Models.OrderModel;
 using Newtonsoft.Json;
 
 namespace CafeManagement.Models.ProductModel

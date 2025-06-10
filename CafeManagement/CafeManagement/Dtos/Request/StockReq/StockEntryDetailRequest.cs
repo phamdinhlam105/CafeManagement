@@ -1,4 +1,4 @@
-﻿namespace CafeManagement.Dtos.Request.Stock
+﻿namespace CafeManagement.Dtos.Request.StockReq
 {
     public class StockEntryDetailRequest
     {

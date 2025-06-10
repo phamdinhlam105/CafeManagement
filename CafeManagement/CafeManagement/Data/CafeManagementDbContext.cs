@@ -1,6 +1,5 @@
 ﻿using CafeManagement.Interfaces;
 using CafeManagement.Models;
-using CafeManagement.Models.Order;
 using CafeManagement.Models.OrderModel;
 using CafeManagement.Models.ProductModel;
 using CafeManagement.Models.PromotionModel;
@@ -25,9 +24,13 @@ namespace CafeManagement.Data
         public DbSet<RecipeDetail> RecipeDetails { get; set; }
         #endregion
 
+        #region Order
+
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Customer> Customers { get; set; }
+        #endregion
+
         #region Promotion
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<PromotionSchedule> PromotionSchedules {  get; set; }

@@ -1,4 +1,5 @@
-﻿using CafeManagement.Models.Order;
+﻿
+using CafeManagement.Models.OrderModel;
 
 namespace CafeManagement.Interfaces.Repositories
 {

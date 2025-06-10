@@ -2,7 +2,7 @@
 using CafeManagement.Dtos.Respone.Stock;
 using CafeManagement.Helpers;
 using CafeManagement.Interfaces.Mappers;
-using CafeManagement.Interfaces.Services.Stock;
+using CafeManagement.Interfaces.Services.StockService;
 using CafeManagement.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

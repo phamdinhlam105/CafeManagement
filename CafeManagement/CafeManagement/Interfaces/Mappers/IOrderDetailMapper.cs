@@ -1,7 +1,7 @@
 ﻿using CafeManagement.Dtos.Request.OrderReq;
 using CafeManagement.Dtos.Respone.OrderRes;
 using CafeManagement.Interfaces.Mappers.BaseMapper;
-using CafeManagement.Models.Order;
+using CafeManagement.Models.OrderModel;
 
 namespace CafeManagement.Interfaces.Mappers
 {

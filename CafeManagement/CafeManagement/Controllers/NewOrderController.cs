@@ -2,9 +2,9 @@
 using CafeManagement.Enums;
 using CafeManagement.Helpers;
 using CafeManagement.Interfaces.Mappers;
-using CafeManagement.Interfaces.Services;
+using CafeManagement.Interfaces.Services.OrderService;
 using CafeManagement.Mappers;
-using CafeManagement.Models.Order;
+using CafeManagement.Models.OrderModel;
 using CafeManagement.Services;
 using CafeManagement.UnitOfWork;
 using Microsoft.AspNetCore.Authorization;

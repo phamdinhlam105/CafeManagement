@@ -2,7 +2,7 @@
 using CafeManagement.Dtos.Respone;
 using CafeManagement.Helpers;
 using CafeManagement.Interfaces.Mappers;
-using CafeManagement.Interfaces.Services;
+using CafeManagement.Interfaces.Services.OrderService;
 using CafeManagement.Models;
 using CafeManagement.Services;
 using Microsoft.AspNetCore.Authorization;

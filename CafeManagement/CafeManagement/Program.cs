@@ -1,17 +1,15 @@
 using CafeManagement.Data;
 using CafeManagement.Interfaces.Mappers;
-using CafeManagement.Interfaces.Services;
 using CafeManagement.Interfaces.Services.Login;
 using CafeManagement.Interfaces.Services.PromotionService;
 using CafeManagement.Interfaces.Services.Report;
-using CafeManagement.Interfaces.Services.Stock;
+using CafeManagement.Interfaces.Services.StockService;
 using CafeManagement.Mappers;
 using CafeManagement.Models;
 using CafeManagement.Services.Login;
-using CafeManagement.Services.Store;
 using CafeManagement.Services.PromotionService;
 using CafeManagement.Services.Report;
-using CafeManagement.Services.Stock;
+using CafeManagement.Services.StockService;
 using CafeManagement.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -22,13 +20,17 @@ using System.Text;
 using DotNetEnv;
 using CafeManagement.Helpers;
 using Microsoft.AspNetCore.Http.Json;
-using CafeManagement.Observers;
 using CafeManagement.Interfaces.Observer;
 using CafeManagement.Interfaces.Factory;
 using CafeManagement.Observers.Subjects;
-using CafeManagement.Models.Order;
 using CafeManagement.Models.Stock;
 using CafeManagement.Factories.Observers;
+using CafeManagement.Events.Obsersvers;
+using CafeManagement.Models.OrderModel;
+using CafeManagement.Services.ProductService;
+using CafeManagement.Interfaces.Services.ProductService;
+using CafeManagement.Interfaces.Services.OrderService;
+using CafeManagement.Services.OrderService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,19 +46,24 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //services
 #region Service
+//product
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+//order
 builder.Services.AddScoped<INewOrderService, NewOrderService>();
 builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
-builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+//user & token
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+//stock
 builder.Services.AddScoped<IStockService, StockService>();
 builder.Services.AddScoped<IStockEntryService, StockEntryService>();
 builder.Services.AddScoped<IIngredientService, IngredientService>();
-builder.Services.AddScoped<IReportUpdateService, ReportUpdateService>();
+//report
 builder.Services.AddScoped<IReportRetrievalService, ReportRetrievalService>();
+//promotion
 builder.Services.AddScoped<IPromotionService, PromotionService>();
-builder.Services.AddScoped<ITokenService, TokenService>();
 #endregion
 
 #region Observer
@@ -67,7 +74,8 @@ builder.Services.AddScoped<ISubject<StockEntry>, StockImportEvent>();
 #endregion
 
 #region Factory
-builder.Services.AddScoped<IObserverFactory<IAppObserver<Order>>, OrderObsFactory>();
+builder.Services.AddScoped<IObserverFactory<Order>, OrderObsFactory>();
+builder.Services.AddScoped<IObserverFactory<StockAdjustment>, AdjustmentObsFactory>();
 #endregion
 //mapper
 #region Mapper
@@ -82,9 +90,9 @@ builder.Services.AddScoped<IStockEntryDetailMapper, StockEntryDetailMapper>();
 builder.Services.AddScoped<IReportMapper,ReportMapper>();
 #endregion
 
-//CORS
+#region CORS
 var MyAllowSpecificOrigins = "_myAllowAllOrigins";
-//cors
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
@@ -95,12 +103,12 @@ builder.Services.AddCors(options =>
                   .AllowAnyHeader();  // allow all headers
         });
 });
-
+#endregion
 builder.Services.Configure<JsonOptions>(options =>
 {
     options.SerializerOptions.Converters.Add(new DateOnlyJsonConverter());
 });
-//authentication
+#region Authentication
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.Password.RequireDigit = false;
@@ -132,13 +140,15 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true
     };
 });
-//Policy
+#endregion
+
+#region Policy
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("NotCustomer", policy =>
         policy.RequireRole(Role.Admin, Role.Manager, Role.Employee)); 
 });
-
+#endregion
 var app = builder.Build();
 app.UseCors(MyAllowSpecificOrigins);
 

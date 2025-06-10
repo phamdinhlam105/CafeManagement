@@ -1,6 +1,6 @@
 ﻿using CafeManagement.Models.Stock;
 
-namespace CafeManagement.Dtos.Respone.Stock
+namespace CafeManagement.Dtos.Respone.StockRes
 {
     public class StockDetailResponse
     {

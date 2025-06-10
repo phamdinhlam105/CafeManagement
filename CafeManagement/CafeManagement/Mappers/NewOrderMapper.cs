@@ -2,8 +2,7 @@
 using CafeManagement.Dtos.Respone.OrderRes;
 using CafeManagement.Enums;
 using CafeManagement.Interfaces.Mappers;
-using CafeManagement.Interfaces.Mappers.BaseMapper;
-using CafeManagement.Models.Order;
+using CafeManagement.Models.OrderModel;
 using CafeManagement.Models.PromotionModel;
 
 namespace CafeManagement.Mappers

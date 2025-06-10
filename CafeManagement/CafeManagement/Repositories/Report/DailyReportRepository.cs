@@ -3,7 +3,6 @@ using CafeManagement.Interfaces.Repositories.Report;
 using CafeManagement.Models.Report;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CafeManagement.Repositories.Report
 {
@@ -11,7 +10,7 @@ namespace CafeManagement.Repositories.Report
     {
         public DailyReportRepository(CafeManagementDbContext _context) : base(_context) { }
 
-        public async Task<IEnumerable<DailyReport>> GetByDateRange(DateOnly start, DateOnly end)
+        public async Task<List<DailyReport>> GetByDateRange(DateOnly start, DateOnly end)
         {
             return await _context.DailyReports
                 .Include(dr => dr.OrderReport)
@@ -36,13 +35,23 @@ namespace CafeManagement.Repositories.Report
                .Include(dr => dr.ProductReports)
                .FirstOrDefaultAsync(dr => dr.ReportDate == date);
         }
-        public async Task<IEnumerable<DailyReport>> GetAll()
+        public async Task<List<DailyReport>> GetAll()
         {
             return await _context.DailyReports
               .Include(dr => dr.OrderReport)
               .Include(dr => dr.StockReport)
               .Include(dr => dr.ProductReports)
               .ToListAsync();
+        }
+        public async Task<DailyReport> GetLastestReport()
+        {
+            var latestDate = await _context.DailyReports
+               .MaxAsync(ds => ds.ReportDate);
+            return await _context.DailyReports
+               .Include(dr => dr.OrderReport)
+               .Include(dr => dr.StockReport)
+               .Include(dr => dr.ProductReports)
+               .FirstOrDefaultAsync(ds => ds.ReportDate == latestDate);
         }
     }
 }

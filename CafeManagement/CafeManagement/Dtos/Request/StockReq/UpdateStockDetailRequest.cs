@@ -1,6 +1,6 @@
 ﻿using CafeManagement.Models.Stock;
 
-namespace CafeManagement.Dtos.Request.Stock
+namespace CafeManagement.Dtos.Request.StockReq
 {
     public class UpdateStockDetailRequest
     {

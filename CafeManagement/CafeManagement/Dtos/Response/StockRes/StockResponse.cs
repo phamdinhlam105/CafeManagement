@@ -1,8 +1,8 @@
-﻿using CafeManagement.Dtos.Respone.Stock;
+﻿using CafeManagement.Dtos.Respone.StockRes;
 using CafeManagement.Helpers;
 using System.Text.Json.Serialization;
 
-namespace CafeManagement.Dtos.Respone
+namespace CafeManagement.Dtos.Respone.StockRes
 {
     public class StockResponse
     {
