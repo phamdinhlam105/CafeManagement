@@ -30,7 +30,7 @@ namespace CafeManagement.Controllers
                 return BadRequest();
             try
             {
-                var newIngredient = await _ingredientService.CreateIngredient(ingredient);
+                var newIngredient = await _ingredientService.Add(ingredient);
                 return Ok(newIngredient);
             }
             catch (Exception ex)

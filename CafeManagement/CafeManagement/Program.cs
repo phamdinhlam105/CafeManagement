@@ -31,6 +31,9 @@ using CafeManagement.Services.ProductService;
 using CafeManagement.Interfaces.Services.ProductService;
 using CafeManagement.Interfaces.Services.OrderService;
 using CafeManagement.Services.OrderService;
+using CafeManagement.Events.Obsersvers.StockReportObserver;
+using CafeManagement.Events.Obsersvers.EntryUpdaterObserver;
+using CafeManagement.Events.Subjects;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +52,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //product
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IRecipeService, RecipeService>();
 //order
 builder.Services.AddScoped<INewOrderService, NewOrderService>();
 builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
@@ -60,8 +64,15 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IStockService, StockService>();
 builder.Services.AddScoped<IStockEntryService, StockEntryService>();
 builder.Services.AddScoped<IIngredientService, IngredientService>();
+builder.Services.AddScoped<IStockUsageService, StockUsageService>();
+builder.Services.AddScoped<IStockQueryService, StockQueryService>();
+builder.Services.AddScoped<IStockAdjustmentService, StockAdjustmentService>();
+builder.Services.AddScoped<IStockFIFOService, StockFIFOService>();
 //report
 builder.Services.AddScoped<IReportRetrievalService, ReportRetrievalService>();
+builder.Services.AddScoped<IOrderReportUpdateService, OrderReportUpdateService>();
+builder.Services.AddScoped<IStockReportUpdateService, StockReportUpdateService>();
+builder.Services.AddScoped<IReportCreationService, ReportCreationService>();
 //promotion
 builder.Services.AddScoped<IPromotionService, PromotionService>();
 #endregion
@@ -69,8 +80,13 @@ builder.Services.AddScoped<IPromotionService, PromotionService>();
 #region Observer
 builder.Services.AddScoped<IAppObserver<Order>, CustomerUpdater>();
 builder.Services.AddScoped<IAppObserver<Order>, OrderReportUpdater>();
+builder.Services.AddScoped<IAppObserver<StockEntry>, StockReportByEntryUpdater>();
+builder.Services.AddScoped<IAppObserver<StockAdjustment>, EntryByAdjustmentUpdater>();
+builder.Services.AddScoped<IAppObserver<StockAdjustment>, StockReportByAdjustmentUpdater>();
+
 builder.Services.AddScoped<ISubject<Order>, OrderCompleteEvent>();
 builder.Services.AddScoped<ISubject<StockEntry>, StockImportEvent>();
+builder.Services.AddScoped<ISubject<StockAdjustment>, StockAdjustmentEvent>();
 #endregion
 
 #region Factory
