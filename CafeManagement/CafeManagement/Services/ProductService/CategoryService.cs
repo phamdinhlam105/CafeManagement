@@ -39,6 +39,9 @@ namespace CafeManagement.Services.ProductService
         }
         public async Task<IEnumerable<Product>> GetProductsByCategory(Guid categoryId)
         {
+            var category = await _unitOfWork.Category.GetById(categoryId);
+            if (category == null)
+                throw new Exception("Category id not found");
             return await _unitOfWork.Product.GetByCategoryId(categoryId);
         }
 

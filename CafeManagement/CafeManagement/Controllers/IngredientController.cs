@@ -24,7 +24,7 @@ namespace CafeManagement.Controllers
             return Ok(await _ingredientService.GetAll());
         }
         [HttpPost]
-        public async Task<IActionResult> AddIngredient([FromBody]Ingredient ingredient)
+        public async Task<IActionResult> Add([FromBody]Ingredient ingredient)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -40,7 +40,7 @@ namespace CafeManagement.Controllers
         }
 
         [HttpPut("{Id}")]
-        public async Task<IActionResult> AddIngredient(Guid Id, [FromBody] Ingredient ingredient)
+        public async Task<IActionResult> Edit(Guid Id, [FromBody] Ingredient ingredient)
         {
             if (!ModelState.IsValid)
                 return BadRequest();

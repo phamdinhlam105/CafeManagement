@@ -1,5 +1,4 @@
 ﻿using CafeManagement.Dtos.Request;
-using CafeManagement.Dtos.Respone;
 using CafeManagement.Helpers;
 using CafeManagement.Interfaces.Mappers;
 using CafeManagement.Interfaces.Services.ProductService;
@@ -85,13 +84,16 @@ namespace CafeManagement.Controllers
         [HttpGet("GetProducts/{categoryId}")]
         public async Task<ActionResult> GetProductsByCategory(Guid categoryId)
         {
-            var category = await _categoryService.GetById(categoryId);
-            if(category == null) 
-                return NotFound(new {Error= 404, Message= "id category not found"});
-            var products = await _categoryService.GetProductsByCategory(categoryId);
-            return Ok(products.Select(p => _productMapper.MapToResponse(p))) ;
+            try
+            {
+                var products = await _categoryService.GetProductsByCategory(categoryId);
+                return Ok(products.Select(p => _productMapper.MapToResponse(p)));
+            }
+            catch
+            {
+                return NotFound();
+            }
         }
-
 
         [HttpDelete("Id")]
         [Authorize(Roles = $"{Role.Manager},{Role.Admin}")]
@@ -103,6 +105,5 @@ namespace CafeManagement.Controllers
             await _categoryService.Delete(category);
             return Ok();
         }
-
     }
 }

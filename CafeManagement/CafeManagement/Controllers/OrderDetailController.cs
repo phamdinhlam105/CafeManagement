@@ -50,7 +50,7 @@ namespace CafeManagement.Controllers
                 if (product == null)
                     return NotFound(new  { Error = 404, Message = "id product not found" });
                 OrderDetail newDetail = _orderDetailMapper.MapToEntity(req);
-                await _newOderService.AddOrderDetail(currentOrder, newDetail, product);
+                await _orderDetailService.Add(newDetail);
                 return Ok(_orderDetailMapper.MapToResponse(newDetail));
             }
             catch (Exception ex)
