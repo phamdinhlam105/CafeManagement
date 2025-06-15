@@ -5,7 +5,7 @@ namespace CafeManagement.Interfaces.Services.StockService
     public interface IStockEntryService
     {
         Task AddNewEntry(StockEntry entry);
-        Task<IEnumerable<StockEntry>> GetAll();
-        Task<IEnumerable<StockEntry>> GetByDate(DateOnly date);
+        Task<List<StockEntry>> GetAll();
+        Task<List<StockEntry>> GetByDate(DateOnly date);
     }
 }

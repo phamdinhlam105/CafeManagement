@@ -8,7 +8,7 @@ namespace CafeManagement.Dtos.Respone.StockRes
     {
         public Guid Id { get; set; }
         [JsonConverter(typeof(DateOnlyJsonConverter))]
-        public DateOnly createDate { get; set; }
+        public DateOnly ReportDate { get; set; }
         public ICollection<StockDetailResponse> Details { get; set; }
     }
 }

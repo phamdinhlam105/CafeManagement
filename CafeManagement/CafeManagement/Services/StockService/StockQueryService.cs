@@ -1,5 +1,6 @@
 ﻿using CafeManagement.Helpers;
 using CafeManagement.Interfaces.Services.StockService;
+using CafeManagement.Models.Report;
 using CafeManagement.Models.Stock;
 using CafeManagement.UnitOfWork;
 
@@ -12,49 +13,20 @@ namespace CafeManagement.Services.StockService
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<List<DailyStock>> CurrentStock()
-        {
-            var dailyReport = await _unitOfWork.DailyReport.GetByDate(Ultilities.GetToday());
-            var listDailyStock = new List<DailyStock>();
-            foreach(var detail in dailyReport.StockReport.StockReportDetails)
-            {
-                listDailyStock.Add(new DailyStock
-                {
-                    StockRemaining = detail.QuantityOnHand,
-                    StockImport = detail.QuantityImported,
-                });
-            }
-            return listDailyStock;
-        }
 
-        public async Task<List<DailyStock>> GetStockAtAtime(DateOnly date)
+        public async Task<StockReport> GetStockAtAtime(DateOnly date)
         {
             var dailyReport = await _unitOfWork.DailyReport.GetByDate(date);
-            var listDailyStock = new List<DailyStock>();
-            foreach (var detail in dailyReport.StockReport.StockReportDetails)
-            {
-                listDailyStock.Add(new DailyStock
-                {
-                    StockRemaining = detail.QuantityOnHand,
-                    StockImport = detail.QuantityImported,
-                });
-            }
-            return listDailyStock;
+            return dailyReport.StockReport;
         }
 
-        public async Task<DailyStock> GetStockByIngredient(Guid ingredientId)
+        public async Task<StockReportDetail> GetStockByIngredient(Guid ingredientId)
         {
+            var ingredient = await _unitOfWork.Ingredient.GetById(ingredientId) ?? throw new Exception("Id not found");
             var dailyReport = await _unitOfWork.DailyReport.GetByDate(Ultilities.GetToday());
-            foreach (var detail in dailyReport.StockReport.StockReportDetails)
-            {
-                if (detail.IngredientId == ingredientId)
-                    return new DailyStock
-                    {
-                        StockRemaining = detail.QuantityOnHand,
-                        StockImport = detail.QuantityImported
-                    };
-            }
-            return null;
+            var reportDetail = dailyReport.StockReport.StockReportDetails
+                .FirstOrDefault(srd => srd.IngredientId == ingredientId);
+            return reportDetail;
         }
     }
 }

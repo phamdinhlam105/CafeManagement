@@ -4,7 +4,7 @@ using CafeManagement.Models.Report;
 
 namespace CafeManagement.Interfaces.Mappers
 {
-    public interface IStockMapper : IEntityToResponse<StockReport,StockResponse>
+    public interface IStockDetailMapper:IEntityToResponse<StockReportDetail,StockDetailResponse>
     {
     }
 }

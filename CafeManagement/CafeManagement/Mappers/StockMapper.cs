@@ -1,30 +1,28 @@
 ﻿using CafeManagement.Dtos.Request;
 using CafeManagement.Dtos.Respone;
-using CafeManagement.Dtos.Respone.Stock;
+using CafeManagement.Dtos.Respone.StockRes;
 using CafeManagement.Interfaces.Mappers;
 using CafeManagement.Interfaces.Mappers.BaseMapper;
+using CafeManagement.Models.Report;
 using CafeManagement.Models.Stock;
 
 namespace CafeManagement.Mappers
 {
     public class StockMapper : IStockMapper
     {
-        public StockResponse MapToResponse(DailyStock stock)
+        private readonly IStockDetailMapper _stockDetailMapper;
+        public StockMapper(IStockDetailMapper stockDetailMapper)
+        {
+            _stockDetailMapper = stockDetailMapper;
+        }
+
+        public StockResponse MapToResponse(StockReport stock)
         {
             return new StockResponse
             {
                 Id = stock.Id,
-                createDate = stock.createDate,
-                Details = stock.DailyStockDetails.Select(dtd => new StockDetailResponse
-                {
-                    Id = dtd.Id,
-                    StockAtStartOfDay = dtd.StockAtStartOfDay,
-                    StockImport = dtd.StockImport,
-                    StockRemaining = dtd.StockRemaining,
-                    DailyStockId = stock.Id,
-                    IngredientId = dtd.IngredientId,
-                    Ingredient = dtd.Ingredient
-                }).ToList()
+                ReportDate = stock.DailyReport.ReportDate,
+                Details = stock.StockReportDetails.Select(srd => _stockDetailMapper.MapToResponse(srd)).ToList()
             };
         }
 

@@ -11,8 +11,7 @@ namespace CafeManagement.Models.Stock
         public float RemainQuantity {  get; set; }
         public decimal Price { get; set; }
         public decimal TotalValue => (decimal)ImportQuantity * Price;
-        [JsonIgnore]
-        public StockEntry? StockEntry { get; set; }
-        public Ingredient? Ingredient { get; set; }
+        public StockEntry StockEntry { get; set; }
+        public Ingredient Ingredient { get; set; }
     }
 }

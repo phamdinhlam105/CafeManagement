@@ -1,5 +1,6 @@
-﻿using CafeManagement.Dtos.Request.Stock;
-using CafeManagement.Dtos.Respone.Stock;
+﻿
+using CafeManagement.Dtos.Request.StockReq;
+using CafeManagement.Dtos.Respone.StockRes;
 using CafeManagement.Interfaces.Mappers;
 using CafeManagement.Models.Stock;
 
@@ -11,10 +12,10 @@ namespace CafeManagement.Mappers
         {
             return new StockEntryDetail
             {
-                Id = Guid.NewGuid(),
                 IngredientId = req.IngredientId,
-                Quantity = req.Quantity,
-                Price = req.Price
+                ImportQuantity = req.Quantity,
+                RemainQuantity = req.Quantity,
+                Price = req.Price,
             };
         }
 
@@ -23,11 +24,12 @@ namespace CafeManagement.Mappers
             return new StockEntryDetailResponse
             {
                 Id = entity.Id,
-                Quantity = entity.Quantity,
+                ImportQuantity = entity.ImportQuantity,
+                RemainQuantity = entity.RemainQuantity,
                 Price = entity.Price,
-                Ingredient = entity.Ingredient,
                 IngredientId = entity.IngredientId,
-                StockEntryId = entity.StockEntryId
+                StockEntryId = entity.StockEntryId,
+                IngredientName = entity.Ingredient.Name
             };
         }
     }

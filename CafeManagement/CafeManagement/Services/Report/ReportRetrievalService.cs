@@ -8,15 +8,19 @@ namespace CafeManagement.Services.Report
     public class ReportRetrievalService : IReportRetrievalService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public ReportRetrievalService(IUnitOfWork unitOfWork)
+        private readonly IReportCreationService _reportCreationService;
+        public ReportRetrievalService(IUnitOfWork unitOfWork, IReportCreationService reportCreationService)
         {
             _unitOfWork = unitOfWork;
+            _reportCreationService = reportCreationService;
         }
         public async Task<DailyReport?> GetDailyReport(DateOnly date)
         {
             var todayReport = await _unitOfWork.DailyReport.GetByDate(date);
             if (todayReport == null)
-                return null;
+            {
+                todayReport = await _reportCreationService.GetTodayReport();
+            }
          
             return todayReport;
         }
@@ -34,9 +38,6 @@ namespace CafeManagement.Services.Report
         public async Task<List<DailyReport>> GetReportsByRange(DateOnly startDate, DateOnly endDate)
         {
             var dailyReportList = (await _unitOfWork.DailyReport.GetByDateRange(startDate, endDate)).ToList();
-            foreach (var dailyReport in dailyReportList)
-            {
-            }
             return dailyReportList;
         }
     }

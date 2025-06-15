@@ -1,7 +1,7 @@
-﻿using CafeManagement.Dtos.Request.Stock;
-using CafeManagement.Dtos.Respone.Stock;
+﻿us
+using CafeManagement.Dtos.Request.StockReq;
+using CafeManagement.Dtos.Respone.StockRes;
 using CafeManagement.Interfaces.Mappers;
-using CafeManagement.Interfaces.Mappers.BaseMapper;
 using CafeManagement.Models.Stock;
 
 namespace CafeManagement.Mappers
@@ -16,18 +16,10 @@ namespace CafeManagement.Mappers
 
         public StockEntry MapToEntity(StockEntryRequest request)
         {
-            var newStockId = Guid.NewGuid();
             return new StockEntry
             {
-                Id = newStockId,
-                EntryDate = request.EntryDate,
                 TotalValue = request.TotalValue,
-                StockEntryDetails = request.Details.Select(d =>
-                {
-                    var detail = _stockEntryDetailMapper.MapToEntity(d);
-                    detail.StockEntryId = newStockId;
-                    return detail;
-                }).ToList()
+                StockEntryDetails = request.Details.Select(d => _stockEntryDetailMapper.MapToEntity(d)).ToList()
             };
         }
 

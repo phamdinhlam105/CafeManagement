@@ -1,5 +1,6 @@
-﻿using CafeManagement.Dtos.Request.Stock;
-using CafeManagement.Dtos.Respone.Stock;
+﻿
+using CafeManagement.Dtos.Request.StockReq;
+using CafeManagement.Dtos.Respone.StockRes;
 using CafeManagement.Interfaces.Mappers.BaseMapper;
 using CafeManagement.Models.Stock;
 

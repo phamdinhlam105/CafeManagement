@@ -2,10 +2,9 @@
 
 namespace CafeManagement.Dtos.Request.StockReq
 {
-    public class UpdateStockDetailRequest
+    public class StockAdjustmentDetailRequest
     {
-        public Guid Id { get; set; }
         public Guid IngredientId { get; set; }
-        public float remainAmount { get; set; }
+        public float QuantityAdjusted { get; set; }
     }
 }
