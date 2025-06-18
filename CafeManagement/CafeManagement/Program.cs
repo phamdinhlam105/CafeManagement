@@ -34,6 +34,8 @@ using CafeManagement.Services.OrderService;
 using CafeManagement.Events.Obsersvers.StockReportObserver;
 using CafeManagement.Events.Obsersvers.EntryUpdaterObserver;
 using CafeManagement.Events.Subjects;
+using CafeManagement.Interfaces.Facade.StockFacade;
+using CafeManagement.Facades;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,7 +63,6 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 //stock
-builder.Services.AddScoped<IStockService, StockService>();
 builder.Services.AddScoped<IStockEntryService, StockEntryService>();
 builder.Services.AddScoped<IIngredientService, IngredientService>();
 builder.Services.AddScoped<IStockUsageService, StockUsageService>();
@@ -76,6 +77,10 @@ builder.Services.AddScoped<IReportCreationService, ReportCreationService>();
 //promotion
 builder.Services.AddScoped<IPromotionService, PromotionService>();
 #endregion
+
+#region Facade
+builder.Services.AddScoped<IStockQueryUseCase, StockFacade>();
+builder.Services.AddScoped<IStockUpdateUseCase, StockFacade>();
 
 #region Observer
 builder.Services.AddScoped<IAppObserver<Order>, CustomerUpdater>();
@@ -104,6 +109,8 @@ builder.Services.AddScoped<IStockMapper, StockMapper>();
 builder.Services.AddScoped<IStockEntryMapper, StockEntryMapper>();
 builder.Services.AddScoped<IStockEntryDetailMapper, StockEntryDetailMapper>();
 builder.Services.AddScoped<IReportMapper,ReportMapper>();
+builder.Services.AddScoped<IRecipeMapper, RecipeMapper>();
+builder.Services.AddScoped<IRecipeDetailMapper, RecipeDetailMapper>();
 #endregion
 
 #region CORS

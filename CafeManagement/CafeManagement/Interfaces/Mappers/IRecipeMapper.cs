@@ -5,9 +5,8 @@ using CafeManagement.Models.ProductModel;
 
 namespace CafeManagement.Interfaces.Mappers
 {
-    public interface ICategoryMapper : IRequestToEntity<CategoryRequest, Category>,
-        IEntityToResponse<Category, CategoryResponse>,
-        IRequestToUpdate<CategoryRequest, Category>
+    public interface IRecipeMapper:IRequestToEntity<RecipeReq,Recipe>,
+        IEntityToResponse<Recipe,RecipeRes>
     {
 
     }

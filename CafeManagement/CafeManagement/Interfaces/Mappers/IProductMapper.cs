@@ -1,5 +1,5 @@
 ﻿using CafeManagement.Dtos.Request;
-using CafeManagement.Dtos.Respone;
+using CafeManagement.Dtos.Response.ProductRes;
 using CafeManagement.Interfaces.Mappers.BaseMapper;
 using CafeManagement.Models.ProductModel;
 

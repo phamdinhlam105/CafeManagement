@@ -12,7 +12,7 @@ namespace CafeManagement.Dtos.Respone.OrderRes
         public int Amount { get; set; }
         public OrderStatus Status { get; set; }
         public string CustomerName { get; set; }
-        public Guid? CustomerId { get; set; }
+        public Guid CustomerId { get; set; }
         public Guid? PromotionId { get; set; }
         public DateTime CreatedAt { get; set; }
         public ICollection<OrderDetailResponse> Details { get; set; }

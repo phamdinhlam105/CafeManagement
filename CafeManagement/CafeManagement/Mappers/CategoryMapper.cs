@@ -1,25 +1,19 @@
-﻿using CafeManagement.Dtos.Request;
-using CafeManagement.Dtos.Respone;
+﻿using CafeManagement.Dtos.Request.ProductReq;
+using CafeManagement.Dtos.Response.ProductRes;
 using CafeManagement.Interfaces.Mappers;
-using CafeManagement.Interfaces.Mappers.BaseMapper;
 using CafeManagement.Models.ProductModel;
 
 namespace CafeManagement.Mappers
 {
     public class CategoryMapper :ICategoryMapper
     {
-        private readonly IProductMapper _productMapper;
-        public CategoryMapper(IProductMapper productMapper)
-        {
-            _productMapper = productMapper;
-        }
         public Category MapToEntity(CategoryRequest request)
         {
             return new Category
             {
                 Id = Guid.NewGuid(),
                 Name = request.Name,
-                Description = (request.Description==null) ? string.Empty:request.Description            
+                Description = request.Description ?? string.Empty
             };
         }
 
@@ -30,7 +24,7 @@ namespace CafeManagement.Mappers
                 Id = category.Id,
                 Name = category.Name,
                 Description=category.Description,
-                Products =category.Products.Select(p => _productMapper.MapToResponse(p)).ToList() ?? []
+                NumberOfProducts =category.Products.Count
             };
         }
 

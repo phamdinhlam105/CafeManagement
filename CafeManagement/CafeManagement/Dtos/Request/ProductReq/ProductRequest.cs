@@ -1,4 +1,6 @@
-﻿namespace CafeManagement.Dtos.Request
+﻿using CafeManagement.Models.ProductModel;
+
+namespace CafeManagement.Dtos.Request.ProductReq
 {
     public class ProductRequest
     {
@@ -7,5 +9,10 @@
         public string? Img {  get; set; }
         public string? Description { get; set; }
         public Guid CategoryId { get; set; }
+        public List<RecipeDetail> Recipes { get; set; }
+        public ProductRequest()
+        {
+            Recipes = new List<RecipeDetail>();
+        }
     }
 }

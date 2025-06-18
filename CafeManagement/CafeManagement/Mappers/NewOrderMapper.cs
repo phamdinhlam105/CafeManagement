@@ -36,16 +36,16 @@ namespace CafeManagement.Mappers
             return new NewOrderResponse
             {
                 Id = order.Id,
-                No=order.No,
+                No = order.No,
                 Note = order.Note ?? "",
                 Total = order.Price,
                 Amount = order.Quantity,
                 Status = order.OrderStatus,
-                CustomerId= order.Customer != null ? order.Customer.Id : null,
-                CustomerName = order.Customer != null ? order.Customer.Name : "",
+                CustomerId = order.Customer.Id,
+                CustomerName = order.Customer.Name,
                 PromotionId = order.PromotionId,
-                CreatedAt=order.createdAt,
-                Details =order.Details.Select(od => _orderDetailMapper.MapToResponse(od)).ToList() ?? []
+                CreatedAt = order.createdAt,
+                Details = order.Details.Select(od => _orderDetailMapper.MapToResponse(od)).ToList() ?? []
             };
         }
     }

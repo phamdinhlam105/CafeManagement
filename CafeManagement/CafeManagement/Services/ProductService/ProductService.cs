@@ -38,7 +38,6 @@ namespace CafeManagement.Services.ProductService
             return await _unitOfWork.Product.GetById(id);
         }
 
-
         public async Task<Product> Update(Product item)
         {
             if (item != null)

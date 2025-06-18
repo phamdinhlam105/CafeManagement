@@ -12,7 +12,7 @@ namespace CafeManagement.Models.OrderModel
         public decimal Price { get; set; }
         public int Quantity { get; set; }
         public DateTime createdAt { get; set; }
-        public Guid? CustomerId { get; set; }
+        public Guid CustomerId { get; set; }
         public string? Note { get; set; }
         public OrderStatus OrderStatus { get; set; }
         public Guid? PromotionId { get; set; }

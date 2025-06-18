@@ -1,4 +1,4 @@
-﻿using CafeManagement.Dtos.Request;
+﻿using CafeManagement.Dtos.Request.ProductReq;
 using CafeManagement.Helpers;
 using CafeManagement.Interfaces.Mappers;
 using CafeManagement.Interfaces.Services.ProductService;
