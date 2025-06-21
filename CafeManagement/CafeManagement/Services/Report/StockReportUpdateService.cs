@@ -50,9 +50,9 @@ namespace CafeManagement.Services.Report
             }
             await _unitOfWork.StockReport.Update(todayStockReport);
         }
-        public async Task UpdateStockReportByOrder(Guid orderId)
+        public async Task UpdateStockReportByUsage(Guid usageId)
         {
-            var listUsageDetail = await _unitOfWork.StockUsageDetail.GetDetailListByOrderId(orderId);
+            var listUsageDetail = await _unitOfWork.StockUsageDetail.GetDetailListByUsageId(usageId);
             var todayStockReport = (await _reportCreationService.GetTodayReport()).StockReport;
             foreach (var usageDetail in listUsageDetail)
             {

@@ -1,5 +1,4 @@
-﻿using CafeManagement.Events.Obsersvers.EntryUpdaterObserver;
-using CafeManagement.Events.Obsersvers.StockReportObserver;
+﻿using CafeManagement.Events.Obsersvers.StockAdjustmentObs;
 using CafeManagement.Interfaces.Factory;
 using CafeManagement.Interfaces.Observer;
 using CafeManagement.Models.Stock;

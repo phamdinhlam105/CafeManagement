@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CafeManagement.Dtos.Request
+namespace CafeManagement.Dtos.Request.OrderReq
 {
     public class CustomerRequest
     {

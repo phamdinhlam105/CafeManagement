@@ -1,5 +1,6 @@
 ﻿using CafeManagement.Enums;
 using CafeManagement.Interfaces.Observer;
+using CafeManagement.Interfaces.Services;
 using CafeManagement.Interfaces.Services.OrderService;
 using CafeManagement.Models.OrderModel;
 using CafeManagement.UnitOfWork;
@@ -20,26 +21,13 @@ namespace CafeManagement.Services.OrderService
             _orderCompleteRegister = orderCompleteRegister;
             _orderCompleteRegister.Register(_orderCompleteEvent);
         }
-        public async Task EditOrder(Order order)
+        public async Task<Order> Update(Order order)
         {
             await _unitOfWork.Order.Update(order);
+            return order;
         }
 
-        public async Task FinishOrder(Order order)
-        {
-            order.OrderStatus = OrderStatus.Completed;
-            await _unitOfWork.Order.Update(order);
-            await _orderCompleteEvent.Notify(order);
-        }
-
-        public async Task CancelOrder(Guid orderId)
-        {
-            var currentOrder = await _unitOfWork.Order.GetById(orderId) ?? throw new Exception("id not found");
-            currentOrder.OrderStatus = OrderStatus.Cancelled;
-            await _unitOfWork.Order.Update(currentOrder);
-        }
-
-        public async Task<Order> CreateOrder(Order order)
+        public async Task<Order> Add(Order order)
         {
             if (order.Id == Guid.Empty)
                 order.Id = Guid.NewGuid();
@@ -57,6 +45,10 @@ namespace CafeManagement.Services.OrderService
         public async Task<IEnumerable<Order>> GetAll()
         {
             return await _unitOfWork.Order.GetAll();
+        }
+        public async Task Delete(Order entity)
+        {
+            await _unitOfWork.Order.Delete(entity);
         }
     }
 }

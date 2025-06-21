@@ -2,7 +2,7 @@
 using CafeManagement.Interfaces.Services.OrderService;
 using CafeManagement.Models.OrderModel;
 
-namespace CafeManagement.Events.Obsersvers
+namespace CafeManagement.Events.Obsersvers.FinishOrderObs
 {
     public class CustomerUpdater : IAppObserver<Order>
     {

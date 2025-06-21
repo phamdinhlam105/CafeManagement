@@ -16,5 +16,12 @@ namespace CafeManagement.Repositories.Stock
                 .Include(sud=>sud.StockEntryDetail)
                 .Where(sud => sud.StockUsageLog.OrderId == orderId).ToListAsync();
         }
+        public async Task<List<StockUsageDetail>> GetDetailListByUsageId(Guid usageId)
+        {
+            return await _context.StockUsageDetails
+                .Include(sud => sud.StockUsageLog)
+                .Include(sud => sud.StockEntryDetail)
+                .Where(sud => sud.StockUsageLogId == usageId).ToListAsync();
+        }
     }
 }

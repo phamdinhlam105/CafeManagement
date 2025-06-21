@@ -1,4 +1,4 @@
-﻿namespace CafeManagement.Dtos.Respone
+﻿namespace CafeManagement.Dtos.Response.OrderRes
 {
     public class CustomerResponse
     {
@@ -6,6 +6,6 @@
         public string Name { get; set; }
         public string? Phone { get; set; }
         public string? Address { get; set; }
-        public int NumberOfOrders {  get; set; }
+        public int NumberOfOrders { get; set; }
     }
 }

@@ -6,6 +6,6 @@ namespace CafeManagement.Interfaces.Services.Report
     {
         Task UpdateStockReportByStockEntry(StockEntry entry);
         Task UpdateStockReportByAdjustment(StockAdjustment adjustment);
-        Task UpdateStockReportByOrder(Guid orderId);
+        Task UpdateStockReportByUsage(Guid orderId);
     }
 }

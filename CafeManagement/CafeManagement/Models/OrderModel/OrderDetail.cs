@@ -12,7 +12,6 @@ namespace CafeManagement.Models.OrderModel
         public decimal CurrentPrice {  get; set; }
         public string? Note { get; set; }
         public Product Product { get; set; }
-        [JsonIgnore]
         public Order Order { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace CafeManagement.Events.Registers
         public void Register(ISubject<Order> subject)
         {
             subject.Attach(_factory.Create("customer"));
-            subject.Attach(_factory.Create("report"));
+            subject.Attach(_factory.Create("order-report"));
         }
     }
 }

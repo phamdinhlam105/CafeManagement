@@ -25,17 +25,17 @@ using CafeManagement.Interfaces.Factory;
 using CafeManagement.Observers.Subjects;
 using CafeManagement.Models.Stock;
 using CafeManagement.Factories.Observers;
-using CafeManagement.Events.Obsersvers;
 using CafeManagement.Models.OrderModel;
 using CafeManagement.Services.ProductService;
 using CafeManagement.Interfaces.Services.ProductService;
 using CafeManagement.Interfaces.Services.OrderService;
 using CafeManagement.Services.OrderService;
-using CafeManagement.Events.Obsersvers.StockReportObserver;
-using CafeManagement.Events.Obsersvers.EntryUpdaterObserver;
 using CafeManagement.Events.Subjects;
 using CafeManagement.Interfaces.Facade.StockFacade;
 using CafeManagement.Facades;
+using CafeManagement.Events.Obsersvers.FinishOrderObs;
+using CafeManagement.Events.Obsersvers.StockAdjustmentObs;
+using CafeManagement.Events.Obsersvers.StockImportObs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -81,6 +81,7 @@ builder.Services.AddScoped<IPromotionService, PromotionService>();
 #region Facade
 builder.Services.AddScoped<IStockQueryUseCase, StockFacade>();
 builder.Services.AddScoped<IStockUpdateUseCase, StockFacade>();
+#endregion
 
 #region Observer
 builder.Services.AddScoped<IAppObserver<Order>, CustomerUpdater>();

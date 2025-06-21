@@ -1,4 +1,5 @@
 ﻿
+using CafeManagement.Interfaces.Observer;
 using CafeManagement.Interfaces.Services.StockService;
 using CafeManagement.Models.OrderModel;
 using CafeManagement.Models.Stock;
@@ -9,10 +10,44 @@ namespace CafeManagement.Services.StockService
     public class StockUsageService : IStockUsageService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public StockUsageService(IUnitOfWork unitOfWork)
+        private readonly ISubject<StockUsageLog> _newUsageLogEvent;
+        public StockUsageService(IUnitOfWork unitOfWork, 
+            ISubject<StockUsageLog> newUsageLogEvent,
+            IEventRegister<StockUsageLog> newUsageLogRegister)
         {
             _unitOfWork = unitOfWork;
+            _newUsageLogEvent = newUsageLogEvent;
+            newUsageLogRegister.Register(_newUsageLogEvent);
         }
+
+        private async Task AddUsageDetailByIngredient(
+           Ingredient ingredient,
+           float totalNeeded,
+           StockUsageLog usageLog)
+        {
+            var entryDetails = await _unitOfWork.StockEntryDetail
+                .GetAvailableIngredient(ingredient.Id);
+
+            foreach (var entry in entryDetails)
+            {
+                if (totalNeeded <= 0) break;
+                if (entry.RemainQuantity <= 0) continue;
+
+                var usedQuantity = Math.Min(entry.RemainQuantity, totalNeeded);
+                totalNeeded -= usedQuantity;
+
+                var usage = new StockUsageDetail
+                {
+                    Id = Guid.NewGuid(),
+                    StockEntryDetailId = entry.Id,
+                    QuantityUsed = usedQuantity,
+                    TotalValue = (decimal)usedQuantity * entry.Price
+                };
+
+                usageLog.StockUsageDetails.Add(usage);
+            }
+        }
+
         public async Task AddStockUsageLogByOrder(Order order)
         {
             foreach (OrderDetail detail in order.Details)
@@ -20,9 +55,9 @@ namespace CafeManagement.Services.StockService
                 var usageLog = new StockUsageLog
                 {
                     Id = Guid.NewGuid(),
-                    OrderId = order.Id,
-                    ProductId = detail.ProductId,
+                    OrderDetailId=detail.Id,
                     SellingPrice = detail.Product.Price,
+                    UsedAt=DateTime.UtcNow,
                     StockUsageDetails = new List<StockUsageDetail>(),
                     TotalCost = 0
                 };
@@ -34,35 +69,13 @@ namespace CafeManagement.Services.StockService
                 {
                     var ingredient = recipeDetail.Ingredient;
                     var totalNeeded = recipeDetail.Amount * detail.Quantity;
-                    var listDetail = await AddUsageDetailByIngredient(ingredient, totalNeeded);
-                    usageLog.StockUsageDetails.AddRange(listDetail);
-                    usageLog.TotalCost = listDetail.Sum(d => d.TotalValue);
+                    await AddUsageDetailByIngredient(ingredient, totalNeeded,usageLog);
+                    usageLog.TotalCost = usageLog.StockUsageDetails.Sum(d => d.TotalValue);
                 }
                 await _unitOfWork.StockUsageLog.Add(usageLog);
-            }
-        }
+                await _newUsageLogEvent.Notify(usageLog);
 
-        public async Task<List<StockUsageDetail>> AddUsageDetailByIngredient(Ingredient ingredient, float totalNeeded)
-        {
-            var usageDetailList = new List<StockUsageDetail>();
-            var entryDetails = await _unitOfWork.StockEntryDetail
-                .GetAvailableIngredient(ingredient.Id);
-            foreach (var entry in entryDetails)
-            {
-                if (totalNeeded <= 0) break;
-                if (entry.RemainQuantity <= 0) continue;
-                var usedQuantity = Math.Min(entry.RemainQuantity, totalNeeded);
-                totalNeeded -= usedQuantity;
-                var usage = new StockUsageDetail
-                {
-                    Id = Guid.NewGuid(),
-                    StockEntryDetailId = entry.Id,
-                    QuantityUsed = usedQuantity,
-                    TotalValue = (decimal)usedQuantity * entry.Price
-                };
-                usageDetailList.Add(usage);
             }
-            return usageDetailList;
         }
 
         public async Task<List<StockUsageLog>> GetUsageLogByDate(DateOnly date)

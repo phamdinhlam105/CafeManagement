@@ -3,7 +3,7 @@ using CafeManagement.Interfaces.Observer;
 using CafeManagement.Interfaces.Services.Report;
 using CafeManagement.Models.OrderModel;
 
-namespace CafeManagement.Events.Obsersvers
+namespace CafeManagement.Events.Obsersvers.FinishOrderObs
 {
     public class OrderReportUpdater : IAppObserver<Order>
     {

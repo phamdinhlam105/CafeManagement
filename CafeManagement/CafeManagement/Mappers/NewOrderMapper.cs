@@ -3,7 +3,6 @@ using CafeManagement.Dtos.Respone.OrderRes;
 using CafeManagement.Enums;
 using CafeManagement.Interfaces.Mappers;
 using CafeManagement.Models.OrderModel;
-using CafeManagement.Models.PromotionModel;
 
 namespace CafeManagement.Mappers
 {
@@ -18,11 +17,9 @@ namespace CafeManagement.Mappers
         {
             return new Order
             {
-                Id = Guid.NewGuid(),
-                No = request.No,
+                TableNo = request.TableNo,
                 Price = 0,
                 Quantity = 0,
-                createdAt = DateTime.UtcNow,
                 CustomerId = request.CustomerId,
                 Note = request.Note,
                 OrderStatus = OrderStatus.New
@@ -35,8 +32,8 @@ namespace CafeManagement.Mappers
 
             return new NewOrderResponse
             {
-                Id = order.Id,
-                No = order.No,
+                Id=order.Id,
+                TableNo = order.TableNo,
                 Note = order.Note ?? "",
                 Total = order.Price,
                 Amount = order.Quantity,
@@ -44,7 +41,12 @@ namespace CafeManagement.Mappers
                 CustomerId = order.Customer.Id,
                 CustomerName = order.Customer.Name,
                 PromotionId = order.PromotionId,
-                CreatedAt = order.createdAt,
+                CreatedAt=order.CreatedAt,
+                CreatedByUserId= order.CreateByUserId,
+                CreatedByUserName=order.CreateByUser.Profile.Name,
+                LastUpdateAt=order.LastUpdateAt,
+                LastUpdateByUserId=order.LastUpdateByUserId, 
+                LastUpdateByUserName=order.LastUpdateByUser.Profile.Name,
                 Details = order.Details.Select(od => _orderDetailMapper.MapToResponse(od)).ToList() ?? []
             };
         }

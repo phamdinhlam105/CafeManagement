@@ -2,7 +2,7 @@
 using CafeManagement.Interfaces.Services.StockService;
 using CafeManagement.Models.Stock;
 
-namespace CafeManagement.Events.Obsersvers.EntryUpdaterObserver
+namespace CafeManagement.Events.Obsersvers.StockAdjustmentObs
 {
     public class EntryByAdjustmentUpdater : IAppObserver<StockAdjustment>
     {

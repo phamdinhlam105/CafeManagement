@@ -2,7 +2,7 @@
 using CafeManagement.Interfaces.Services.Report;
 using CafeManagement.Models.OrderModel;
 
-namespace CafeManagement.Events.Obsersvers.StockReportObserver
+namespace CafeManagement.Events.Obsersvers.FinishOrderObs
 {
     public class StockReportByOrderUpdater : IAppObserver<Order>
     {

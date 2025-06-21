@@ -3,7 +3,7 @@ using CafeManagement.Interfaces.Services.Report;
 using CafeManagement.Interfaces.Services.StockService;
 using CafeManagement.Models.Stock;
 
-namespace CafeManagement.Events.Obsersvers.StockReportObserver
+namespace CafeManagement.Events.Obsersvers.StockImportObs
 {
     public class StockReportByEntryUpdater : IAppObserver<StockEntry>
     {
